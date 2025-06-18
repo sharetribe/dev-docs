@@ -1,8 +1,36 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import localFont from 'next/font/local'
+
+// Components
 import Logo from './components/Logo.js'
+import SlackIcon from './components/SlackIcon.js'
+
+// Styles
 import 'nextra-theme-docs/style.css'
+import './global.css'
+
+const circular = localFont({
+  src: [
+    {
+      path: './fonts/CircularXXWeb-Italic.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: './fonts/CircularXXWeb-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/CircularXXWeb-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+})
+
  
 export const metadata = {
   // Define your metadata here
@@ -13,6 +41,9 @@ export const metadata = {
 const navbar = (
   <Navbar
     logo={<Logo />}
+    chatLink="https://www.sharetribe.com/dev-slack"
+    chatIcon={<SlackIcon/>}
+    projectLink="https://www.github.com/sharetribe/web-template"
     // ... Your additional navbar options
   />
 )
@@ -21,6 +52,7 @@ const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
 export default async function RootLayout({ children }) {
   return (
     <html
+    className={circular.className}
       // Not required, but good for SEO
       lang="en"
       // Required to be set
@@ -29,6 +61,7 @@ export default async function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <Head
+      faviconGlyph="none"
         backgroundColor={{
           light: "rgb(250,250,250)",
           dark: "rgb(12,10,9)",
@@ -50,7 +83,7 @@ export default async function RootLayout({ children }) {
           // banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/sharetribe/dev-docs"
+          docsRepositoryBase="https://github.com/sharetribe/dev-docs/blob/main"
           footer={footer}
           // ... Your additional layout options
         >
