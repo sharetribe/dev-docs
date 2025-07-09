@@ -47,7 +47,7 @@ const navbar = (
     // ... Your additional navbar options
   />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>
+const footer = <Footer>{new Date().getFullYear()} © Sharetribe</Footer>
  
 export default async function RootLayout({ children }) {
   return (
@@ -76,7 +76,6 @@ export default async function RootLayout({ children }) {
             }
         }}
       >
-        {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>
         <Layout
