@@ -1,3 +1,5 @@
+// Enables tailwind
+
 const config = {
   plugins: {
     "@tailwindcss/postcss": {},

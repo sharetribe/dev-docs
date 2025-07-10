@@ -8,7 +8,17 @@ export default {
       breadcrumb: false,
     },
   },
+  "tutorial": {
+    "theme": {
+      collapsed: true
+    }
+  },
   "concepts": {
+    "theme": {
+      collapsed: true
+    }
+  },
+  "web-template": {
     "theme": {
       collapsed: true
     }
@@ -23,10 +33,6 @@ export default {
     "type": "page",
     "href": "https://console.sharetribe.com"
   },
-  // "about": {
-  //       "title": "About",
-  //       "href": "https://www.example.com"
-  //     },
   "company": {
     "title": "Resources",
     "type": "menu",
