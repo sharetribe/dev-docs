@@ -1,13 +1,13 @@
 # Dev Docs
 
-The dev docs are built with Nextra and the project deploys to Vercel. 
+The dev docs are built with Nextra and the project deploys to Vercel.
 
 ## Project Overview
 
 ## Tech Stack
 
 - **Framework**: Next.js with Nextra
-- **Language**: JavaScript 
+- **Language**: JavaScript
 - **Styling**: Tailwind CSS
 - **Deployment**: Vercel
 
@@ -29,6 +29,7 @@ The dev docs are built with Nextra and the project deploys to Vercel.
 ### Development
 
 Start the development server:
+
 ```bash
 yarn dev
 ```
@@ -38,11 +39,13 @@ The site will be available at `http://localhost:3000`
 ### Building
 
 Build the project for production:
+
 ```bash
 yarn build
 ```
 
 Start the production server:
+
 ```bash
 yarn start
 ```
@@ -72,11 +75,10 @@ The `[[...mdxPath]]` directory uses Next.js dynamic routing to handle all docume
 
 - **Dynamic Catch-All Routes**: The `[[...mdxPath]]` folder name creates a catch-all route that matches any path depth (e.g., `/concepts/users`, `/tutorial/getting-started`)
 - **Nextra Integration**: The `page.jsx` file uses Nextra's `importPage` function to dynamically load MDX files from the `content/` directory based on the URL path
-- **Static Generation**: `generateStaticParams` pre-builds all possible routes at build time 
+- **Static Generation**: `generateStaticParams` pre-builds all possible routes at build time
 - **Metadata Handling**: Each MDX file can include frontmatter metadata that gets extracted and used for SEO and page information
 
 This structure allows you to simply add new `.mdx` files to the `content/` directory and they automatically become accessible via their file path as URLs.
-
 
 ## Deployment
 

@@ -2,7 +2,7 @@
  * A reusable card component that displays a title and description.
  * Can be rendered as either a link (when href is provided) or an article element.
  * Used on the landing page to display information cards with descriptions below titles.
- * 
+ *
  * @param {string} title - The main heading text for the card
  * @param {string} description - The descriptive text displayed below the title
  * @param {string} [href] - Optional URL to make the card clickable as a link
@@ -30,7 +30,9 @@ const CustomCard = ({ title, description, href, className = "" }) => {
       style={{ cursor: href ? "pointer" : "default" }}
     >
       {/* Card title with optional arrow indicator for links */}
-      <h3 className={`font-semibold text-lg mb-0 flex items-center gap-2 ${href ? 'after:content-["→"] after:transition-transform after:duration-75 group-hover:after:translate-x-0.5 group-focus:after:translate-x-0.5' : ''}`}>
+      <h3
+        className={`font-semibold text-lg mb-0 flex items-center gap-2 ${href ? 'after:content-["→"] after:transition-transform after:duration-75 group-hover:after:translate-x-0.5 group-focus:after:translate-x-0.5' : ""}`}
+      >
         {title}
       </h3>
       {/* Card description text */}
@@ -43,7 +45,7 @@ const CustomCard = ({ title, description, href, className = "" }) => {
 
 /**
  * A container component that displays multiple CustomCard components in a responsive grid layout.
- * 
+ *
  * @param {React.ReactNode} children - The card components to display
  * @param {string} [className] - Additional CSS classes to apply to the container
  */
@@ -51,7 +53,7 @@ export const CustomCards = ({ children, className = "" }) => {
   return (
     <div
       className={`mt-4 grid gap-4 ${className}`.trim()}
-      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}
+      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}
     >
       {children}
     </div>
