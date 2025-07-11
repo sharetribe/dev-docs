@@ -33,8 +33,9 @@ const circular = localFont({
 
  
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  robots: {
+    index: false,
+  },
 }
  
 // const banner = <Banner storageKey="some-key">Add banners here! 🎉</Banner>
