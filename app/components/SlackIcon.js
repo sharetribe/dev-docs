@@ -8,14 +8,15 @@ const SlackIcon = (props) => {
       version="1.1"
       viewBox="-18.42 -30.7 159.64 184.2"
       {...props}
-    >
-      <g id="g192" transform="translate(-73.6 -73.6)">
+            >
+              <g id="g192" transform="translate(-73.6 -73.6)">
         <g id="g172">
-          <path
-            id="path168"
-            style={{ fill: "#e01e5a" }}
-            d="M99.4 151.2c0 7.1-5.8 12.9-12.9 12.9-7.1 0-12.9-5.8-12.9-12.9 0-7.1 5.8-12.9 12.9-12.9h12.9z"
-          />
+                  
+                  <path
+                    id="path168"
+                    style={{ fill: "#e01e5a" }}
+                    d="M99.4 151.2c0 7.1-5.8 12.9-12.9 12.9-7.1 0-12.9-5.8-12.9-12.9 0-7.1 5.8-12.9 12.9-12.9h12.9z"
+                  />
           <path
             id="path170"
             style={{ fill: "#e01e5a" }}
