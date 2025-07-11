@@ -1,7 +1,6 @@
-import nextra from 'nextra'
+import nextra from "nextra";
 
 const withNextra = nextra({
-
   // Possible options listed below, from https://nextra.site/api/nextraconfig
   // defaultShowCopyCode: true, // Show copy button for code blocks by default (default: undefined)
   // search: { codeblocks: false }, // Enable search functionality (default: { "codeblocks": false })
@@ -13,11 +12,10 @@ const withNextra = nextra({
   // whiteListTagsStyling: [], // Allow replacing HTML elements with custom components (default: undefined)
   // contentDirBasePath: '/docs', // Set base path for serving Markdown files (default: "/")
   // unstable_shouldAddLocaleToLinks: false // Prefix locale to page map links (default: false)
-})
+});
 
 export default withNextra({
-  output: 'export',
+  output: "export",
   trailingSlash: true,
-  images: { unoptimized: true }
-})
-
+  images: { unoptimized: true },
+});

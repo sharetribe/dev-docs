@@ -1,6 +1,6 @@
-function CustomCard({ title, description, href, className = '' }) {
-  const CardComponent = href ? 'a' : 'article';
-  
+function CustomCard({ title, description, href, className = "" }) {
+  const CardComponent = href ? "a" : "article";
+
   return (
     <CardComponent
       href={href}
@@ -13,8 +13,10 @@ function CustomCard({ title, description, href, className = '' }) {
         p-4 text-gray-700 hover:text-gray-900
         dark:text-neutral-200 dark:hover:text-neutral-50
         gap-2 ${className}
-      `.trim().replace(/\s+/g, ' ')}
-      style={{ cursor: href ? 'pointer' : 'default' }}
+      `
+        .trim()
+        .replace(/\s+/g, " ")}
+      style={{ cursor: href ? "pointer" : "default" }}
     >
       <h3 className="font-semibold text-lg mb-0 flex items-center gap-2">
         {title}
@@ -27,7 +29,7 @@ function CustomCard({ title, description, href, className = '' }) {
   );
 }
 
-export function CustomCards({ children, className = '' }) {
+export function CustomCards({ children, className = "" }) {
   return (
     <div
       className={`mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 ${className}`.trim()}

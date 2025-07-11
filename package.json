@@ -19,11 +19,13 @@
     "dev": "next",
     "build": "next build",
     "start": "npx serve@latest out",
-    "postbuild": "pagefind --site out --output-path out/_pagefind"
+    "postbuild": "pagefind --site out --output-path out/_pagefind",
+    "format": "prettier . --write"
   },
   "devDependencies": {
     "@types/node": "24.0.3",
     "@types/react": "19.1.8",
-    "pagefind": "^1.3.0"
+    "pagefind": "^1.3.0",
+    "prettier": "3.6.2"
   }
 }
