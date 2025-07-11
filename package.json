@@ -21,6 +21,10 @@
     "start": "npx serve@latest out",
     "postbuild": "pagefind --site out --output-path out/_pagefind",
     "format": "prettier . --write"
+    
+  },
+    "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
     "@types/node": "24.0.3",
