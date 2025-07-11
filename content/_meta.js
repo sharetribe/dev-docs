@@ -28,6 +28,11 @@ export default {
     type: "page",
     href: "https://www.sharetribe.com/api-reference",
   },
+  developer_blog: {
+    title: "Developer Blog",
+    type: "page",
+    href: "https://www.sharetribe.com/developer-blog",
+  },
   console_link: {
     title: "Console",
     type: "page",
@@ -39,7 +44,7 @@ export default {
     items: {
       about: {
         title: "JavaScript SDK",
-        href: "https://www.example.com",
+        href: "https://sharetribe.github.io/flex-sdk-js/",
       },
       example_repo: {
         title: "Example processes",
@@ -47,7 +52,7 @@ export default {
       },
       example_repo2: {
         title: "Integration API examples",
-        href: "https://github.com/sharetribe/example-processes/?tab=readme-ov-file#sharetribe-example-transaction-processes",
+        href: "https://github.com/sharetribe/integration-api-examples/tree/master?tab=readme-ov-file",
       },
     },
   },
