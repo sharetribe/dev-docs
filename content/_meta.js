@@ -13,12 +13,14 @@ export default {
       collapsed: true,
     },
   },
-  concepts: {
+
+  "web-template": {
     theme: {
       collapsed: true,
     },
   },
-  "web-template": {
+  references: {
+    title: "References",
     theme: {
       collapsed: true,
     },
