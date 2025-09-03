@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.10",
-    "next": "^15.3.3",
+    "next": "^15.5.2",
     "nextra": "^4.4.0",
     "nextra-theme-docs": "^4.4.0",
     "postcss": "^8.5.6",
