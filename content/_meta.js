@@ -14,13 +14,24 @@ export default {
     },
   },
 
-  "web-template": {
+  template: {
+    theme: {
+      collapsed: true,
+    },
+  },
+  concepts: {
     theme: {
       collapsed: true,
     },
   },
   references: {
     title: "References",
+    theme: {
+      collapsed: true,
+    },
+  },
+  "how-to": {
+    title: "How-tos",
     theme: {
       collapsed: true,
     },
