@@ -3,7 +3,8 @@ title: User extended data
 slug: user-extended-data
 updated: 2025-06-11
 category: concepts-extended-data
-ingress: User extended data allows you to distinguish between different types
+description:
+  User extended data allows you to distinguish between different types
   of users, such as customer and providers or regular and verified
   providers, as well as share sensitive information to a transaction
   counterparty.
@@ -15,7 +16,7 @@ data, private data, and public metadata. A user's extended data is
 nested in the user's _profile_ attribute, not a direct attribute of the
 user resource.
 
-<info>
+<Callout>
 
 User public data fields and user types can be configured in Console
 using [assets](/references/assets/).
@@ -28,7 +29,7 @@ for user types, the Sharetribe Web Template has the capability to read
 the asset-based extended data configurations and display the necessary
 components when editing and viewing a user's profile.
 
-</info>
+</Callout>
 
 ## Viewing and modifying user extended data
 
@@ -62,7 +63,7 @@ by setting specific attributes in your users' extended data and allowing
 them access to certain parts of the marketplace based on those
 attributes.
 
-<info>
+<Callout>
 
 Starting from release
 [v8.5.0](https://github.com/sharetribe/web-template/releases/tag/v8.5.0),
@@ -70,7 +71,7 @@ operators can differentiate users' experience based on user type in
 Console, and the Sharetribe Web Template will display selected user
 interface elements differently based on those configurations.
 
-</info>
+</Callout>
 
 You can also implement different tiers of providers, where for example a
 regular (non-paid) provider is allowed to publish one listing and a

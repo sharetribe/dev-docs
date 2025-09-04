@@ -3,7 +3,8 @@ title: Introduction to extended data
 slug: extended-data-introduction
 updated: 2024-11-14
 category: concepts-extended-data
-ingress: Extended data allows you to fully customize the information you want
+description:
+  Extended data allows you to fully customize the information you want
   to collect about users, listings, and transactions on your
   marketplace.
 published: true

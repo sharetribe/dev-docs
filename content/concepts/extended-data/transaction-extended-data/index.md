@@ -3,7 +3,7 @@ title: Transaction extended data
 slug: transaction-extended-data
 updated: 2025-04-14
 category: concepts-extended-data
-ingress: Transaction extended data allows you to keep sensitive information
+description: Transaction extended data allows you to keep sensitive information
   stored and visible for both transaction parties, as well as add
   information related to, for example, integrations or analytics.
 published: true
