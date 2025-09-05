@@ -2,7 +2,7 @@ import nextra from "nextra";
 
 const withNextra = nextra({
   // Possible options listed below, from https://nextra.site/api/nextraconfig
-  // defaultShowCopyCode: true, // Show copy button for code blocks by default (default: undefined)
+  defaultShowCopyCode: true, // Show copy button for code blocks by default (default: undefined)
   // search: { codeblocks: false }, // Enable search functionality (default: { "codeblocks": false })
   // staticImage: true, // Optimize static image imports in Markdown (default: true)
   // readingTime: true, // Add estimated reading time to .md and .mdx files (default: undefined)
@@ -16,6 +16,5 @@ const withNextra = nextra({
 
 export default withNextra({
   output: "export",
-  trailingSlash: true,
   images: { unoptimized: true },
 });
