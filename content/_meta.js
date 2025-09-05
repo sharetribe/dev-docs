@@ -1,6 +1,6 @@
 export default {
   index: {
-    title: "Introduction",
+    title: "Developer documentation",
     theme: {
       toc: false,
       layout: "full",
@@ -8,6 +8,7 @@ export default {
       breadcrumb: false,
     },
   },
+  introduction: { theme: {} },
   tutorial: {
     theme: {
       collapsed: true,
@@ -24,18 +25,19 @@ export default {
       collapsed: true,
     },
   },
-  references: {
-    title: "References",
-    theme: {
-      collapsed: true,
-    },
-  },
   "how-to": {
     title: "How-tos",
     theme: {
       collapsed: true,
     },
   },
+  references: {
+    title: "References",
+    theme: {
+      collapsed: true,
+    },
+  },
+
   github_link: {
     title: "API Reference",
     type: "page",

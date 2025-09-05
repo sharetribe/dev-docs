@@ -37,7 +37,9 @@ export const metadata = {
   },
 };
 
-// const banner = <Banner storageKey="some-key">Add banners here! 🎉</Banner>
+const banner = (
+  <Banner storageKey="new-docs">We've released a new docs site! 🎉</Banner>
+);
 const navbar = (
   <Navbar
     logo={<Logo />}
@@ -77,11 +79,12 @@ export default async function RootLayout({ children }) {
       ></Head>
       <body>
         <Layout
-          // banner={banner}
+          banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
           docsRepositoryBase="https://github.com/sharetribe/dev-docs/blob/main"
           footer={footer}
+          sidebar={{ autoCollapse: true }}
           // ... Your additional layout options
         >
           {children}
