@@ -6,7 +6,18 @@ export const generateStaticParams = generateStaticParamsFor("mdxPath");
 export async function generateMetadata(props) {
   const params = await props.params;
   const { metadata } = await importPage(params.mdxPath);
-  return metadata;
+
+  // Generate canonical URL
+  const baseUrl = "https://www.sharetribe.com/docs";
+  const canonicalPath = params.mdxPath ? params.mdxPath.join("/") : "";
+  const canonicalUrl = `${baseUrl}/${canonicalPath}`;
+
+  return {
+    ...metadata,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
 }
 
 const Wrapper = getMDXComponents().wrapper;
