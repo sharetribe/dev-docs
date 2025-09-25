@@ -2,3 +2,7 @@ _pagefind/
 .next/
 node_modules/
 out/
+
+# Generated sitemap files
+public/sitemap*.xml
+public/robots.txt
