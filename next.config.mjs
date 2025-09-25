@@ -10,7 +10,6 @@ const withNextra = nextra({
   // codeHighlight: true, // Enable or disable syntax highlighting (default: true)
   // mdxOptions: { format: "detect", rehypePrettyCodeOptions: {} }, // Specific options for MDX compilation (default: { "format": "detect", "rehypePrettyCodeOptions": {} })
   // whiteListTagsStyling: [], // Allow replacing HTML elements with custom components (default: undefined)
-  // contentDirBasePath: '/docs', // Set base path for serving Markdown files (default: "/")
   // unstable_shouldAddLocaleToLinks: false // Prefix locale to page map links (default: false)
 });
 
@@ -18,4 +17,5 @@ export default withNextra({
   output: "export",
   images: { unoptimized: true },
   basePath: "/docs",
+  assetPrefix: "/docs/",
 });
