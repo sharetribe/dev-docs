@@ -8,7 +8,11 @@ export default {
       breadcrumb: false,
     },
   },
-  introduction: { theme: {} },
+  introduction: {
+    theme: {
+      collapsed: true,
+    },
+  },
   tutorial: {
     theme: {
       collapsed: true,
@@ -43,16 +47,7 @@ export default {
     type: "page",
     href: "https://www.sharetribe.com/api-reference",
   },
-  developer_blog: {
-    title: "Developer Blog",
-    type: "page",
-    href: "https://www.sharetribe.com/developer-blog",
-  },
-  console_link: {
-    title: "Console",
-    type: "page",
-    href: "https://console.sharetribe.com",
-  },
+
   company: {
     title: "Resources",
     type: "menu",
@@ -61,8 +56,16 @@ export default {
         title: "JavaScript SDK",
         href: "https://sharetribe.github.io/flex-sdk-js/",
       },
+      developer_blog: {
+        title: "Developer Blog",
+        href: "https://www.sharetribe.com/developer-blog",
+      },
+      console_link: {
+        title: "Console",
+        href: "https://console.sharetribe.com",
+      },
       example_repo: {
-        title: "Example processes",
+        title: "Example transaction processes",
         href: "https://github.com/sharetribe/example-processes/?tab=readme-ov-file#sharetribe-example-transaction-processes",
       },
       example_repo2: {

@@ -16,12 +16,12 @@ export default async function Page(props) {
   const result = await importPage(params.mdxPath);
   const { default: MDXContent, toc, metadata, sourceCode } = result;
   // if we define hideCopyPage = true in front matter, we can disable the llm copy page feature for a specific page
-  const { hideCopyPage } = metadata;
+  // const { hideCopyPage } = metadata;
   return (
     <Wrapper
       toc={toc}
       metadata={metadata}
-      sourceCode={hideCopyPage ? "" : sourceCode}
+      // sourceCode={hideCopyPage ? "" : sourceCode}
     >
       <MDXContent {...props} params={params} />
     </Wrapper>
