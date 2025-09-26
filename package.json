@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "next",
-    "build": "next build && mv out out-root && mkdir out && mv out-root out/docs && mv out/docs/404.html out/",
+    "build": "next build",
     "start": "npx serve@latest out",
     "postbuild": "next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind",
     "format": "prettier . --write",
