@@ -17,6 +17,6 @@ export default withNextra({
   output: "export",
   images: { unoptimized: true },
   basePath: "/docs",
-  assetPrefix: "/docs/",
+  // assetPrefix: "/docs/",
   // trailingSlash: true,
 });
