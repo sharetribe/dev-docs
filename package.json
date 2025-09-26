@@ -20,7 +20,7 @@
     "dev": "next",
     "build": "next build",
     "start": "npx serve@latest out",
-    "postbuild": "next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind",
+    "postbuild": "next-sitemap && pagefind --site out --output-path out/_pagefind",
     "format": "prettier . --write",
     "prepare": "husky"
   },
