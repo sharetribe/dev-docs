@@ -18,9 +18,9 @@
   },
   "scripts": {
     "dev": "next",
-    "build": "next build && mv out out-root && mkdir out && mv out-root out/docs",
+    "build": "next build && mv out out-root && mkdir out && mv out-root out/docs && cp -r out/docs/404 out/ && cp out/docs/404.html out/",
     "start": "npx serve@latest out",
-    "postbuild": "next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind && cp -r out/docs/404 out/ && cp out/docs/404.html out/",
+    "postbuild": "next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind",
     "format": "prettier . --write",
     "prepare": "husky"
   },
