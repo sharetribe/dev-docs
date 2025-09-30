@@ -1,8 +1,5 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "status": 404, "dest": "/docs/404/" }
-  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
       "source": "/docs/legacy/:match(.*)",
@@ -15,6 +12,10 @@
     {
       "source": "/docs/stats/api/event/",
       "destination": "https://plausible.io/api/event"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/docs/404/"
     }
   ]
 }
