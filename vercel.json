@@ -2,5 +2,19 @@
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "status": 404, "dest": "/docs/404/" }
+  ],
+  "rewrites": [
+    {
+      "source": "/docs/legacy/:match(.*)",
+      "destination": "https://legacy-docs-ruby.vercel.app/:match"
+    },
+    {
+      "source": "/docs/stats/js/script/",
+      "destination": "https://plausible.io/js/script.js"
+    },
+    {
+      "source": "/docs/stats/api/event/",
+      "destination": "https://plausible.io/api/event"
+    }
   ]
 }

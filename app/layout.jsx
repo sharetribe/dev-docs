@@ -11,6 +11,12 @@ import SlackIcon from "./components/SlackIcon.js";
 import "nextra-theme-docs/style.css";
 import "./global.css";
 
+// Plausible
+import PlausibleProvider from "next-plausible";
+
+const isPreviewEnv = process.env.PLAUSIBLE_ENV === `preview`;
+const enablePlausible = process.env.NODE_ENV === `production`;
+
 const circular = localFont({
   src: [
     {
@@ -76,7 +82,16 @@ export default async function RootLayout({ children }) {
             dark: 63,
           },
         }}
-      ></Head>
+      >
+        <PlausibleProvider
+          scriptProps={{
+            src: "/stats/js/script/",
+            "data-api": "/stats/api/event/",
+          }}
+          enabled={enablePlausible}
+          domain={isPreviewEnv ? "flex-docs.vercel.app" : "sharetribe.com/docs"}
+        />
+      </Head>
       <body>
         <Layout
           banner={banner}
