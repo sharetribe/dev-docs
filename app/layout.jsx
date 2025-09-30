@@ -85,8 +85,8 @@ export default async function RootLayout({ children }) {
       >
         <PlausibleProvider
           scriptProps={{
-            src: "/stats/js/script/",
-            "data-api": "/stats/api/event/",
+            src: "/docs/stats/js/script/",
+            "data-api": "/docs/stats/api/event/",
           }}
           enabled={enablePlausible}
           domain={isPreviewEnv ? "flex-docs.vercel.app" : "sharetribe.com/docs"}
