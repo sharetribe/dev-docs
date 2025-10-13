@@ -70,7 +70,7 @@
     },
     {
       "source": "/docs/background/transaction-engine/",
-      "destination": "/docs/concepts/transaction-process/",
+      "destination": "/docs/concepts/transactions/transaction-process/",
       "permanent": true
     },
     {
@@ -135,7 +135,7 @@
     },
     {
       "source": "/docs/guides/how-to-enable-login-as-user/",
-      "destination": "/docs/concepts/login-as-user/",
+      "destination": "/docs/concepts/users-and-authentication/login-as-user/",
       "permanent": true
     },
     {
@@ -215,7 +215,7 @@
     },
     {
       "source": "/docs/guides/provider-onboarding-and-identity-verification/",
-      "destination": "/docs/concepts/providers-and-customers-on-stripe-platform/",
+      "destination": "/docs/concepts/payments/providers-and-customers-on-stripe-platform/",
       "permanent": true
     },
     {
@@ -265,7 +265,7 @@
     },
     {
       "source": "/docs/background/custom-pricing/",
-      "destination": "/docs/concepts/pricing/",
+      "destination": "/docs/concepts/pricing-and-commissions/pricing/",
       "permanent": true
     },
     {
@@ -380,12 +380,12 @@
     },
     {
       "source": "/docs/background/transaction-process/",
-      "destination": "/docs/concepts/transaction-process/",
+      "destination": "/docs/concepts/transactions/transaction-process/",
       "permanent": true
     },
     {
       "source": "/docs/background/pricing/",
-      "destination": "/docs/concepts/pricing/",
+      "destination": "/docs/concepts/pricing-and-commissions/pricing/",
       "permanent": true
     },
     {
@@ -395,37 +395,37 @@
     },
     {
       "source": "/docs/background/payments-overview/",
-      "destination": "/docs/concepts/payments-overview/",
+      "destination": "/docs/concepts/payments/payments-overview/",
       "permanent": true
     },
     {
       "source": "/docs/background/payment-methods-overview/",
-      "destination": "/docs/concepts/payment-methods-overview/",
+      "destination": "/docs/concepts/payments/payment-methods-overview/",
       "permanent": true
     },
     {
       "source": "/docs/background/payment-intents/",
-      "destination": "/docs/concepts/payment-intents/",
+      "destination": "/docs/concepts/payments/payment-intents/",
       "permanent": true
     },
     {
       "source": "/docs/background/strong-customer-authentication/",
-      "destination": "/docs/concepts/strong-customer-authentication/",
+      "destination": "/docs/concepts/payments/strong-customer-authentication/",
       "permanent": true
     },
     {
       "source": "/docs/background/privileged-transitions/",
-      "destination": "/docs/concepts/privileged-transitions/",
+      "destination": "/docs/concepts/transactions/privileged-transitions/",
       "permanent": true
     },
     {
       "source": "/docs/background/off-session-payments-in-transaction-process/",
-      "destination": "/docs/concepts/off-session-payments-in-transaction-process/",
+      "destination": "/docs/concepts/payments/off-session-payments-in-transaction-process/",
       "permanent": true
     },
     {
       "source": "/docs/background/using-stored-payment-cards/",
-      "destination": "/docs/concepts/using-stored-payment-cards/",
+      "destination": "/docs/concepts/payments/using-stored-payment-cards/",
       "permanent": true
     },
     {
@@ -440,42 +440,42 @@
     },
     {
       "source": "/docs/background/commissions-and-monetizing-your-platform/",
-      "destination": "/docs/concepts/commissions-and-monetizing-your-platform/",
+      "destination": "/docs/concepts/pricing-and-commissions/commissions-and-monetizing-your-platform/",
       "permanent": true
     },
     {
       "source": "/docs/background/how-the-search-works/",
-      "destination": "/docs/concepts/how-the-listing-search-works/",
+      "destination": "/docs/concepts/listings/how-the-listing-search-works/",
       "permanent": true
     },
     {
       "source": "/docs/background/marketplace-api-integration-api/",
-      "destination": "/docs/concepts/marketplace-api-integration-api/",
+      "destination": "/docs/concepts/api-sdk/marketplace-api-integration-api/",
       "permanent": true
     },
     {
       "source": "/docs/background/authentication-api/",
-      "destination": "/docs/concepts/authentication-api/",
+      "destination": "/docs/concepts/api-sdk/authentication-api/",
       "permanent": true
     },
     {
       "source": "/docs/background/social-logins-and-sso/",
-      "destination": "/docs/concepts/social-logins-and-sso/",
+      "destination": "/docs/concepts/users-and-authentication/social-logins-and-sso/",
       "permanent": true
     },
     {
       "source": "/docs/background/applications/",
-      "destination": "/docs/concepts/applications/",
+      "destination": "/docs/concepts/development/applications/",
       "permanent": true
     },
     {
       "source": "/docs/background/flex-environments/",
-      "destination": "/docs/concepts/sharetribe-environments/",
+      "destination": "/docs/concepts/development/sharetribe-environments/",
       "permanent": true
     },
     {
       "source": "/docs/background/requiring-approval/",
-      "destination": "/docs/concepts/requiring-approval/",
+      "destination": "/docs/concepts/listings/requiring-approval/",
       "permanent": true
     },
     {
@@ -520,7 +520,7 @@
     },
     {
       "source": "/docs/cookbook-payments/provider-onboarding-and-identity-verification/",
-      "destination": "/docs/concepts/providers-and-customers-on-stripe-platform/",
+      "destination": "/docs/concepts/payments/providers-and-customers-on-stripe-platform/",
       "permanent": true
     },
     {
@@ -540,7 +540,7 @@
     },
     {
       "source": "/docs/cookbook-manage/enable-login-as-user/",
-      "destination": "/docs/concepts/login-as-user/",
+      "destination": "/docs/concepts/users-and-authentication/login-as-user/",
       "permanent": true
     },
     {
@@ -745,32 +745,32 @@
     },
     {
       "source": "/docs/references/api/",
-      "destination": "/docs/concepts/api/",
+      "destination": "/docs/concepts/api-sdk/api/",
       "permanent": true
     },
     {
       "source": "/docs/references/js-sdk/",
-      "destination": "/docs/concepts/js-sdk/",
+      "destination": "/docs/concepts/api-sdk/js-sdk/",
       "permanent": true
     },
     {
       "source": "/docs/operator-guides/change-transaction-process/",
-      "destination": "/docs/concepts/change-transaction-process/",
+      "destination": "/docs/concepts/transactions/change-transaction-process//",
       "permanent": true
     },
     {
       "source": "/docs/operator-guides/console-overview/",
-      "destination": "/docs/concepts/console-overview/",
+      "destination": "/docs/concepts/development/console-overview/",
       "permanent": true
     },
     {
       "source": "/docs/operator-guides/design-txn-process-with-whimsical/",
-      "destination": "/docs/concepts/change-transaction-process/",
+      "destination": "/docs/concepts/transactions/change-transaction-process//",
       "permanent": true
     },
     {
       "source": "/docs/operator-guides/extended-data-introduction/",
-      "destination": "/docs/concepts/extended-data-introduction/",
+      "destination": "/docs/concepts/extended-data/extended-data-introduction/",
       "permanent": true
     },
     {
@@ -790,12 +790,12 @@
     },
     {
       "source": "/docs/docs/operator-guides/inventory-management/",
-      "destination": "/docs/concepts/inventory-management/",
+      "destination": "/docs/concepts/availability/inventory-management/",
       "permanent": true
     },
     {
       "source": "/docs/operator-guides/manage-seats/",
-      "destination": "/docs/concepts/manage-seats/",
+      "destination": "/docs/concepts/availability/manage-seats/",
       "permanent": true
     },
     {
@@ -805,7 +805,7 @@
     },
     {
       "source": "/docs/operator-guides/transaction-process/",
-      "destination": "/docs/concepts/transaction-process/",
+      "destination": "/docs/concepts/transactions/transaction-process/",
       "permanent": true
     },
     {
@@ -850,7 +850,7 @@
     },
     {
       "source": "/docs/concepts/translations/",
-      "destination": "/docs/concepts/marketplace-texts/",
+      "destination": "/docs/concepts/content-management/marketplace-texts/",
       "permanent": true
     },
     {
@@ -950,7 +950,7 @@
     },
     {
       "source": "/docs/concepts/flex-environments/",
-      "destination": "/docs/concepts/sharetribe-environments/",
+      "destination": "/docs/concepts/development/sharetribe-environments/",
       "permanent": true
     },
     {
@@ -970,7 +970,7 @@
     },
     {
       "source": "/docs/concepts/users-and-authentication-in-flex/",
-      "destination": "/docs/concepts/users-and-authentication-in-sharetribe/",
+      "destination": "/docs/concepts/users-and-authentication/users-and-authentication-in-sharetribe/",
       "permanent": true
     },
     {
@@ -1095,7 +1095,7 @@
     },
     {
       "source": "/docs/concepts/microcopy/",
-      "destination": "/docs/concepts/marketplace-texts/",
+      "destination": "/docs/concepts/content-management/marketplace-texts/",
       "permanent": true
     },
     {
@@ -1165,7 +1165,7 @@
     },
     {
       "source": "/docs/how-to/enable-login-as-user/",
-      "destination": "/docs/concepts/login-as-user/",
+      "destination": "/docs/concepts/users-and-authentication/login-as-user/",
       "permanent": true
     },
     {
@@ -1200,7 +1200,7 @@
     },
     {
       "source": "/docs/how-to/provider-onboarding-and-identity-verification/",
-      "destination": "/docs/concepts/providers-and-customers-on-stripe-platform/",
+      "destination": "/docs/concepts/payments/providers-and-customers-on-stripe-platform/",
       "permanent": true
     },
     {
@@ -1516,6 +1516,211 @@
     {
       "source": "/docs/how-to/setup-open-id-connect-proxy/",
       "destination": "/docs/how-to/users-and-authentication/setup-open-id-connect-proxy/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/api/",
+      "destination": "/docs/concepts/api-sdk/api/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/authentication-api/",
+      "destination": "/docs/concepts/api-sdk/authentication-api/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/js-sdk/",
+      "destination": "/docs/concepts/api-sdk/js-sdk/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/marketplace-api-integration-api/",
+      "destination": "/docs/concepts/api-sdk/marketplace-api-integration-api/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/rate-limiting/",
+      "destination": "/docs/concepts/api-sdk/rate-limiting/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/inventory-management/",
+      "destination": "/docs/concepts/availability/inventory-management/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/manage-seats/",
+      "destination": "/docs/concepts/availability/manage-seats/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/content-management-in-sharetribe/",
+      "destination": "/docs/concepts/content-management/content-management-in-sharetribe/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/headless-content-management/",
+      "destination": "/docs/concepts/content-management/headless-content-management/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/marketplace-texts/",
+      "destination": "/docs/concepts/content-management/marketplace-texts/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/applications/",
+      "destination": "/docs/concepts/development/applications/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/console-overview/",
+      "destination": "/docs/concepts/development/console-overview/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/sharetribe-environments/",
+      "destination": "/docs/concepts/development/sharetribe-environments/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/sitemap-in-sharetribe/",
+      "destination": "/docs/concepts/development/sitemap-in-sharetribe/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/extended-data-introduction/",
+      "destination": "/docs/concepts/extended-data/extended-data-introduction/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/listing-extended-data/",
+      "destination": "/docs/concepts/extended-data/listing-extended-data/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/transaction-extended-data/",
+      "destination": "/docs/concepts/extended-data/transaction-extended-data/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/user-extended-data/",
+      "destination": "/docs/concepts/extended-data/user-extended-data/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/integrations-introduction/",
+      "destination": "/docs/concepts/integrations/integrations-introduction/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/how-the-listing-search-works/",
+      "destination": "/docs/concepts/listings/how-the-listing-search-works/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/listings-overview/",
+      "destination": "/docs/concepts/listings/listings-overview/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/requiring-approval/",
+      "destination": "/docs/concepts/listings/requiring-approval/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/email-notifications/",
+      "destination": "/docs/concepts/messages/email-notifications/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/messages/",
+      "destination": "/docs/concepts/messages/messages/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/off-session-payments-in-transaction-process/",
+      "destination": "/docs/concepts/payments/off-session-payments-in-transaction-process/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/payment-intents/",
+      "destination": "/docs/concepts/payments/payment-intents/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/payment-methods-overview/",
+      "destination": "/docs/concepts/payments/payment-methods-overview/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/payments-overview/",
+      "destination": "/docs/concepts/payments/payments-overview/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/providers-and-customers-on-stripe-platform/",
+      "destination": "/docs/concepts/payments/providers-and-customers-on-stripe-platform/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/strong-customer-authentication/",
+      "destination": "/docs/concepts/payments/strong-customer-authentication/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/using-stored-payment-cards/",
+      "destination": "/docs/concepts/payments/using-stored-payment-cards/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/commissions-and-monetizing-your-platform/",
+      "destination": "/docs/concepts/pricing-and-commissions/commissions-and-monetizing-your-platform/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/pricing/",
+      "destination": "/docs/concepts/pricing-and-commissions/pricing/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/change-transaction-process/",
+      "destination": "/docs/concepts/transactions/change-transaction-process/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/privileged-transitions/",
+      "destination": "/docs/concepts/transactions/privileged-transitions/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/reviews/",
+      "destination": "/docs/concepts/transactions/reviews/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/transaction-process/",
+      "destination": "/docs/concepts/transactions/transaction-process/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/login-as-user/",
+      "destination": "/docs/concepts/users-and-authentication/login-as-user/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/social-logins-and-sso/",
+      "destination": "/docs/concepts/users-and-authentication/social-logins-and-sso/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/user-access-control-in-sharetribe/",
+      "destination": "/docs/concepts/users-and-authentication/user-access-control-in-sharetribe/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/users-and-authentication-in-sharetribe/",
+      "destination": "/docs/concepts/users-and-authentication/users-and-authentication-in-sharetribe/",
       "permanent": true
     }
   ]
