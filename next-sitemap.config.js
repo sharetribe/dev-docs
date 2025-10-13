@@ -9,4 +9,5 @@ module.exports = {
   changefreq: undefined,
   exclude: ["/icon.png"],
   priority: undefined,
+  outDir: "./out/docs/public/",
 };
