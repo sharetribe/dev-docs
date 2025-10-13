@@ -60,7 +60,7 @@
     },
     {
       "source": "/docs/background/save-payment-card/",
-      "destination": "/docs/how-to/save-payment-card/",
+      "destination": "/docs/how-to/payments/save-payment-card/",
       "permanent": true
     },
     {
@@ -100,7 +100,7 @@
     },
     {
       "source": "/docs/guides/how-to-change-search-filters-in-ftw/",
-      "destination": "/docs/how-to/change-search-filters-in-template/",
+      "destination": "/docs/how-to/search/change-search-filters-in-template/",
       "permanent": true
     },
     {
@@ -110,7 +110,7 @@
     },
     {
       "source": "/docs/guides/how-to-change-transaction-process-in-ftw/",
-      "destination": "/docs/how-to/change-transaction-process-in-template/",
+      "destination": "/docs/how-to/transaction-process/change-transaction-process-in-template/",
       "permanent": true
     },
     {
@@ -125,7 +125,7 @@
     },
     {
       "source": "/docs/guides/how-to-customize-pricing/",
-      "destination": "/docs/how-to/how-to-customize-pricing/",
+      "destination": "/docs/how-to/payments/how-to-customize-pricing/",
       "permanent": true
     },
     {
@@ -140,7 +140,7 @@
     },
     {
       "source": "/docs/guides/how-to-extend-listing-data-in-ftw/",
-      "destination": "/docs/how-to/extend-listing-data-in-template/",
+      "destination": "/docs/how-to/listings/extend-listing-data-in-template/",
       "permanent": true
     },
     {
@@ -160,7 +160,7 @@
     },
     {
       "source": "/docs/guides/how-to-set-up-and-use-stripe/",
-      "destination": "/docs/how-to/set-up-and-use-stripe/",
+      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
       "permanent": true
     },
     {
@@ -185,7 +185,7 @@
     },
     {
       "source": "/docs/guides/how-to-take-payment-intents-into-use/",
-      "destination": "/docs/how-to/enable-payment-intents/",
+      "destination": "/docs/how-to/payments/enable-payment-intents/",
       "permanent": true
     },
     {
@@ -230,12 +230,12 @@
     },
     {
       "source": "/docs/tutorials/edit-email-templates-with-flex-cli/",
-      "destination": "/docs/how-to/edit-email-templates-with-sharetribe-cli/",
+      "destination": "/docs/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/tutorials/edit-transaction-process-with-flex-cli/",
-      "destination": "/docs/how-to/edit-transaction-process-with-sharetribe-cli/",
+      "destination": "/docs/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/",
       "permanent": true
     },
     {
@@ -260,7 +260,7 @@
     },
     {
       "source": "/docs/tutorials/manage-search-schemas-with-flex-cli/",
-      "destination": "/docs/how-to/manage-search-schemas-with-sharetribe-cli/",
+      "destination": "/docs/how-to/search/manage-search-schemas-with-sharetribe-cli/",
       "permanent": true
     },
     {
@@ -270,7 +270,7 @@
     },
     {
       "source": "/docs/cookbook-payments/customize-pricing/",
-      "destination": "/docs/how-to/how-to-customize-pricing/",
+      "destination": "/docs/how-to/payments/how-to-customize-pricing/",
       "permanent": true
     },
     {
@@ -480,7 +480,7 @@
     },
     {
       "source": "/docs/cookbook-data-model/extend-listing-data-in-ftw/",
-      "destination": "/docs/how-to/extend-listing-data-in-template/",
+      "destination": "/docs/how-to/listings/extend-listing-data-in-template/",
       "permanent": true
     },
     {
@@ -490,7 +490,7 @@
     },
     {
       "source": "/docs/cookbook-search/change-search-filters-in-ftw/",
-      "destination": "/docs/how-to/change-search-filters-in-template/",
+      "destination": "/docs/how-to/search/change-search-filters-in-template/",
       "permanent": true
     },
     {
@@ -500,7 +500,7 @@
     },
     {
       "source": "/docs/cookbook-transaction-process/change-transaction-process-in-ftw/",
-      "destination": "/docs/how-to/change-transaction-process-in-template/",
+      "destination": "/docs/how-to/transaction-process/change-transaction-process-in-template/",
       "permanent": true
     },
     {
@@ -510,12 +510,12 @@
     },
     {
       "source": "/docs/cookbook-payments/how-to-customize-pricing/",
-      "destination": "/docs/how-to/how-to-customize-pricing/",
+      "destination": "/docs/how-to/payments/how-to-customize-pricing/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-payments/set-up-and-use-stripe/",
-      "destination": "/docs/how-to/set-up-and-use-stripe/",
+      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
       "permanent": true
     },
     {
@@ -525,17 +525,17 @@
     },
     {
       "source": "/docs/cookbook-payments/enable-payment-intents/",
-      "destination": "/docs/how-to/enable-payment-intents/",
+      "destination": "/docs/how-to/payments/enable-payment-intents/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-payments/save-payment-card/",
-      "destination": "/docs/how-to/save-payment-card/",
+      "destination": "/docs/how-to/payments/save-payment-card/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-payments/removing-stripe-and-payments/",
-      "destination": "/docs/how-to/removing-stripe-and-payments/",
+      "destination": "/docs/how-to/payments/removing-stripe-and-payments/",
       "permanent": true
     },
     {
@@ -545,42 +545,42 @@
     },
     {
       "source": "/docs/cookbook-manage/implement-delete-user/",
-      "destination": "/docs/how-to/implement-delete-user/",
+      "destination": "/docs/how-to/users-and-authentication/implement-delete-user/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-emails/set-up-outgoing-email-settings/",
-      "destination": "/docs/how-to/set-up-outgoing-email-settings/",
+      "destination": "/docs/how-to/emails-and-notifications/set-up-outgoing-email-settings/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-social-logins-and-sso/enable-facebook-login/",
-      "destination": "/docs/how-to/enable-facebook-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-facebook-login/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-social-logins-and-sso/enable-google-login/",
-      "destination": "/docs/how-to/enable-google-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-google-login/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-social-logins-and-sso/enable-open-id-connect-login/",
-      "destination": "/docs/how-to/enable-open-id-connect-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-open-id-connect-login/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-social-logins-and-sso/setup-open-id-connect-proxy/",
-      "destination": "/docs/how-to/setup-open-id-connect-proxy/",
+      "destination": "/docs/how-to/users-and-authentication/setup-open-id-connect-proxy/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-events/like-feature/",
-      "destination": "/docs/how-to/like-feature/",
+      "destination": "/docs/how-to/events/like-feature/",
       "permanent": true
     },
     {
       "source": "/docs/cookbook-events/reacting-to-events/",
-      "destination": "/docs/how-to/reacting-to-events/",
+      "destination": "/docs/how-to/events/reacting-to-events/",
       "permanent": true
     },
     {
@@ -715,22 +715,22 @@
     },
     {
       "source": "/docs/flex-cli/edit-transaction-process-with-flex-cli/",
-      "destination": "/docs/how-to/edit-transaction-process-with-sharetribe-cli/",
+      "destination": "/docs/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/flex-cli/edit-email-templates-with-flex-cli/",
-      "destination": "/docs/how-to/edit-email-templates-with-sharetribe-cli/",
+      "destination": "/docs/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/flex-cli/manage-search-schemas-with-flex-cli/",
-      "destination": "/docs/how-to/manage-search-schemas-with-sharetribe-cli/",
+      "destination": "/docs/how-to/search/manage-search-schemas-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/flex-cli/view-events-with-flex-cli/",
-      "destination": "/docs/how-to/view-events-with-sharetribe-cli/",
+      "destination": "/docs/how-to/events/view-events-with-sharetribe-cli/",
       "permanent": true
     },
     {
@@ -740,7 +740,7 @@
     },
     {
       "source": "/docs/integrations/how-to-integrate-3rd-party-payment-gateway/",
-      "destination": "/docs/how-to/how-to-integrate-3rd-party-payment-gateway/",
+      "destination": "/docs/how-to/payments/how-to-integrate-3rd-party-payment-gateway/",
       "permanent": true
     },
     {
@@ -800,7 +800,7 @@
     },
     {
       "source": "/docs/operator-guides/migrating-from-outside-sharetribe/",
-      "destination": "/docs/how-to/migrating-from-outside-sharetribe/",
+      "destination": "/docs/how-to/migrations/migrating-from-outside-sharetribe/",
       "permanent": true
     },
     {
@@ -975,22 +975,22 @@
     },
     {
       "source": "/docs/how-to/edit-transaction-process-with-flex-cli/",
-      "destination": "/docs/how-to/edit-transaction-process-with-sharetribe-cli/",
+      "destination": "/docs/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/how-to/manage-search-schemas-with-flex-cli/",
-      "destination": "/docs/how-to/manage-search-schemas-with-sharetribe-cli/",
+      "destination": "/docs/how-to/search/manage-search-schemas-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/how-to/view-events-with-flex-cli/",
-      "destination": "/docs/how-to/view-events-with-sharetribe-cli/",
+      "destination": "/docs/how-to/events/view-events-with-sharetribe-cli/",
       "permanent": true
     },
     {
       "source": "/docs/how-to/edit-email-templates-with-flex-cli/",
-      "destination": "/docs/how-to/edit-email-templates-with-sharetribe-cli/",
+      "destination": "/docs/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/",
       "permanent": true
     },
     {
@@ -1020,7 +1020,7 @@
     },
     {
       "source": "/docs/how-to/extend-listing-data-in-ftw/",
-      "destination": "/docs/how-to/extend-listing-data-in-template/",
+      "destination": "/docs/how-to/listings/extend-listing-data-in-template/",
       "permanent": true
     },
     {
@@ -1030,7 +1030,7 @@
     },
     {
       "source": "/docs/how-to/change-transaction-process-in-ftw/",
-      "destination": "/docs/how-to/change-transaction-process-in-template/",
+      "destination": "/docs/how-to/transaction-process/change-transaction-process-in-template/",
       "permanent": true
     },
     {
@@ -1120,7 +1120,7 @@
     },
     {
       "source": "/docs/how-to/change-search-filters-in-ftw/",
-      "destination": "/docs/how-to/change-search-filters-in-template/",
+      "destination": "/docs/how-to/search/change-search-filters-in-template/",
       "permanent": true
     },
     {
@@ -1195,7 +1195,7 @@
     },
     {
       "source": "/docs/how-to/add-new-stripe-countries",
-      "destination": "/docs/how-to/set-up-and-use-stripe/",
+      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
       "permanent": true
     },
     {
@@ -1371,6 +1371,151 @@
     {
       "source": "/docs/template/how-to-test-template/",
       "destination": "/docs/template/testing/how-to-test-template/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/article-library/",
+      "destination": "/docs/how-to/content-management/article-library/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/options-prop/",
+      "destination": "/docs/how-to/content-management/options-prop/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/update-email-texts/",
+      "destination": "/docs/how-to/content-management/update-email-texts/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/edit-email-templates-with-sharetribe-cli/",
+      "destination": "/docs/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/set-up-outgoing-email-settings/",
+      "destination": "/docs/how-to/emails-and-notifications/set-up-outgoing-email-settings/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/like-feature/",
+      "destination": "/docs/how-to/events/like-feature/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/reacting-to-events/",
+      "destination": "/docs/how-to/events/reacting-to-events/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/view-events-with-sharetribe-cli/",
+      "destination": "/docs/how-to/events/view-events-with-sharetribe-cli/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/bookings-with-buffer/",
+      "destination": "/docs/how-to/listings/bookings-with-buffer/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/extend-listing-data-in-template/",
+      "destination": "/docs/how-to/listings/extend-listing-data-in-template/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/modify-time-intervals/",
+      "destination": "/docs/how-to/listings/modify-time-intervals/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/multiple-seats/",
+      "destination": "/docs/how-to/listings/multiple-seats/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/migrating-from-outside-sharetribe/",
+      "destination": "/docs/how-to/migrations/migrating-from-outside-sharetribe/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/enable-payment-intents/",
+      "destination": "/docs/how-to/payments/enable-payment-intents/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/how-to-customize-pricing/",
+      "destination": "/docs/how-to/payments/how-to-customize-pricing/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/how-to-integrate-3rd-party-payment-gateway/",
+      "destination": "/docs/how-to/payments/how-to-integrate-3rd-party-payment-gateway/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/removing-stripe-and-payments/",
+      "destination": "/docs/how-to/payments/removing-stripe-and-payments/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/save-payment-card/",
+      "destination": "/docs/how-to/payments/save-payment-card/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/set-up-and-use-stripe/",
+      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/change-search-filters-in-template/",
+      "destination": "/docs/how-to/search/change-search-filters-in-template/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/manage-search-schemas-with-sharetribe-cli/",
+      "destination": "/docs/how-to/search/manage-search-schemas-with-sharetribe-cli/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/change-transaction-process-in-template/",
+      "destination": "/docs/how-to/transaction-process/change-transaction-process-in-template/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/edit-transaction-process-with-sharetribe-cli/",
+      "destination": "/docs/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/enable-facebook-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-facebook-login/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/enable-google-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-google-login/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/enable-open-id-connect-login/",
+      "destination": "/docs/how-to/users-and-authentication/enable-open-id-connect-login/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/extend-user-data-in-template/",
+      "destination": "/docs/how-to/users-and-authentication/extend-user-data-in-template/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/implement-delete-user/",
+      "destination": "/docs/how-to/users-and-authentication/implement-delete-user/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/setup-open-id-connect-proxy/",
+      "destination": "/docs/how-to/users-and-authentication/setup-open-id-connect-proxy/",
       "permanent": true
     }
   ]
