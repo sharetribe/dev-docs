@@ -1722,6 +1722,26 @@
       "source": "/docs/concepts/users-and-authentication-in-sharetribe/",
       "destination": "/docs/concepts/users-and-authentication/users-and-authentication-in-sharetribe/",
       "permanent": true
+    },
+    {
+      "source": "/docs/design-toolkit/design-files/",
+      "destination": "/docs/introduction/design-files/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/design-toolkit/what-are-user-journeys/",
+      "destination": "/docs/introduction/design-files/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/design-toolkit/your-user-journey-a-guide/",
+      "destination": "/docs/introduction/design-files/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tutorial/introduction/",
+      "destination": "/docs/tutorial/",
+      "permanent": true
     }
   ]
 }
