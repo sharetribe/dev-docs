@@ -1,9 +1,12 @@
 /** @type {import('next-sitemap').IConfig} */
+// https://github.com/iamvishnusankar/next-sitemap
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://www.sharetribe.com/docs",
+  siteUrl: "https://www.sharetribe.com/docs",
   generateRobotsTxt: true,
   autoLastmod: false,
   changefreq: undefined,
   exclude: ["/icon.png"],
   priority: undefined,
+  outDir: process.env.VERCEL_ENV == "production" ? "./out/docs/" : "public",
+  output: "export",
 };
