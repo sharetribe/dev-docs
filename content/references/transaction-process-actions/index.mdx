@@ -34,7 +34,9 @@ reference article.
   This action is implicit and must not be in the process description.
 </Callout>
 
-Initialize a new transaction from a listing.
+Initialize a new transaction from a listing using a standard transaction
+flow: customer initializes the transaction and provider is the author of
+the transaction listing.
 
 **Preconditions**:
 
@@ -42,6 +44,29 @@ Initialize a new transaction from a listing.
 - Listing must have an author
 - Customer (actor of the transaction) must be a valid user
 - Author and customer must not be the same user
+
+**Parameters**:
+
+- `listingId`, UUID, mandatory
+
+**Configuration options**: -
+
+#### :action.initializer/init-reverse-listing-tx
+
+<Callout>
+  This action is implicit and must not be in the process description.
+</Callout>
+
+Initialize a new reverse transaction from a listing using a reverse
+transaction flow: provider initializes the transaction and customer is
+the author of the transaction listing.
+
+**Preconditions**:
+
+- Listing with the given ID must exist
+- Listing must have an author
+- Provider (actor of the transaction) must be a valid user
+- Author and provider must not be the same user
 
 **Parameters**:
 

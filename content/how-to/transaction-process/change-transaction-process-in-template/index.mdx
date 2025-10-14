@@ -10,11 +10,12 @@ import { Callout, FileTree } from 'nextra/components';
 
 # Change transaction process in Sharetribe Web Template
 
-Sharetribe Web Template defines three transaction processes by default:
+Sharetribe Web Template defines four transaction processes by default:
 
 - daily, nightly, and hourly bookings use the **default-booking**
   process,
-- product sales use the **default-purchase** process, and
+- product sales use the **default-purchase** process
+- price negotiations use the **default-negotiation** process, and
 - inquiries use the **default-inquiry** process.
 
 The template is created to support states and transitions defined in
@@ -106,8 +107,10 @@ Supported transaction processes are also defined in the files found in
 // Then names of supported processes
 export const PURCHASE_PROCESS_NAME = 'default-purchase';
 export const BOOKING_PROCESS_NAME = 'default-booking';
+export const INQUIRY_PROCESS_NAME = 'default-inquiry';
+export const NEGOTIATION_PROCESS_NAME = 'default-negotiation';
 // Add new processes with a descriptive name
-export const NEGOTIATION_PROCESS_NAME = 'negotiated-booking';
+export const NEGOTIATED_BOOKING_PROCESS_NAME = 'negotiated-booking';
 ```
 
 In addition to updating the process name to your `transaction.js` file,
@@ -121,10 +124,9 @@ folder.
 If you are replacing one of the default processes (for instance the
 default booking process with a new booking process with different
 transitions and states), you can modify the existing
-`transactionProcessBooking.js` file to correspond to the new process. If
-you are creating a parallel booking process and want to allow providers
-to choose between two processes for their listings, you will need to
-create a new transaction process file and import it in `transaction.js`.
+**transactionProcessBooking.js** file to correspond to the new process.
+If you are creating a parallel booking process and want to allow listing
+authors to choose between two processes for their listings, you will
 
 The following instructions specify the steps for modifying the existing
 `transactionProcessBooking.js` file, so if you do create a new one, we
@@ -227,11 +229,15 @@ to review.
       <FileTree.Folder name="InboxPage" defaultOpen>
         <FileTree.File name="InboxPage.stateData.js" />
         <FileTree.File name="InboxPage.stateDataBooking.js" />
+        <FileTree.File name="InboxPage.stateDataInquiry.js" />
+        <FileTree.File name="InboxPage.stateDataNegotiation.js" />
         <FileTree.File name="InboxPage.stateDataPurchase.js" />
       </FileTree.Folder>
       <FileTree.Folder name="TransactionPage" defaultOpen>
         <FileTree.File name="TransactionPage.stateData.js" />
         <FileTree.File name="TransactionPage.stateDataBooking.js" />
+        <FileTree.File name="TransactionPage.stateDataInquiry.js" />
+        <FileTree.File name="TransactionPage.stateDataNegotiation.js" />
         <FileTree.File name="TransactionPage.stateDataPurchase.js" />
       </FileTree.Folder>
     </FileTree.Folder>
@@ -259,6 +265,10 @@ export const getStateData = params => {
     return getStateDataForPurchaseProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
     return getStateDataForBookingProcess(params, processInfo());
+  } else if (processName === INQUIRY_PROCESS_NAME) {
+    return getStateDataForInquiryProcess(params, processInfo());
+  } else if (processName === NEGOTIATION_PROCESS_NAME) {
+    return getStateDataForNegotiationProcess(params, processInfo());
   } else {
     return {};
   }
@@ -278,9 +288,9 @@ state and the user role. You will need to check which changes to make in
 the `ConditionalResolver`, for example if there are new states that
 require specific props to be returned to the page based on the state.
 
-If you have created a new `stateData` file (e.g.
-`InboxPage.stateDataNegotiation.js`), you will need to export a uniquely
-named `getStateDataFor...` function from that file.
+If you have created a new **stateData** file (e.g.
+**InboxPage.stateDataNegotiatedBooking.js**), you will need to export a
+uniquely named _getStateDataFor..._ function from that file.
 
 ## Add marketplace text strings
 
