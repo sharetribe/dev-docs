@@ -19,7 +19,7 @@ Console or using an
 
 Transaction protected data is visible to both transaction parties. It
 can be updated by
-[revealing the participants' protected data](/concepts/user-extended-data/#revealing-information-within-the-transaction)
+[revealing the participants' protected data](/concepts/extended-data/user-extended-data/#revealing-information-within-the-transaction)
 to the transaction, which renders it visible within the transaction. In
 addition, a transaction process can have an action to
 [update transaction protected data](/references/transaction-process-actions/#actionupdate-protected-data).
@@ -42,7 +42,7 @@ Metadata can also be used to tag transactions for analytics purposes.
 You need a trusted context for updating transaction metadata – either a
 privileged transition, or a secure server endpoint. You can also build a
 separate application to
-[listen to transaction events](/how-to/reacting-to-events/) and update
+[listen to transaction events](/how-to/events/reacting-to-events/) and update
 transaction metadata through the Integration API as a reaction to those
 events.
 
@@ -59,5 +59,5 @@ transactions also by extended data when calling these endpoints. That
 way, you can segment your transactions by important attributes for more
 fine-grained processing. To filter transactions by extended data, you
 will need to
-[create a search schema](/how-to/manage-search-schemas-with-sharetribe-cli/)
+[create a search schema](/how-to/search/manage-search-schemas-with-sharetribe-cli/)
 for the transaction.

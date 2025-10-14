@@ -24,7 +24,7 @@ be a provider, they can also be a customer on someone else's listing.
 
 If you want to limit certain users to only customers or only providers,
 you will need to create those limitations in your client application.
-You can use [extended data](/concepts/extended-data-introduction/) to
+You can use [extended data](/concepts/extended-data/extended-data-introduction/) to
 determine that a user is in a certain group, and then allow a subset of
 your marketplace functionalities, e.g. listing creation, for a specified
 group. You can, for example,
@@ -130,14 +130,14 @@ retrieve data for custom marketplace dashboards.
 
 Sharetribe marketplace users need to sign up with their email address to
 create listings and participate in transactions. Alternatively, they can
-use [social logins](/concepts/social-logins-and-sso/) to sign up, or to
+use [social logins](/concepts/users-and-authentication/social-logins-and-sso/) to sign up, or to
 login with an email address that already has a user within Sharetribe.
 
 Sharetribe has a separate
-[Authentication API](/concepts/authentication-api/) that handles
+[Authentication API](/concepts/api-sdk/authentication-api/) that handles
 authentication to other Sharetribe APIs. Both Marketplace API and
 Integration API require valid access tokens to be passed in every API
-request. If you use the [Javascript SDKs](/concepts/js-sdk/) in your
+request. If you use the [Javascript SDKs](/concepts/api-sdk/js-sdk/) in your
 marketplace client application, they handle authenticating the user
 automatically when they enter their credentials.
 
@@ -184,7 +184,7 @@ Operators can delete users through Sharetribe Console. In addition,
 there is an endpoint in Marketplace API so that operators can build a
 functionality for users to delete their own accounts. We have a how-to
 guide on
-[implementing a _Delete user_ feature](/how-to/implement-delete-user/).
+[implementing a _Delete user_ feature](/how-to/users-and-authentication/implement-delete-user/).
 
 ## Authentication in Sharetribe
 
@@ -198,7 +198,7 @@ browser code.
 Regardless of the level of access, each API endpoint requires an access
 token that can be acquired through Sharetribe
 [Authentication API](https://www.sharetribe.com/api-reference/authentication.html).
-When using the [Sharetribe Javascript SDKs](/concepts/js-sdk/),
+When using the [Sharetribe Javascript SDKs](/concepts/api-sdk/js-sdk/),
 authentication is handled with
 [specific SDK methods for Marketplace API](https://sharetribe.github.io/flex-sdk-js/authentication.html)
 and
@@ -235,7 +235,7 @@ transaction process.
 
 Some transitions within a transaction process can include privileged
 actions that require a trusted context i.e. they are
-[privileged transitions](/concepts/privileged-transitions/). Privileged
+[privileged transitions](/concepts/transactions/privileged-transitions/). Privileged
 actions include
 [setting the transaction line items](/references/transaction-process-actions/#actionprivileged-set-line-items)
 and
@@ -260,7 +260,7 @@ endpoints you can access using the Integration API, refer to the
 
 To access the Integration API you need a valid access token obtained
 through
-[the Authentication API](/concepts/authentication-api/#authentication-api)
+[the Authentication API](/concepts/api-sdk/authentication-api/#authentication-api)
 or the
 [Sharetribe Integration SDK](https://sharetribe.github.io/flex-integration-sdk-js/authentication.html).
 You should only grant access to trusted applications, such as ones that

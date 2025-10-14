@@ -49,7 +49,7 @@ endpoint.
 ### Pending approval
 
 If the marketplace
-[requires listing approval for new listings](/concepts/requiring-approval/),
+[requires listing approval for new listings](/concepts/listings/requiring-approval/),
 a draft listing does not get published directly when the
 [own_listings/publish_draft](https://www.sharetribe.com/api-reference/marketplace.html#publish-draft-listing)
 is called. Instead, it moves into **state: pendingApproval**. The
@@ -139,13 +139,13 @@ One of the most powerful features of Sharetribe is the listing search
 using the
 [listings/query](https://www.sharetribe.com/api-reference/marketplace.html#query-listings)
 endpoint. By default, you can query by price,
-[keywords, origin,](/concepts/how-the-listing-search-works/) bounds,
+[keywords, origin,](/concepts/listings/how-the-listing-search-works/) bounds,
 availability, and stock, among others.
 
 In addition to the default parameters, you can query listings by public
 extended data attributes, i.e. public data and metadata. You will need
 to
-[set a search schema](/how-to/manage-search-schemas-with-sharetribe-cli/)
+[set a search schema](/how-to/search/manage-search-schemas-with-sharetribe-cli/)
 for the attribute so that it is indexed for search within Sharetribe,
 unless the attribute has been defined as a listing field in Console.
 
@@ -160,13 +160,13 @@ product listings with [stock](/references/stock/), in the same
 marketplace, and differentiate them with a **listingType** attribute in
 listing extended data. With both availability and stock listings in the
 same marketplace, you likely want to have separate
-[transaction processes](/concepts/transaction-process/), whose
+[transaction processes](/concepts/transactions/transaction-process/), whose
 information is also saved in the listing extended data.
 
 By passing listing type as a query parameter to the endpoint, you can
 then create differentiated views for the two types of listings. Again,
 using extended data as query parameters requires
-[setting a search schema](/how-to/manage-search-schemas-with-sharetribe-cli/)
+[setting a search schema](/how-to/search/manage-search-schemas-with-sharetribe-cli/)
 if the field does not have a Console-created search schema by default.
 
 Some marketplaces want to allow filtering by entities that are not

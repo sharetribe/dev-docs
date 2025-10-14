@@ -13,7 +13,7 @@ description: Overview of how Stripe PaymentIntents work with Sharetribe, and how
 [PaymentIntents](https://stripe.com/docs/payments/payment-intents) are a
 mechanism provided by Stripe to track the lifecycle of customer checkout
 flow. In addition, PaymentIntents provide tools for
-[Strong Customer Authentication (SCA)](/concepts/strong-customer-authentication/)
+[Strong Customer Authentication (SCA)](/concepts/payments/strong-customer-authentication/)
 where required. Sharetribe has built-in support for PaymentIntents and
 Strong Customer Authentication.
 
@@ -32,7 +32,7 @@ things like
 
 PaymentIntents also allow a variety of payment methods to be used when
 making a payment in Sharetribe. See the
-[overview of supported payment methods in Sharetribe](/concepts/payment-methods-overview/).
+[overview of supported payment methods in Sharetribe](/concepts/payments/payment-methods-overview/).
 
 This article will describe how PaymentIntents relate to Sharetribe
 transaction processes and the general principles of implementing a
@@ -50,9 +50,9 @@ steps:
 3. The transaction can proceed only after customer has authorized (if
    required) the payment. The PaymentIntent is confirmed, resulting in a
    Charge being preauthorized (in the case of
-   [card payments](/concepts/payment-methods-overview/#card-payment-flow))
+   [card payments](/concepts/payments/payment-methods-overview/#card-payment-flow))
    or fully captured (in the case of
-   [push payment methods](/concepts/payment-methods-overview/#push-payment-flow)).
+   [push payment methods](/concepts/payments/payment-methods-overview/#push-payment-flow)).
 4. Transaction flow continues as usual onwards.
 
 ### Example transaction process with card payments
@@ -76,7 +76,7 @@ found in this [section](#required-actions-in-the-client).
 ![PaymentIntent process with card and push payments](./push-payment-process.png)
 
 Since push payments
-[do not have a preauthorization stage](/concepts/payment-methods-overview/#push-payment-flow),
+[do not have a preauthorization stage](/concepts/payments/payment-methods-overview/#push-payment-flow),
 this process allows an instant-booking type of flow, where the booking
 does not need acceptance from the provider.
 
@@ -295,14 +295,14 @@ you would use the `confirm-payment` transition for card payments and the
 The Sharetribe Web Template supports card payments with PaymentIntents
 by default. If you need to adjust the default implementation, or if
 you're currently using one of our
-[legacy templates](https://www.sharetribe.com/docs/template/legacy-templates/),
-[learn more about how to take PaymentIntents into use](/how-to/enable-payment-intents/).
+[legacy templates](https://www.sharetribe.com/docs/template/legacy/legacy-templates/),
+[learn more about how to take PaymentIntents into use](/how-to/payments/enable-payment-intents/).
 
 ## Further reading
 
-- [Payment methods overview](/concepts/payment-methods-overview/)
+- [Payment methods overview](/concepts/payments/payment-methods-overview/)
 
-* [Transaction process](/concepts/transaction-process/)
+* [Transaction process](/concepts/transactions/transaction-process/)
 * [Action reference for Stripe integration](/references/transaction-process-actions/#stripe-integration)
-* [Editing transaction process](/how-to/edit-transaction-process-with-sharetribe-cli/)
-* [Changing transaction process setup in Sharetribe Web Template](/how-to/change-transaction-process-in-template/)
+* [Editing transaction process](/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/)
+* [Changing transaction process setup in Sharetribe Web Template](/how-to/transaction-process/change-transaction-process-in-template/)

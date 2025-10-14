@@ -34,7 +34,7 @@ production. A workflow like this helps prevent bugs and unfinished code
 from being released to your users.
 
 Sharetribe offers
-[three different environment types](https://www.sharetribe.com/docs/concepts/sharetribe-environments/#environment-types)
+[three different environment types](https://www.sharetribe.com/docs/concepts/development/sharetribe-environments/#environment-types)
 – Live, Test, and Dev. You should connect your client application with
 the corresponding marketplace environment, i.e. your client environment
 intended for development should use environment variables that point to
@@ -53,7 +53,7 @@ have three deployments of your client application:
 We recommend that you keep your production and test deployments
 identical, so that operators can preview their no-code changes reliably.
 Read more:
-[Sharetribe environments](/concepts/sharetribe-environments//#workflow-between-the-three-environments).
+[Sharetribe environments](/concepts/development/sharetribe-environments//#workflow-between-the-three-environments).
 
 ## Where to host your application?
 
@@ -86,7 +86,7 @@ look into include [AWS](https://aws.amazon.com/),
 [Digital Ocean](https://www.digitalocean.com/) and
 [Microsoft Azure](https://azure.microsoft.com/). If your deployment
 solution requires using containers, you can refer to our guide on
-[running the template in a Docker container](/template/run-template-with-docker/).
+[running the template in a Docker container](/template/hosting/run-template-with-docker/).
 
 ## Deploying to production
 
@@ -94,7 +94,7 @@ solution requires using containers, you can refer to our guide on
 
 If you are looking to deploy your marketplace on either Heroku or
 Render, please read our detailed deployment guides for both
-[Heroku](/template/how-to-deploy-template-to-heroku/) and
+[Heroku](/template/hosting/how-to-deploy-template-to-heroku/) and
 [Render](/tutorial/deploy-to-render/#deploy-to-render).
 
 </Callout>
@@ -112,17 +112,17 @@ Deploying your marketplace to production is a three-step process:
 If you are transitioning from a Sharetribe hosted marketplace to a
 self-hosted marketplace and you are using Social Logins (e.g. Google or
 Facebook login), you will need to enable the logins through
-[environment variables](/template/template-env/). The configuration in
+[environment variables](/template/configuration/template-env/). The configuration in
 Console only works for Sharetribe hosted marketplaces.
 
-See [here how to enable Google Login](/how-to/enable-google-login/) and
-[Facebook login](/how-to/enable-facebook-login/) for self-hosted
+See [here how to enable Google Login](/how-to/users-and-authentication/enable-google-login/) and
+[Facebook login](/how-to/users-and-authentication/enable-facebook-login/) for self-hosted
 marketplaces.
 
 </Callout>
 
 For a full list of possible environment variables, see the
-[Environment configuration variables](/template/template-env/) reference
+[Environment configuration variables](/template/configuration/template-env/) reference
 for more information. To deploy your marketplace, you need to add at
 least the following variables:
 
@@ -171,7 +171,7 @@ The Mapbox access token is specified via Console, under
 **Integrations** > **Map**. The template fetches this access token via
 [assets](/references/assets/). This environment variable is used as a
 fallback, and therefore is not mandatory. See the
-[How to set up Mapbox for Sharetribe Web Template](/template/how-to-set-up-mapbox-for-template/)
+[How to set up Mapbox for Sharetribe Web Template](/template/maps/how-to-set-up-mapbox-for-template/)
 guide for more information.
 
 ### Building the app

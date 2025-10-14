@@ -25,7 +25,7 @@ and on the complexity of the integration you are looking to create.
 The simplest integration tool is your client application. Since you have
 full control over your marketplace client app, you can add analytics and
 tracking tools such as [Hotjar](#hotjar-analytics) or
-[Goole Analytics](/template/how-to-set-up-analytics-for-template/#configure-google-analytics),
+[Goole Analytics](/template/analytics/how-to-set-up-analytics-for-template/#configure-google-analytics),
 or messaging tools such as [Sendbird](#sendbird-user-to-user-chat-app)
 or
 [Intercom](https://www.intercom.com/help/en/articles/168-install-intercom-on-your-website-to-support-and-onboard-logged-in-users),
@@ -45,7 +45,7 @@ listens to – or takes action on – your Sharetribe marketplace, you will
 likely need to use the
 [Integration API](/introduction/getting-started-with-integration-api/).
 Where the
-[Marketplace API](/concepts/marketplace-api-integration-api/#when-to-use-the-marketplace-api)
+[Marketplace API](/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-marketplace-api)
 is meant for everyday marketplace interactions, the Integration API
 gives operators powerful access to all marketplace data and activity.
 Through the Integration API, operators can enable third party tools to
@@ -69,7 +69,7 @@ transitioned, and so forth. You can review
 By listening to events, you can build flows where third party solutions
 take action either in Sharetribe or within the solutions themselves. You
 can read more about
-[reacting to events in Sharetribe](https://www.sharetribe.com/docs/how-to/reacting-to-events/).
+[reacting to events in Sharetribe](https://www.sharetribe.com/docs/how-to/events/reacting-to-events/).
 
 ### Zapier
 
@@ -146,7 +146,7 @@ allows you to collect user activity heatmaps, feedback, and user
 behavior recordings, among other features.
 
 - Add a
-  [tracking script to the client application](/template/how-to-set-up-analytics-for-template/#custom-analytics-libraries).
+  [tracking script to the client application](/template/analytics/how-to-set-up-analytics-for-template/#custom-analytics-libraries).
 - Add custom CSP directives to
   [/server/csp.js](https://github.com/sharetribe/web-template/blob/main/server/csp.js).
 
@@ -271,4 +271,4 @@ support team of the payment gateway provider you have chosen.
   use, and make sure you are eligible for their service. Some providers
   may have limitations regarding platform size or geography.
 - Get familiar with our how-to article on
-  [integrating a third-party payment gateway to Sharetribe](/how-to/how-to-integrate-3rd-party-payment-gateway/).
+  [integrating a third-party payment gateway to Sharetribe](/how-to/payments/how-to-integrate-3rd-party-payment-gateway/).
