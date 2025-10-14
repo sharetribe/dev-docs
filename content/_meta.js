@@ -1,6 +1,7 @@
 export default {
   index: {
     title: "Developer documentation",
+    display: "hidden",
     theme: {
       toc: false,
       layout: "full",

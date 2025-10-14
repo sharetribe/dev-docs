@@ -1,5 +1,5 @@
 ---
-title: Start building with Sharetribe
+title: Developer documentation for Sharetribe
 sidebarTitle: Introduction
 description: Sharetribe is a marketplace platform that you can extend with code. This is the developer documentation for building with Sharetribe.
 asIndexPage: false
@@ -10,14 +10,14 @@ import StyledHeader from "../app/components/StyledHeader/StyledHeader";
 import CustomCard, { CustomCards } from "../app/components/Card/Card";
 import { Cards, Image } from "nextra/components";
 
-<StyledHeader>Start building with Sharetribe</StyledHeader>
+<StyledHeader>Sharetribe Developer Documentation</StyledHeader>
 
 Sharetribe is the fastest and most affordable way to set up a powerful marketplace platform that is uniquely yours.
 
 ## Get Started
 
 <CustomCards>
-<CustomCard title={'Install the template'} description={'Install the Sharetribe Web Template and start customizing.'} href={'/introduction/getting-started-with-web-template'} />
+<CustomCard title={'Install the template'} description={'Install the Sharetribe Web Template and start customizing.'} href={'/docs/introduction/getting-started-with-web-template'} />
 
 <CustomCard title="API Reference" description="Explore our API reference with information on the Marketplace, Integration, Authentication and Asset Delivery API." href="https://www.sharetribe.com/api-reference" />
 <CustomCard title="Create an account" description="Create a free Sharetribe account and kick off development." href="https://console.sharetribe.com/new" />
@@ -29,14 +29,14 @@ Sharetribe is the fastest and most affordable way to set up a powerful marketpla
   <CustomCard
     title="Tutorials"
     description="A step-by-step tutorial to help you build a fully functional marketplace and learn about all the key features of Sharetribe."
-    href="/tutorial"
+    href="/docs/tutorial"
   />
   <CustomCard
-    title="Build a custom payment system"
+    title="Help Center"
     description={
-      "Read our guide on how to integrate any 3rd-party payment gateway, such as PayPal, MANGOPAY, or Adyen."
+      "Read more about the no-code features in the Help Center, such as how to adjust general marketplace settings and how to adjust the branding and layout of your marketplace."
     }
-    href={"/how-to/payments/how-to-integrate-3rd-party-payment-gateway"}
+    href={"https://www.sharetribe.com/help/en/"}
   />
   <CustomCard
     title="Developer blog"
@@ -57,10 +57,15 @@ Sharetribe is the fastest and most affordable way to set up a powerful marketpla
 
 ## Need help with something?
 
-<Cards num={1}>
+<Cards num={2}>
   <Cards.Card
     arrow
     title="Reach out to our support"
     href="mailto:hello@sharetribe.com"
+  />
+  <Cards.Card
+    arrow
+    title="Ask the community"
+    href="https://www.sharetribe.com/dev-slack"
   />
 </Cards>
