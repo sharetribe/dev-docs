@@ -130,10 +130,11 @@ After changing the `handlePublishListing` you can remove unused code.
 You also might want to clean up `EditListingPage` and remove the Stripe
 related props we pass to `EditListingWizard`.
 
-In addition, the [MakeOfferForm.js](TODO) component has a limitation
-that providers cannot submit their offer if they don't have a Stripe
-account. You will need to remove the references to `stripeConnected` in
-the form to remove this restriction.
+In addition, the
+[MakeOfferForm.js](https://github.com/sharetribe/web-template/blob/main/src/containers/MakeOfferPage/MakeOfferForm/MakeOfferForm.js)
+component has a limitation that providers cannot submit their offer if
+they don't have a Stripe account. You will need to remove the references
+to `stripeConnected` in the form to remove this restriction.
 
 ### Edit CheckoutPage
 

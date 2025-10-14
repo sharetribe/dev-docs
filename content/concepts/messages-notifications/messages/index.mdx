@@ -109,15 +109,18 @@ there are transactions that require action from the user:
 
 This is how the default logic works:
 
-1.  The template [makes two queries](TODO) that retrieve all sales
-    transactions (i.e. transactions where the current user is the
-    provider) that are in a state that
-    [requires provider attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L287),
+1.  The template
+    [makes two queries](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L311-L328)
+    that retrieve all sales transactions (i.e. transactions where the
+    current user is the provider) that are in a state that
+    [requires provider attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L354),
     and all order transactions (i.e. transactions where the current user
     is the provider) that are in a state that
-    [requires customer attention](TODO)
+    [requires customer attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L367)
 2.  The number of relevant sales and order transactions determines the
-    [notification count](TODO) shown [in the badge](TODO).
+    [notification count](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/TopbarContainer.js#L55)
+    that in turn determines whether to show
+    [the notification indicator](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/Topbar/TopbarDesktop/TopbarDesktop.js#L43).
 
 The variable
 [currentUserNotificationCount](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L64)
