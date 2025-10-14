@@ -7,6 +7,7 @@ export default {
       layout: "full",
       timestamp: false,
       breadcrumb: false,
+      pagination: false,
     },
   },
   introduction: {
