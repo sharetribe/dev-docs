@@ -1,10 +1,12 @@
 ---
 title: Introduction to transaction processes
-sidebarTitle: Transaction processes
+sidebarTitle: Introduction
 description: This article introduces transaction processes as a concept, their
   parts, and how they define user interactions and order flows in your
   marketplace.
 ---
+
+import { Callout } from "nextra/components";
 
 # Introduction to transaction processes
 
@@ -127,6 +129,8 @@ all the other elements of a transaction process. We will not go to into
 more detail in this article, but you can find more information
 [in the transaction process format reference documentation.](/references/transaction-process-format/)
 
+![Transaction transitions](./transaction-transitions-v2.png)
+
 ### Actions
 
 Actions describe what happens as part of a transition. For example, the
@@ -140,8 +144,10 @@ include cancelling the booking and issuing a refund.
 Possible actions are defined by the capacity of the Sharetribe API. The
 list of all transaction process actions can be found
 [in the transaction process actions reference documentation](/references/transaction-process-actions/).
-Creating custom transaction process actions is not possible in
-Sharetribe.
+
+<Callout type="warning">Creating custom actions is not possible.</Callout>
+
+![Transaction actions](./transaction-actions-v2.png)
 
 ### Notifications
 
@@ -167,9 +173,7 @@ that can be customized using the Sharetribe CLI. You can also edit the
 content of the transaction notifications in the Console, under Build >
 Content > Email texts.
 
-<transactionprocesscomponentscarousel title="Transaction process components">
-
-</transactionprocesscomponentscarousel>
+![Transaction notifications](./transaction-notifications-v2.png)
 
 ## How users interact with your transaction process?
 
@@ -196,10 +200,6 @@ customers in Biketribe, an example marketplace built with Sharetribe Web
 Template. If you’re not sure what is meant by the “Sharetribe Web
 Template”, you can read more about it
 [here](/introduction/introducing-template/).
-
-<txnprocessuxcarousel title="Transaction process and user experience">
-
-</txnprocessuxcarousel>
 
 ## What kind of transaction process customizations are possible?
 
