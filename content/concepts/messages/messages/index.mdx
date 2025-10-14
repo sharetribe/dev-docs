@@ -44,7 +44,7 @@ included as a relationship when
 ## Email notifications
 
 New messages trigger a
-[built-in email notification](/concepts/email-notifications/) sent to
+[built-in email notification](/concepts/messages/email-notifications/) sent to
 the receiving party of the message. You can edit built-in email
 notification content through
 [Console > Build > Content > Email texts](https://console.sharetribe.com/a/content/email-texts),
@@ -80,7 +80,7 @@ to use the message content in your Zap.
 
 ### Events and messages
 
-Listening to [events](/how-to/reacting-to-events/) through the
+Listening to [events](/how-to/events/reacting-to-events/) through the
 [Integration API](/introduction/getting-started-with-integration-api/)
 is the most versatile way to react to what is happening in your
 marketplace. As sending new messages does not affect transaction state
@@ -88,7 +88,7 @@ or transitions, you can’t use Zapier to detect new messages as it can
 only react to transactions, listing and user events. Events allow you to
 listen to [created messages](/references/events/#supported-event-types)
 and react directly to them. See how to
-[react to events](/how-to/reacting-to-events/) and the
+[react to events](/how-to/events/reacting-to-events/) and the
 [Integration API example script repository](https://github.com/sharetribe/integration-api-examples)
 if you’re unsure where to start building your integration.
 
@@ -122,4 +122,4 @@ new message. To achieve this, you could change the logic behind
 [currentUserNotificationCount](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L64)
 to display a number stored in extended data. The data attribute would
 represent the number of unread messages, and could be updated every time
-a new message is detected using [events](/how-to/reacting-to-events/).
+a new message is detected using [events](/how-to/events/reacting-to-events/).

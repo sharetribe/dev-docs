@@ -98,7 +98,7 @@ public data). Also, it's worth noting that the query parameter with a
 `text` schema is `keywords` which also targets the `title` and
 `description` attributes of a listing. This query parameter is only
 supported in listing queries. See
-[Keyword search](/concepts/how-the-listing-search-works/#keyword-search)
+[Keyword search](/concepts/listings/how-the-listing-search-works/#keyword-search)
 for more information.
 
 ### Providing multiple query params for a single field
@@ -121,7 +121,7 @@ has_all mathing mode (AND) for multi enums.
 With the `text` type, you provide a search query, so splitting values
 with a comma doesn't make sense. You will just provide a string of text
 as the search query, and the query will be used as described
-[in the keyword search explanation](/concepts/how-the-listing-search-works/#keyword-search)
+[in the keyword search explanation](/concepts/listings/how-the-listing-search-works/#keyword-search)
 section.
 
 With the `long` type, you can provide minimum and/or maximum values for
@@ -164,7 +164,7 @@ will see the following error:
 Through Console, you can create a multi-enum (select multiple) listing
 field with `has_all` search mode. If you want to have a multi-enum field
 with `has_any` logic, you need to define that listing field
-[in your local configurations](/how-to/extend-listing-data-in-template/).
+[in your local configurations](/how-to/listings/extend-listing-data-in-template/).
 
 For a locally defined listing field, you need to add a listing search
 schema manually through the CLI. We will create a search schema for the
@@ -341,7 +341,7 @@ schema, and adding a listing schema with a default value.
 
 For more information, see the following resources:
 
-- [How the search works](/concepts/how-the-listing-search-works/)
+- [How the search works](/concepts/listings/how-the-listing-search-works/)
   background article
 - [Extended data reference](/references/extended-data/)
 - API reference for the
@@ -353,5 +353,5 @@ For more information, see the following resources:
 - API reference for the
   [/users/query](https://www.sharetribe.com/api-reference/integration.html#query-users)
   endpoint in the Integration API
-- [Extend listing data in template](/how-to/extend-listing-data-in-template/)
-- [Change search filters in template](/how-to/change-search-filters-in-template/)
+- [Extend listing data in template](/how-to/listings/extend-listing-data-in-template/)
+- [Change search filters in template](/how-to/search/change-search-filters-in-template/)
