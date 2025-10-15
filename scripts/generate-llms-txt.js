@@ -75,20 +75,14 @@ function getAllMDXFiles(dir) {
 function generateLLMSTxt() {
   const contentDir = join(__dirname, "..", "content");
   const outputDir = join(__dirname, "..", "out/docs/");
-  const outputFile = join(outputDir, "llms.txt");
+  const outputFile = join(outputDir, "llms-full.txt");
 
   // Get all MDX files
   const mdxFiles = getAllMDXFiles(contentDir);
   console.log(`Found ${mdxFiles.length} MDX files`);
 
-  let llmsContent = `# Sharetribe Developer Documentation
-
-This file contains the content of all documentation pages for use by LLMs.
-Generated on: ${new Date().toISOString()}
-
----
-
-`;
+  let llmsContent = `# Sharetribe Developer Documentation | Generated on: ${new Date().toISOString()}
+  `;
 
   // Process each MDX file
   let processedCount = 0;
