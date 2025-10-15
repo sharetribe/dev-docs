@@ -20,12 +20,6 @@ export default {
       collapsed: true,
     },
   },
-
-  template: {
-    theme: {
-      collapsed: true,
-    },
-  },
   concepts: {
     theme: {
       collapsed: true,
@@ -37,6 +31,13 @@ export default {
       collapsed: true,
     },
   },
+
+  template: {
+    theme: {
+      collapsed: true,
+    },
+  },
+
   references: {
     title: "References",
     theme: {
@@ -44,17 +45,17 @@ export default {
     },
   },
 
-  github_link: {
+  api_reference: {
     title: "API Reference",
     type: "page",
     href: "https://www.sharetribe.com/api-reference",
   },
 
-  company: {
+  resources: {
     title: "Resources",
     type: "menu",
     items: {
-      about: {
+      sdk: {
         title: "JavaScript SDK",
         href: "https://sharetribe.github.io/flex-sdk-js/",
       },
