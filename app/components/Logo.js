@@ -13,6 +13,8 @@ const Logo = (props) => {
       height="26"
       xmlns="http://www.w3.org/2000/svg"
       className="text-gray-800 dark:text-gray-200"
+      role="link"
+      aria-label="Link to the home page"
       {...props}
     >
       <style>{`.logo-text { fill: currentColor; }`}</style>
