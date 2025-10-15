@@ -15,7 +15,7 @@ import "./global.css";
 import PlausibleProvider from "next-plausible";
 
 const isPreviewEnv = process.env.PLAUSIBLE_ENV === `preview`;
-const enablePlausible = process.env.NODE_ENV === `production`;
+const isProduction = process.env.NODE_ENV === `production`;
 
 const circular = localFont({
   src: [
@@ -39,7 +39,7 @@ const circular = localFont({
 
 export const metadata = {
   robots: {
-    index: false,
+    index: isProduction,
   },
 };
 
@@ -88,7 +88,7 @@ export default async function RootLayout({ children }) {
             src: "/docs/stats/js/script/",
             "data-api": "/docs/stats/api/event/",
           }}
-          enabled={enablePlausible}
+          enabled={isProduction}
           domain={isPreviewEnv ? "flex-docs.vercel.app" : "sharetribe.com/docs"}
         />
       </Head>
