@@ -829,11 +829,6 @@
       "permanent": true
     },
     {
-      "source": "/docs/sitemap.xml",
-      "destination": "/docs/sitemap/sitemap-index.xml",
-      "permanent": true
-    },
-    {
       "source": "/docs/tutorial/working-with-translations/",
       "destination": "/docs/tutorial/working-with-microcopy/",
       "permanent": true
@@ -1244,6 +1239,11 @@
       "permanent": true
     },
     {
+      "source": "/docs/template/configuration/",
+      "destination": "/docs/template/configuration/variables/",
+      "permanent": true
+    },
+    {
       "source": "/docs/template/hosted-marketplace-texts/",
       "destination": "/docs/template/content-management/hosted-marketplace-texts/",
       "permanent": true
@@ -1630,12 +1630,12 @@
     },
     {
       "source": "/docs/concepts/email-notifications/",
-      "destination": "/docs/concepts/messages/email-notifications/",
+      "destination": "/docs/concepts/messages-notifications/email-notifications/",
       "permanent": true
     },
     {
       "source": "/docs/concepts/messages/",
-      "destination": "/docs/concepts/messages/messages/",
+      "destination": "/docs/concepts/messages-notifications/messages/",
       "permanent": true
     },
     {
