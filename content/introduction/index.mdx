@@ -1,0 +1,197 @@
+---
+title: Show & Tell
+sidebarTitle: Show & Tell
+description:
+  Complete demonstration of all Nextra built-in components and features
+  for creating beautiful documentation sites.
+---
+
+import {
+  Callout,
+  Card,
+  Steps,
+  Tabs,
+  FileTree,
+  Bleed,
+} from 'nextra/components';
+
+# Show & Tell
+
+Welcome to our comprehensive demonstration of Nextra's powerful built-in
+components! This page showcases all the amazing features available for
+creating stunning documentation.
+
+## Callout Components
+
+Four different callout components:
+
+<Callout type="info">
+  For more information about the Asset Delivery API, see our [reference
+  documentation](/references/assets/).
+</Callout>
+
+<Callout type="warning">
+  Do not onboard real users or listings to Test, as they cannot be moved
+  into Live.
+</Callout>
+
+<Callout type="error">
+  **Never** share your Integration API credentials publicly!
+</Callout>
+
+<Callout>
+  Currently, Stripe doesn't support updating the country of the account
+  after the account has been created.
+</Callout>
+
+## Steps Component
+
+Perfect for tutorials and step-by-step guides:
+
+<Steps>
+
+### Install the web-template
+
+Clone the web-template repository:
+
+```bash
+git clone https://github.com/sharetribe/web-template.git
+```
+
+### Install dependancies
+
+Run this in the root directory:
+
+```bash
+yarn install
+```
+
+### Start Development
+
+Run the development server:
+
+```bash
+yarn run dev
+```
+
+</Steps>
+
+## Tabs Component
+
+Organize content into tabbed sections:
+
+<Tabs items={['yarn', 'npm']}>
+  <Tabs.Tab>```bash yarn global add flex-cli ```</Tabs.Tab>
+  <Tabs.Tab>```bash npm add flex-cli ```</Tabs.Tab>
+</Tabs>
+
+## FileTree Component
+
+Visualize project structures and file hierarchies:
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="EditListingPage" defaultOpen>
+        <FileTree.Folder name="EditListingWizard" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
+            <FileTree.Folder name="WeeklyCalendar" defaultOpen>
+              <FileTree.File name="WeeklyCalendar.js" />
+            </FileTree.Folder>
+          </FileTree.Folder>
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+## Copying code examples
+
+```js
+const calculateLineItems =
+  (
+    listingId,
+    isOwnListing,
+    fetchLineItemsInProgress,
+    onFetchTransactionLineItems,
+    seatsEnabled
+  ) =>
+  (formValues) => {
+    const { startDate, endDate, seats } = formValues?.values || {};
+
+    const priceVariantMaybe = priceVariantName
+      ? { priceVariantName }
+      : {};
+    const seatCount = seats ? parseInt(seats, 10) : 1;
+
+    const hasHelmetFee = formValues.values?.helmetFee;
+
+    const orderData = {
+      bookingStart: startDate,
+      bookingEnd: endDate,
+      ...priceVariantMaybe,
+      ...(seatsEnabled && { seats: seatCount }),
+      hasHelmetFee,
+    };
+
+    if (startDate && endDate && !fetchLineItemsInProgress) {
+      onFetchTransactionLineItems({
+        orderData,
+        listingId,
+        isOwnListing,
+      });
+    }
+  };
+```
+
+## Highlighting code
+
+Highlight rows 1, 4 and 5 in the following code example:
+
+```js {1,4-5}
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+## Filenames in code blocks
+
+```js filename="example.js"
+console.log('hello, world');
+```
+
+## Extra info
+
+<details>
+<summary>
+What is Redux?
+</summary>
+
+The Sharetribe Web Template uses Redux to manage state. The app stores
+some information so that it does not need to make API calls to fetch
+information every time it needs to show something.
+
+In addition, the template uses Redux for SDK and local API calls. This
+means that containers or components themselves do not make SDK or API
+calls, and instead they dispatch actions to Redux, and those actions
+then call the SDK or API and handle the response. This means that those
+actions can be called from several places in the application.
+
+You can read more about Redux
+[in their documentation](https://redux.js.org/).
+
+</details>
+
+## Suggest an improvement & feedback buttons
+
+## New search
+
+## Navigation
+
+## Dark mode!
