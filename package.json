@@ -23,6 +23,7 @@
     "start": "npx serve@latest out",
     "postbuild": "next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind",
     "format": "prettier . --write",
+    "format-docs": "prettier --print-width=72 --write \"content/**/*.mxd\"",
     "prepare": "husky"
   },
   "lint-staged": {

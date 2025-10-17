@@ -1,0 +1,26 @@
+{
+    "app/**/*.js": [
+        "prettier --write"
+    ],
+    "app/**/*.css": [
+        "prettier --write"
+    ],
+    "app/**/*.jsx": [
+        "prettier --write"
+    ],
+    "next.config.mjs": [
+        "prettier --write"
+    ],
+    "postcss.config.mjs": [
+        "prettier --write"
+    ],
+    "next-sitemap.config.js": [
+        "prettier --write"
+    ],
+    "mdx-components.js": [
+        "prettier --write"
+    ],
+    "content/**/*.mdx": [
+        "prettier --print-width=72 --write"
+    ]
+}
