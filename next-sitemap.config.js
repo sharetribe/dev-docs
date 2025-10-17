@@ -2,7 +2,6 @@
 // https://github.com/iamvishnusankar/next-sitemap
 module.exports = {
   siteUrl: "https://www.sharetribe.com/docs",
-  generateRobotsTxt: true,
   autoLastmod: false,
   changefreq: undefined,
   exclude: ["/icon.png"],

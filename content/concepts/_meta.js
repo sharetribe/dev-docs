@@ -30,7 +30,7 @@ export default {
   "api-sdk": "API & SDK",
 
   // Emails & notifications
-  messages: "Messages & Notifications",
+  "messages-notifications": "Messages & Notifications",
 
   // Integrations
   integrations: "Integrations",

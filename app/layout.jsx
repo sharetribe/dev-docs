@@ -41,6 +41,10 @@ export const metadata = {
   robots: {
     index: false,
   },
+  title: {
+    template: '%s - Sharetribe Developer Documentation',
+    default: 'Sharetribe Developer Documentation',
+  },
 };
 
 const banner = (
@@ -100,6 +104,7 @@ export default async function RootLayout({ children }) {
           docsRepositoryBase="https://github.com/sharetribe/dev-docs/blob/main"
           footer={footer}
           sidebar={{ autoCollapse: true }}
+          editLink="Suggest an improvement"
           // ... Your additional layout options
         >
           {children}
