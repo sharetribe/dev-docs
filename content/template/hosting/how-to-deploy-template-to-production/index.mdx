@@ -5,7 +5,7 @@ description:
   Sharetribe Web Template to production.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Deploy to production
 
@@ -14,8 +14,8 @@ import { Callout } from "nextra/components";
 <Callout>
   Note that you need to enable [Hosting
   mode](https://www.sharetribe.com/help/en/articles/8944305) through the
-  Sharetribe Console before you can connect your custom application to your Live
-  environment.
+  Sharetribe Console before you can connect your custom application to
+  your Live environment.
 </Callout>
 
 A production environment hosts and executes the code that runs your live
@@ -112,19 +112,21 @@ Deploying your marketplace to production is a three-step process:
 If you are transitioning from a Sharetribe hosted marketplace to a
 self-hosted marketplace and you are using Social Logins (e.g. Google or
 Facebook login), you will need to enable the logins through
-[environment variables](/template/configuration/template-env/). The configuration in
-Console only works for Sharetribe hosted marketplaces.
+[environment variables](/template/configuration/template-env/). The
+configuration in Console only works for Sharetribe hosted marketplaces.
 
-See [here how to enable Google Login](/how-to/users-and-authentication/enable-google-login/) and
-[Facebook login](/how-to/users-and-authentication/enable-facebook-login/) for self-hosted
-marketplaces.
+See
+[here how to enable Google Login](/how-to/users-and-authentication/enable-google-login/)
+and
+[Facebook login](/how-to/users-and-authentication/enable-facebook-login/)
+for self-hosted marketplaces.
 
 </Callout>
 
 For a full list of possible environment variables, see the
-[Environment configuration variables](/template/configuration/template-env/) reference
-for more information. To deploy your marketplace, you need to add at
-least the following variables:
+[Environment configuration variables](/template/configuration/template-env/)
+reference for more information. To deploy your marketplace, you need to
+add at least the following variables:
 
 - **`NODE_ENV`**
 

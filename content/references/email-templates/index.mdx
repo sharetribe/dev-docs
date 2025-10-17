@@ -1,7 +1,9 @@
 ---
 title: Email templates
 sidebarTitle: Email templates
-description: Reference documentation for editing built-in or transaction email templates.
+description:
+  Reference documentation for editing built-in or transaction email
+  templates.
 ---
 
 # Email templates
@@ -17,8 +19,8 @@ The platform sends two types of emails:
 
 The built-in emails can be customized using the
 [Built-in email notifications editor](https://console.sharetribe.com/advanced/email-notifications)
-in the Sharetribe Console. You find the editor in Console under **Build** >
-**Advanced** > **Email notifications** section.
+in the Sharetribe Console. You find the editor in Console under
+**Build** > **Advanced** > **Email notifications** section.
 
 To change the transaction emails, follow the
 [Edit email templates with Sharetribe CLI](/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/)
@@ -116,9 +118,9 @@ Example usage:
 
 ```handlebars
 {{t
-  "BookingNewRequest.Description"
-  "{customerDisplayName} requested to book {listingTitle}
-in {marketplaceName}."
+  'BookingNewRequest.Description'
+  '{customerDisplayName} requested to book {listingTitle}
+in {marketplaceName}.'
   customerDisplayName=customer.display-name
   listingTitle=listing.title
   marketplaceName=marketplace.name
@@ -146,13 +148,14 @@ defined after the message key and the fallback message.
 
 **Hash parameters:**
 
-- list of hash parameters and their respective values used with the messages
+- list of hash parameters and their respective values used with the
+  messages
 
 Example usage:
 
 ```handlebars
 {{format-text
-  "{amount,number,::.00} {currency}"
+  '{amount,number,::.00} {currency}'
   amount=money.amount
   currency=money.currency
 }}
@@ -210,7 +213,7 @@ an else block is specified it will be rendered when falsy.
 Example usage:
 
 ```handlebars
-{{inflect quantity "day" "days"}}
+{{inflect quantity 'day' 'days'}}
 ```
 
 Returns either the `singular` or `plural` inflection of a word based on
@@ -231,7 +234,7 @@ the given `count`.
 Example usage:
 
 ```handlebars
-{{date d format="d. MMM, YYYY" lang="fi-FI" tz="Europe/Helsinki"}}
+{{date d format='d. MMM, YYYY' lang='fi-FI' tz='Europe/Helsinki'}}
 ```
 
 Renders a properly localized `time` based on the `format`, `lang` and
@@ -263,7 +266,12 @@ The `tz` supports
 Example usage:
 
 ```handlebars
-{{date-day-before d format="d. MMM, YYYY" lang="fi-FI" tz="Europe/Helsinki"}}
+{{date-day-before
+  d
+  format='d. MMM, YYYY'
+  lang='fi-FI'
+  tz='Europe/Helsinki'
+}}
 ```
 
 Renders a properly localized `time`, one day before the given date,
@@ -293,7 +301,7 @@ The `tz` supports
 Example usage:
 
 ```handlebars
-{{format-text "{date,date,::EE}" date=(date-transform date days=-1)}}
+{{format-text '{date,date,::EE}' date=(date-transform date days=-1)}}
 ```
 
 Can be used with the [format-text](#format-text) helper to transform a
@@ -316,7 +324,7 @@ parameter:
 Example usage:
 
 ```handlebars
-{{money-amount m lang="fi-FI"}}
+{{money-amount m lang='fi-FI'}}
 ```
 
 Takes money and formats the amount according to the currency.
@@ -348,7 +356,7 @@ E.g. `"en-US"` is a valid string.
 Example usage:
 
 ```handlebars
-{{number n lang="fi-FI"}}
+{{number n lang='fi-FI'}}
 ```
 
 Formats the given `number`. `lang`, `max-fraction-digits` and
@@ -368,7 +376,7 @@ E.g. `"en-US"` is a valid string.
 Example usage:
 
 ```handlebars
-{{url-encode "Share & Tribe"}}
+{{url-encode 'Share & Tribe'}}
 ```
 
 URL encodes the given string. Should be used for encoding all user
@@ -384,11 +392,11 @@ be encoded.
 Example usage:
 
 ```handlebars
-{{form-encode "Share & Tribe"}}
+{{form-encode 'Share & Tribe'}}
 ```
 
-Encode the given string as `application/x-www-form-urlencoded`. Should be
-used for query string components.
+Encode the given string as `application/x-www-form-urlencoded`. Should
+be used for query string components.
 
 #### `asset`
 
@@ -407,9 +415,9 @@ the branding asset – any asset data can be used in the templates.
 
 ```handlebars
 {{asset
-  "design/branding.json"
-  "marketplaceColors.notificationPrimaryButton"
-  "#007DF2"
+  'design/branding.json'
+  'marketplaceColors.notificationPrimaryButton'
+  '#007DF2'
 }}
 ```
 
@@ -418,14 +426,15 @@ correct localization settings in the email templates without modifying
 the template structure itself:
 
 ```handlebars
-{{set-translations (asset "content/email-texts.json")}}
-{{set-locale (asset "general/localization.json" "locale" "en_US")}}
+{{set-translations (asset 'content/email-texts.json')}}
+{{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
 ```
 
 ## Editing email content
 
 For both built-in emails and transaction process emails, you can edit
-content with the email text editor under **Build** > **Content** > **Email texts**.
+content with the email text editor under **Build** > **Content** >
+**Email texts**.
 
 ## Editing built-in emails
 
@@ -1034,8 +1043,8 @@ available for each email template.
   Properties in such an object can have any valid JSON values, including
   JSON data structures.
 - The listing `availability-plan` property `timezone` is in TZ time zone
-  database format, for example `"Europe/Berlin"`. It is only available for
-  plans with type `availability-plan/time`.
+  database format, for example `"Europe/Berlin"`. It is only available
+  for plans with type `availability-plan/time`.
 - Remember to traverse the context properly. For example, in
   `"transaction-transition"` `"payin-total"` is nested under
   `"transaction"`. This means that the correct way to refer to that is

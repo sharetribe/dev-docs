@@ -1,9 +1,10 @@
 ---
 title: Routing
-description: This article explains how routing works in the Sharetribe Web Template
+description:
+  This article explains how routing works in the Sharetribe Web Template
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Routing
 
@@ -40,14 +41,14 @@ used within the template:
 const AboutPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "AboutPage" */ "./containers/AboutPage/AboutPage"
-    ),
+      /* webpackChunkName: "AboutPage" */ './containers/AboutPage/AboutPage'
+    )
 );
 const AuthenticationPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "AuthenticationPage" */ "./containers/AuthenticationPage/AuthenticationPage"
-    ),
+      /* webpackChunkName: "AuthenticationPage" */ './containers/AuthenticationPage/AuthenticationPage'
+    )
 );
 // etc..
 
@@ -56,21 +57,21 @@ const AuthenticationPage = loadable(
 const routeConfiguration = () => {
   return [
     {
-      path: "/about",
-      name: "AboutPage",
+      path: '/about',
+      name: 'AboutPage',
       component: AboutPage,
     },
     {
-      path: "/login",
-      name: "LoginPage",
+      path: '/login',
+      name: 'LoginPage',
       component: AuthenticationPage,
-      extraProps: { tab: "login" },
+      extraProps: { tab: 'login' },
     },
     {
-      path: "/signup",
-      name: "SignupPage",
+      path: '/signup',
+      name: 'SignupPage',
       component: AuthenticationPage,
-      extraProps: { tab: "signup" },
+      extraProps: { tab: 'signup' },
     },
     //...
   ];
@@ -150,9 +151,9 @@ The route configuration is used in _src/app.js_. For example,
 Here's a simplified _app.js_ code that renders the client-side app:
 
 ```jsx
-import { BrowserRouter } from "react-router-dom";
-import Routes from "./Routes";
-import routeConfiguration from "./routeConfiguration";
+import { BrowserRouter } from 'react-router-dom';
+import Routes from './Routes';
+import routeConfiguration from './routeConfiguration';
 //...
 export const ClientApp = (props) => {
   return (
@@ -313,7 +314,8 @@ when the mouse is over **NamedLink**. In addition, **Form** and
 loaded before the user has actually clicked the button or executed form
 submit.
 
-Read more about [code-splitting](/template/routing/code-splitting-in-template/).
+Read more about
+[code-splitting](/template/routing/code-splitting-in-template/).
 
 ## Analytics
 
@@ -349,7 +351,7 @@ URL is a parameter for this render function).
 So, instead of having something like this on the Express server:
 
 ```js
-app.get("/about", handleAbout);
+app.get('/about', handleAbout);
 ```
 
 We basically catch every path call using `*` on _server/index.js_:
@@ -368,9 +370,11 @@ and then we ask our React app to
 3.  send rendered HTML string as a response to the client browser
 
 ```js
-dataLoader.loadData(req.url, sdk /* other params */).then((preloadedState) => {
-  const html = renderer.render(req.url /* and other params */);
-  //...
-  res.send(html);
-});
+dataLoader
+  .loadData(req.url, sdk /* other params */)
+  .then((preloadedState) => {
+    const html = renderer.render(req.url /* and other params */);
+    //...
+    res.send(html);
+  });
 ```

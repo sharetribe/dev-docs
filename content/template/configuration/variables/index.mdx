@@ -1,11 +1,12 @@
 ---
 title: Configuration variables
-description: The Sharetribe Web Template has many configurations you can edit
+description:
+  The Sharetribe Web Template has many configurations you can edit
   through configuration files. This article explains how to change those
   configurations and what they mean.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Configuration variables
 
@@ -30,8 +31,8 @@ to pull in the latest upstream changes.
 
 Settings configured in local configurations files are overridden by any
 fetched via the Asset Delivery API. You can refer to
-[this article](/template/configuration/hosted-and-local-configurations/) to modify the
-way your template merges local and hosted configurations.
+[this article](/template/configuration/hosted-and-local-configurations/)
+to modify the way your template merges local and hosted configurations.
 
 </Callout>
 
@@ -39,7 +40,8 @@ way your template merges local and hosted configurations.
 
 All relevant configuration is split between the following files and the
 environment variables. You can see the available environment variables
-in the [template environment variables](/template/configuration/template-env/)
+in the
+[template environment variables](/template/configuration/template-env/)
 article.
 
 - [configBranding.js](https://github.com/sharetribe/web-template/blob/main/src/config/configBranding.js)
@@ -177,7 +179,7 @@ and 'grid'.
 // There are 2 SearchPage variants that can be used:
 // 'map' & 'grid'
 export const searchPage = {
-  variantType: "map",
+  variantType: 'map',
 };
 ```
 
@@ -212,7 +214,7 @@ file by toggling the `listingPage` variable between 'coverPhoto' and
 
 ```js
 export const listingPage = {
-  variantType: "carousel",
+  variantType: 'carousel',
 };
 ```
 
@@ -230,13 +232,13 @@ set the aspectRatio property to 3/1:
 
 ```js
 export const listingImage = {
-  variantType: "cropImage",
+  variantType: 'cropImage',
   // Aspect ratio for listing image variants (width/height)
   // Note: This will be converted to separate aspectWidth and aspectHeight values
   // to make calculations easier.
-  aspectRatio: "3/1",
+  aspectRatio: '3/1',
   // Listings have custom image variants, which are named here.
-  variantPrefix: "listing-card",
+  variantPrefix: 'listing-card',
 };
 ```
 
@@ -249,7 +251,8 @@ Which would look like this on the search page:
 ### Extended data configuration
 
 The `listingFields` is an array of configuration options for extended
-data fields. [Extended data](/concepts/extended-data/extended-data-introduction/)
+data fields.
+[Extended data](/concepts/extended-data/extended-data-introduction/)
 fields are additional pieces of information that can be added to a
 listing. Each object in the array represents a single extended data
 field. You can find the full list of configuration options for extended
@@ -393,10 +396,10 @@ the
 The
 [configMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js)
 file allows you to set up a map provider and adjust map-related
-settings. See [this article](/template/maps/configure-maps/) for a complete
-overview of what map-related adjustments you can achieve through the
-configuration files. If you are trying to change the map provider, see
-the how to set up
+settings. See [this article](/template/maps/configure-maps/) for a
+complete overview of what map-related adjustments you can achieve
+through the configuration files. If you are trying to change the map
+provider, see the how to set up
 [Google Maps](/template/maps/how-to-use-google-maps-in-template/) or
 [Mapbox](/template/maps/how-to-set-up-mapbox-for-template/) article.
 

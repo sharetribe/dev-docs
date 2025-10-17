@@ -1,11 +1,13 @@
 ---
 title: Add listings with multiple seats
 sidebarTitle: Add listings with multiple seats
-description: This guide describes how to handle multiple seats in listings and bookings in earlier template versions
+description:
+  This guide describes how to handle multiple seats in listings and
+  bookings in earlier template versions
 ---
 
-import { Callout } from "nextra/components";
-import { FileTree } from "nextra/components";
+import { Callout } from 'nextra/components';
+import { FileTree } from 'nextra/components';
 
 # Add listings with multiple seats
 
@@ -75,7 +77,10 @@ one seat. We will make these changes in EditListingAvailabilityPanel:
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.Folder name="EditListingAvailabilityExceptionForm">
               <FileTree.File name="EditListingAvailabilityExceptionForm.js" />
               <FileTree.File name="EditListingAvailabilityExceptionForm.module.css" />
@@ -105,7 +110,10 @@ availability.
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.Folder name="EditListingAvailabilityPlanForm">
               <FileTree.File name="AvailabilityPlanEntries.js" />
             </FileTree.Folder>
@@ -137,7 +145,7 @@ import {
   FieldSelect,
   FieldCheckbox,
   FieldTextInput, // add this row
-} from "../../../../../components";
+} from '../../../../../components';
 ```
 
 When the user selects a day as active on a full day listing, the time
@@ -162,7 +170,7 @@ const TimeRangeHidden = (props) => {
         type="number"
         initialValue={value.seats}
         placeholder={intl.formatMessage({
-          id: "EditListingAvailabilityPlanForm.seatsPlaceholder",
+          id: 'EditListingAvailabilityPlanForm.seatsPlaceholder',
         })}
         min="1"
         onChange={onChange}
@@ -343,7 +351,10 @@ entries based on the submit values.
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.File name="EditListingAvailabilityPanel.js" />
           </FileTree.Folder>
         </FileTree.Folder>
@@ -367,7 +378,7 @@ const createEntriesFromSubmitValues = (values) =>
             dayOfWeek,
             seats: 1,
             startTime,
-            endTime: endTime === "24:00" ? "00:00" : endTime,
+            endTime: endTime === '24:00' ? '00:00' : endTime,
           }
         : null;
     });
@@ -461,7 +472,10 @@ let's show the number of available seats in the weekly calendar.
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.Folder name="WeeklyCalendar">
               <FileTree.File name="WeeklyCalendar.js" />
             </FileTree.Folder>
@@ -627,7 +641,10 @@ concerts, with a variable number of seats each time.
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.Folder name="EditListingAvailabilityExceptionForm">
               <FileTree.File name="EditListingAvailabilityExceptionForm.js" />
               <FileTree.File name="EditListingAvailabilityExceptionForm.module.css" />
@@ -647,7 +664,7 @@ import {
   Form,
   H3,
   PrimaryButton,
-} from "../../../../../components";
+} from '../../../../../components';
 ```
 
 We only want to show the seat selection input if the provider has
@@ -657,7 +674,7 @@ an input component if the value is available.
 
 ```jsx
 const formState = formApi.getState();
-const isAvailable = formState.values.availability === "available";
+const isAvailable = formState.values.availability === 'available';
 
 const seatsSelectionMaybe = isAvailable ? (
   <FieldTextInput
@@ -667,10 +684,10 @@ const seatsSelectionMaybe = isAvailable ? (
     type="number"
     min="1"
     label={intl.formatMessage({
-      id: "EditListingAvailabilityExceptionForm.seatsLabel",
+      id: 'EditListingAvailabilityExceptionForm.seatsLabel',
     })}
     placeholder={intl.formatMessage({
-      id: "EditListingAvailabilityExceptionForm.seatsPlaceholder",
+      id: 'EditListingAvailabilityExceptionForm.seatsPlaceholder',
     })}
   />
 ) : null;
@@ -710,11 +727,15 @@ function.
 ```jsx
 // Save exception click handler
 const saveException = (values) => {
-  const { availability, exceptionStartTime, exceptionEndTime, exceptionRange } =
-    values;
+  const {
+    availability,
+    exceptionStartTime,
+    exceptionEndTime,
+    exceptionRange,
+  } = values;
 
   // TODO: add proper seat handling
-  const seats = availability === "available" ? 1 : 0;
+  const seats = availability === 'available' ? 1 : 0;
 
   // Exception date/time range is given through FieldDateRangeInput or
   // separate time fields.
@@ -776,7 +797,10 @@ the default plan.
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="EditListingPage" defaultOpen>
         <FileTree.Folder name="EditListingWizard" defaultOpen>
-          <FileTree.Folder name="EditListingAvailabilityPanel" defaultOpen>
+          <FileTree.Folder
+            name="EditListingAvailabilityPanel"
+            defaultOpen
+          >
             <FileTree.Folder name="WeeklyCalendar">
               <FileTree.File name="WeeklyCalendar.js" />
             </FileTree.Folder>
@@ -815,7 +839,9 @@ const AvailableExceptionsInfo = ({
             timeZone={timeZone}
             useFullDays={useFullDays}
             isDaily={isDaily}
-            onDeleteAvailabilityException={onDeleteAvailabilityException}
+            onDeleteAvailabilityException={
+              onDeleteAvailabilityException
+            }
           />
         );
       })}
@@ -889,7 +915,7 @@ Let's add the following import and two functions after the existing
 imports in `BookingDatesForm.js`:
 
 ```jsx
-import { generateMonths } from "../../../util/generators";
+import { generateMonths } from '../../../util/generators';
 
 /**
  * Return an array of timeslots for the months between start date and end date
@@ -903,7 +929,7 @@ const pickBookingMonthTimeSlots = (
   monthlyTimeSlots,
   startDate,
   endDate,
-  timeZone,
+  timeZone
 ) => {
   // The generateMonths generator returns the first day of each month that is spanned
   // by the time range between start date and end date.
@@ -922,13 +948,13 @@ const getMinSeatsTimeSlot = (
   monthlyTimeSlots,
   timeZone,
   startDate,
-  endDate,
+  endDate
 ) => {
   const timeSlots = pickBookingMonthTimeSlots(
     monthlyTimeSlots,
     startDate,
     endDate,
-    timeZone,
+    timeZone
   );
 
   // Determine the timeslots that fall between start date and end date
@@ -950,7 +976,9 @@ const getMinSeatsTimeSlot = (
       return ts.attributes;
     }
 
-    return ts.attributes.seats < minSeats.seats ? ts.attributes : minSeats;
+    return ts.attributes.seats < minSeats.seats
+      ? ts.attributes
+      : minSeats;
   }, {});
 };
 ```
@@ -965,7 +993,7 @@ const handleFormSpyChange =
     listingId,
     isOwnListing,
     fetchLineItemsInProgress,
-    onFetchTransactionLineItems,
+    onFetchTransactionLineItems
   ) =>
   (formValues) => {
     const { seats, bookingDates } = formValues.values;
@@ -1027,7 +1055,7 @@ const getSeatsArray = () => {
     monthlyTimeSlots,
     timeZone,
     bookingDates.startDate,
-    bookingDates.endDate,
+    bookingDates.endDate
   );
 
   // Return an array of the seat options a customer
@@ -1069,7 +1097,7 @@ Now, we will add the corresponding handling to `FieldDateRangeInput`.
 First, add `FieldSelect` to the import from components folder:
 
 ```js
-import { FieldSelect, ValidationError } from "../../components";
+import { FieldSelect, ValidationError } from '../../components';
 ```
 
 Next, add the `seatsArray` and `seatsLabel` props to the render function
@@ -1323,8 +1351,9 @@ In Sharetribe, line items need to have either
 - both units _and_ seats.
 
 <br />
-For this reason, we use **quantity** to denote the number of days when seats are
-not defined, and **units** to denote the number of days when seats are defined.
+For this reason, we use **quantity** to denote the number of days when
+seats are not defined, and **units** to denote the number of days when
+seats are defined.
 
 **[Read more about line items](https://www.sharetribe.com/docs/concepts/pricing-and-commissions/pricing/#line-items)**.
 

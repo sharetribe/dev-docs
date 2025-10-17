@@ -1,10 +1,15 @@
 ---
 title: How to set up OpenID Connect proxy in Sharetribe Web Template
 sidebarTitle: OpenID Connect proxy
-description: In this guide, we'll take a look at the process of setting up OpenID Connect (OIDC) proxy to Sharetribe Web Template. This allows you to add support for identity providers that Sharetribe doesn't natively support. In this example, we are building the proxy implementation for Github.
+description:
+  In this guide, we'll take a look at the process of setting up OpenID
+  Connect (OIDC) proxy to Sharetribe Web Template. This allows you to
+  add support for identity providers that Sharetribe doesn't natively
+  support. In this example, we are building the proxy implementation for
+  Github.
 ---
 
-import { Callout, Steps } from "nextra/components";
+import { Callout, Steps } from 'nextra/components';
 
 # How to set up OpenID Connect proxy in Sharetribe Web Template
 
@@ -35,9 +40,9 @@ The main steps to take to achieve this are:
 1. Build Github auth flow in the template
 
 <Callout>
-  If you are working with one of our legacy templates and are not sure whether
-  using Open ID Connect proxy is enabled, take a look at our [legacy
-  documentation](/template/legacy/legacy-templates/).
+  If you are working with one of our legacy templates and are not sure
+  whether using Open ID Connect proxy is enabled, take a look at our
+  [legacy documentation](/template/legacy/legacy-templates/).
 </Callout>
 
 ## A note about development environments
@@ -79,21 +84,27 @@ site is being served through Ngrok.
 <Steps>
 ### Head to Github developer settings
 
-Head to [Github developer settings](https://github.com/settings/developers). A Github account is required.
+Head to
+[Github developer settings](https://github.com/settings/developers). A
+Github account is required.
 
 ### Register a new application
 
-Select "OAuth apps" in the left sidebar, and click "Register a new application".
+Select "OAuth apps" in the left sidebar, and click "Register a new
+application".
 
 ### Add application details
 
-Add application name and homepage URL. The name and URL are used to identify your application to the people signing in.
+Add application name and homepage URL. The name and URL are used to
+identify your application to the people signing in.
 
 ![Authentication view for Github](./github-proxy-auth-screen.png)
 
 ### Add Authorization callback URL
 
-Add the Authorization callback URL: `<your marketplace URL>/api/auth/github/callback`. So for example, `https://www.mymarketplace.com/api/auth/github/callback`
+Add the Authorization callback URL:
+`<your marketplace URL>/api/auth/github/callback`. So for example,
+`https://www.mymarketplace.com/api/auth/github/callback`
 
 ### Register the application
 
@@ -101,7 +112,8 @@ Click "Register application".
 
 ### Generate client secret
 
-Generate a client secret, and make a note of the client ID and client secret. You will need these values later on.
+Generate a client secret, and make a note of the client ID and client
+secret. You will need these values later on.
 
 </Steps>
 
@@ -363,19 +375,19 @@ In `server/apiRouter.js`, add the following import:
 const {
   authenticateGithub,
   authenticateGithubCallback,
-} = require("./api/auth/github");
+} = require('./api/auth/github');
 ```
 
 And after all the `router.*` invocations, add Github login routes:
 
 ```js
 // This endpoint is called when the user wants to initiate authentication with Github
-router.get("/auth/github", authenticateGithub);
+router.get('/auth/github', authenticateGithub);
 
 // This is the route for callback URL the user is redirected after authenticating
 // with Github. In this route a Passport.js custom callback is used for calling
 // loginWithIdp endpoint in Sharetribe API to authenticate user to Sharetribe
-router.get("/auth/github/callback", authenticateGithubCallback);
+router.get('/auth/github/callback', authenticateGithubCallback);
 ```
 
 Finally, on the server side we need to update

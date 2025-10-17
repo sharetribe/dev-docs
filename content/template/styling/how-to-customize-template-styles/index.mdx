@@ -5,7 +5,7 @@ description:
   Template and how to apply changes to the styling using CSS.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Styling and CSS
 
@@ -224,7 +224,7 @@ To use styles defined in SectionHero.module.css, we need to import the
 file into the component:
 
 ```jsx
-import css from "./SectionHero.module.css";
+import css from './SectionHero.module.css';
 ```
 
 and then select the correct class from imported style object (in this
@@ -378,8 +378,8 @@ where `<Component className="classA classB"/>` could end up overwriting
 each others depending on the order they are imported.)
 
 ```jsx
-import React from "react";
-import css from "./MyComponent.module.css";
+import React from 'react';
+import css from './MyComponent.module.css';
 
 export const MyComponent = (props) => {
   const { className, rootClassName } = props;

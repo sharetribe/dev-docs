@@ -1,10 +1,11 @@
 ---
 title: Enable analytics
-description: This guide describes how to enable analytics in the Sharetribe Web
+description:
+  This guide describes how to enable analytics in the Sharetribe Web
   Template
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Enable analytics
 
@@ -156,12 +157,14 @@ file:
   (function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
     n = f.fbq = function () {
-      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      n.callMethod
+        ? n.callMethod.apply(n, arguments)
+        : n.queue.push(arguments);
     };
     if (!f._fbq) f._fbq = n;
     n.push = n;
     n.loaded = !0;
-    n.version = "2.0";
+    n.version = '2.0';
     n.queue = [];
     t = b.createElement(e);
     t.async = !0;
@@ -171,17 +174,17 @@ file:
   })(
     window,
     document,
-    "script",
-    "https://connect.facebook.net/en_US/fbevents.js",
+    'script',
+    'https://connect.facebook.net/en_US/fbevents.js'
   );
 
-  fbq("init", "{your-pixel-id-goes-here}");
-  fbq("track", "PageView");
+  fbq('init', '{your-pixel-id-goes-here}');
+  fbq('track', 'PageView');
 
-  const img = document.createElement("img");
-  img.height = "1";
-  img.width = "1";
-  img.style.display = "none";
+  const img = document.createElement('img');
+  img.height = '1';
+  img.width = '1';
+  img.style.display = 'none';
   img.src = `https://www.facebook.com/tr?id={your-pixel-id-goes-here}&ev=PageView&noscript=1`;
   document.body.appendChild(img);
 })();
@@ -195,7 +198,7 @@ analyticsLibraries.push(
   <script
     key="fb"
     src={`${rootURL}/static/scripts/facebook/facebook.js`}
-  ></script>,
+  ></script>
 );
 ```
 
@@ -205,22 +208,22 @@ file:
 
 ```js
 const { imgSrc = [self] } = defaultDirectives;
-const imgSrcOverride = imgSrc.concat("www.facebook.com");
+const imgSrcOverride = imgSrc.concat('www.facebook.com');
 
 const { scriptSrc = [self] } = defaultDirectives;
 const scriptSrcOverride = scriptSrc.concat(
-  "connect.facebook.net",
-  "www.facebook.com",
+  'connect.facebook.net',
+  'www.facebook.com'
 );
 
 const { frameSrc = [self] } = defaultDirectives;
 const frameSrcOverride = frameSrc.concat(
-  "connect.facebook.net",
-  "www.facebook.com",
+  'connect.facebook.net',
+  'www.facebook.com'
 );
 
 const { connectSrc = [self] } = defaultDirectives;
-const connectSrcOverride = connectSrc.concat("www.facebook.com");
+const connectSrcOverride = connectSrc.concat('www.facebook.com');
 
 const customDirectives = {
   imgSrc: imgSrcOverride,

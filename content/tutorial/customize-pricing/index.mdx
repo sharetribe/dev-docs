@@ -1,13 +1,14 @@
 ---
 title: Customize pricing
-description: Learn how to customize pricing in your marketplace by adding an
+description:
+  Learn how to customize pricing in your marketplace by adding an
   optional helmet rental fee on top of the regular nightly price of the
   accommodation.
 ---
 
 # Customize pricing
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 In this tutorial, you will
 
@@ -347,8 +348,8 @@ const formattedHelmetFee = helmetFee
   : null;
 
 const helmetFeeLabel = intl.formatMessage(
-  { id: "BookingDatesForm.helmetFeeLabel" },
-  { fee: formattedHelmetFee },
+  { id: 'BookingDatesForm.helmetFeeLabel' },
+  { fee: formattedHelmetFee }
 );
 ```
 

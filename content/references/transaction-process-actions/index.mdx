@@ -1,10 +1,12 @@
 ---
 title: Transaction process actions
 sidebarTitle: Transaction process actions
-description: This reference article lists all the available actions and their configuration options.
+description:
+  This reference article lists all the available actions and their
+  configuration options.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Transaction process actions
 
@@ -111,10 +113,11 @@ defining `includeFor` array `["customer"]` and provider commission by
 other non-commission line totals. Must be zero or positive.
 
 <Callout>
-  *Note:* Some line-item configurations are not supported by the default Stripe
-  payment actions. If you use Stripe payment actions, `payinTotal` needs to be
-  greater than zero, and greater than or equal to `payoutTotal`. For more
-  details, refer to Stripe action documentation.
+  *Note:* Some line-item configurations are not supported by the default
+  Stripe payment actions. If you use Stripe payment actions,
+  `payinTotal` needs to be greater than zero, and greater than or equal
+  to `payoutTotal`. For more details, refer to Stripe action
+  documentation.
 </Callout>
 
 `payoutTotal` is calculated by the action and added to the transaction.
@@ -196,8 +199,8 @@ Too large commission (i.e. a negative payout) will cause an error.
 - `commission`: decimal, mandatory. Acts as a multiplier on the
   transaction total, e.g. `0.1M` for a 10% commission.
 - `min`: a map with mandatory keys `:amount` and `:currency`, optional.
-  Acts as a minimum commission, e.g. `{:amount 2M, :currency "EUR"}` for a
-  2EUR minimum.
+  Acts as a minimum commission, e.g. `{:amount 2M, :currency "EUR"}` for
+  a 2EUR minimum.
 - `max`: a map with keys `:amount` and `:currency`, optional. Acts as a
   maximum commission, e.g. `{:amount 20M, :currency "EUR"}` for a 20EUR
   minimum..
@@ -712,9 +715,9 @@ When updated, the booking remains in the same state it was before the
 update.
 
 <Callout>
-  Only the given attributes are updated and ones that are left our remain
-  unchanged. In particular, the booking display times are NOT updated
-  automatically when the booking start/end time is updated.
+  Only the given attributes are updated and ones that are left our
+  remain unchanged. In particular, the booking display times are NOT
+  updated automatically when the booking start/end time is updated.
 </Callout>
 
 **Preconditions**:
@@ -898,8 +901,8 @@ stock reservation will have no net impact on the listing's available
 stock.
 
 <Callout>
-  Note: It is recommended to place this action last in the transition's action
-  list whenever possible.
+  Note: It is recommended to place this action last in the transition's
+  action list whenever possible.
 </Callout>
 
 **Preconditions**:
@@ -921,8 +924,8 @@ accepted. As a result, the stock reservation will have no net impact on
 the listing's available stock.
 
 <Callout>
-  Note: It is recommended to place this action last in the transition's action
-  list whenever possible.
+  Note: It is recommended to place this action last in the transition's
+  action list whenever possible.
 </Callout>
 
 **Preconditions**:
@@ -1228,10 +1231,11 @@ provider accepts the booking before the payment is made.
   SDK.
 
 <Callout>
-  **Note** that the allowed payment method types are passed as transition
-  parameters. If implementations wish to strictly validate which payment methods
-  are allowed to fulfill a payment, use a privileged transition and validate the
-  set of allowed payment methods in your server.
+  **Note** that the allowed payment method types are passed as
+  transition parameters. If implementations wish to strictly validate
+  which payment methods are allowed to fulfill a payment, use a
+  privileged transition and validate the set of allowed payment methods
+  in your server.
 </Callout>
 
 **Configuration options:** -
@@ -1249,17 +1253,18 @@ by using `:action/stripe-refund-payment`.
 
 <Callout type="important">
   Payments with synchronous push payment methods (created with
-  `:action/stripe-create-payment-intent-push`) are captured and made in full
-  immediately when confirmed by the customer via their bank or app and unlike
-  card payments there is no preauthorization stage. After the payment is made,
-  it can only be reversed with a full refund using
+  `:action/stripe-create-payment-intent-push`) are captured and made in
+  full immediately when confirmed by the customer via their bank or app
+  and unlike card payments there is no preauthorization stage. After the
+  payment is made, it can only be reversed with a full refund using
   `:action/stripe-refund-payment`. Unlike cancelling a preauthorization,
-  creating a full refund does not refund Stripe's own payment processing fees to
-  the Stripe platform account. Therefore, it is recommended that the transaction
-  process takes that into account. Typically, this means that the transaction
-  process is some form of "instant booking" where provider does not need to
-  accept the booking at all, or alternatively a process where the provider
-  accepts the booking before the payment is made.
+  creating a full refund does not refund Stripe's own payment processing
+  fees to the Stripe platform account. Therefore, it is recommended that
+  the transaction process takes that into account. Typically, this means
+  that the transaction process is some form of "instant booking" where
+  provider does not need to accept the booking at all, or alternatively
+  a process where the provider accepts the booking before the payment is
+  made.
 </Callout>
 
 **Preconditions**:

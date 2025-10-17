@@ -7,19 +7,18 @@ description:
   API requests to work properly.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Enable Google Maps
 
 <Callout>
 **Note**
 
-Before making the change to Google Maps, you should consider if
-you are OK with their current pricing. There's a pricing calculator
-available in their
-[pricing page](https://cloud.google.com/maps-platform/pricing/). The
-template's default map provider is Mapbox, which is often cheaper. To
-use Mapbox, see the
+Before making the change to Google Maps, you should consider if you are
+OK with their current pricing. There's a pricing calculator available in
+their [pricing page](https://cloud.google.com/maps-platform/pricing/).
+The template's default map provider is Mapbox, which is often cheaper.
+To use Mapbox, see the
 [How to set up Mapbox](/template/maps/how-to-set-up-mapbox-for-template/)
 guide.
 
@@ -63,7 +62,7 @@ This configuration variable can be one of two options: `'MAPBOX'` or
 variable to `'GOOGLE_MAPS'`:
 
 ```js
-export const mapProvider = "GOOGLE_MAPS";
+export const mapProvider = 'GOOGLE_MAPS';
 ```
 
 ## Further reading
@@ -72,6 +71,6 @@ Once you have enabled maps in your marketplace using your chosen map
 provider, you can change the map's configuration settings. These options
 allow you to change things like the default search locations and
 restrict location search to specific countries. Refer to the
-[map configurations article](/template/maps/configure-maps/) to learn more
-about the specific configurations you can adjust for maps in your
+[map configurations article](/template/maps/configure-maps/) to learn
+more about the specific configurations you can adjust for maps in your
 marketplace.

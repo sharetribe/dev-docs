@@ -1,6 +1,7 @@
 ---
 title: Payments in Sharetribe
-description: This article introduces how payments work in Sharetribe in general,
+description:
+  This article introduces how payments work in Sharetribe in general,
   and describes the default Stripe payment gateway integration
 published: true
 ---
@@ -89,12 +90,13 @@ out to the bank account that the provider gave upon onboarding.
 
 <details>
   <summary>"What does &quot;destination charge&quot; mean?"</summary>
-  The Stripe `on_behalf_of` destination charge means that when the charge is
-  created, the money goes directly to the provider's Custom Connect account in
-  Stripe, and the provider's information is shown on the customer's payment
-  method receipt. This also means that a listing cannot be booked or purchased
-  if the provider has not onboarded to Stripe, because the charge cannot be
-  created in Stripe without the provider's Custom Connect account information.
+  The Stripe `on_behalf_of` destination charge means that when the
+  charge is created, the money goes directly to the provider's Custom
+  Connect account in Stripe, and the provider's information is shown on
+  the customer's payment method receipt. This also means that a listing
+  cannot be booked or purchased if the provider has not onboarded to
+  Stripe, because the charge cannot be created in Stripe without the
+  provider's Custom Connect account information.
 </details>
 
 ### Default payment process with Stripe
@@ -122,11 +124,11 @@ your most likely marketplace provider demographics in
 
 When the customer initiates a transaction in the Sharetribe default
 transaction processes, Sharetribe creates a
-[PaymentIntent](/concepts/payments/payment-intents/) for the total price of the
-transaction. Once the PaymentIntent is confirmed, Stripe preauthorizes
-the sum from the customer's payment method. In other words, even though
-the sum is not paid out from the customer's card, it is reserved and not
-available to be used by the customer.
+[PaymentIntent](/concepts/payments/payment-intents/) for the total price
+of the transaction. Once the PaymentIntent is confirmed, Stripe
+preauthorizes the sum from the customer's payment method. In other
+words, even though the sum is not paid out from the customer's card, it
+is reserved and not available to be used by the customer.
 
 The preauthorization is valid for 7 days, after which the
 preauthorization is automatically released by Stripe, and the funds are
@@ -161,8 +163,8 @@ the platform's account as an
 [application fee](https://stripe.com/docs/api/application_fees).
 
 Depending on how the
-[transaction's line items](/concepts/pricing-and-commissions/pricing/#line-items) have been
-defined, the platform can take a
+[transaction's line items](/concepts/pricing-and-commissions/pricing/#line-items)
+have been defined, the platform can take a
 [commission of the price](/concepts/pricing-and-commissions/commissions-and-monetizing-your-platform/)
 from either the provider, the customer, or both. The platform is also
 responsible for paying all
@@ -201,13 +203,14 @@ times exceeding 90 days, the process needs to be modified.
 
 <details>
   <summary>Manual or automatic payout?</summary>
-  In Stripe terms, the Sharetribe integration uses manual payouts. This means
-  that Stripe does not automatically pay out the funds from the Connect accounts
-  e.g. daily or weekly, and instead the platform controls the payout schedule.
-  Since the payouts are triggered by the transaction process, they happen
-  automatically from the marketplace operator's point of view. In other words,
-  the operator should not pay out funds manually through the Stripe Dashboard if
-  the marketplace transaction process is using the Stripe payout action.
+  In Stripe terms, the Sharetribe integration uses manual payouts. This
+  means that Stripe does not automatically pay out the funds from the
+  Connect accounts e.g. daily or weekly, and instead the platform
+  controls the payout schedule. Since the payouts are triggered by the
+  transaction process, they happen automatically from the marketplace
+  operator's point of view. In other words, the operator should not pay
+  out funds manually through the Stripe Dashboard if the marketplace
+  transaction process is using the Stripe payout action.
 </details>
 
 **Related Stripe actions:**
@@ -269,8 +272,8 @@ receiving the product or service they purchased.
 Sharetribe supports multiple payment methods as a part of its Stripe
 integration. The default payment method is a payment card, which is what
 the Sharetribe Web Template uses. However, you can enable
-[other payment methods](/concepts/payments/payment-methods-overview/) as well
-with moderate custom development work.
+[other payment methods](/concepts/payments/payment-methods-overview/) as
+well with moderate custom development work.
 
 The user can save a default payment method in Sharetribe. If your
 marketplace uses the
@@ -289,28 +292,30 @@ sorting.
 As the transaction progresses, the payment intent is created and charged
 from the customer's payment method in the listing's currency, or
 alternatively the
-[currency of the line items](/concepts/pricing-and-commissions/pricing/#line-items) if different
-from the listing currency. The payout currency is determined by the
-provider's bank account currency.
+[currency of the line items](/concepts/pricing-and-commissions/pricing/#line-items)
+if different from the listing currency. The payout currency is
+determined by the provider's bank account currency.
 
 <details>
   <summary>Stripe currency terminology</summary>
-  In Stripe terminology, the <b>presentment currency</b> is the currency of the
-  charge, i.e. the currency at which the listing price is charged from the
-  customer's card. The customer's card provider may charge a conversion fee if
-  the presentment currency differs from the customer's card currency, or if the
-  credit card and the marketplace platform are registered in different countries
-  regardless of currency.
+  In Stripe terminology, the <b>presentment currency</b> is the currency
+  of the charge, i.e. the currency at which the listing price is charged
+  from the customer's card. The customer's card provider may charge a
+  conversion fee if the presentment currency differs from the customer's
+  card currency, or if the credit card and the marketplace platform are
+  registered in different countries regardless of currency.
   <br />
   <br />
   The <b>settlement currency</b> is the currency of the payout, i.e. the
-  currency at which the provider's payout is paid to their bank account. If the
-  presentment currency differs from the settlement currency, Stripe converts the
-  charge to the settlement currency.
+  currency at which the provider's payout is paid to their bank account.
+  If the presentment currency differs from the settlement currency,
+  Stripe converts the charge to the settlement currency.
   <br />
   <br />
-  See{" "}
-  <a href="https://stripe.com/docs/currencies">Stripe's own documentation</a>
+  See{' '}
+  <a href="https://stripe.com/docs/currencies">
+    Stripe's own documentation
+  </a>
   for country-specific details on supported currencies.
 </details>
 
@@ -349,9 +354,10 @@ Sometimes it takes a while to get Stripe to work. Here are some ideas to
 troubleshoot the problem.
 
 - Double check that you have followed the
-  [Stripe setup instructions](/how-to/payments/set-up-and-use-stripe/). Note that
-  in your Dev and Test environments, you need to use the Stripe keys
-  starting with `sk_test` and `pk_test`, and you will also need to use
+  [Stripe setup instructions](/how-to/payments/set-up-and-use-stripe/).
+  Note that in your Dev and Test environments, you need to use the
+  Stripe keys starting with `sk_test` and `pk_test`, and you will also
+  need to use
   [Stripe's test payout details](https://stripe.com/docs/connect/testing#payouts)
   and
   [test payment methods](https://stripe.com/docs/testing#payment-intents-api)
@@ -450,8 +456,8 @@ transaction process actions etc.) are named with the prefix `stripe`.
 If you want to modify your template to work without Stripe, the effort
 is more extensive, since each template is built around a logic that uses
 Stripe actions and endpoints. You can use
-[this article](/how-to/payments/removing-stripe-and-payments/) as your starting
-point.
+[this article](/how-to/payments/removing-stripe-and-payments/) as your
+starting point.
 
 When removing the Stripe integration, you will want to consider whether
 or not you want to implement some other payment gateway in your

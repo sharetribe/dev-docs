@@ -1,11 +1,12 @@
 ---
 title: Payment methods overview
 sidebarTitle: Payment methods
-description: This article provides an overview of different payment methods in
+description:
+  This article provides an overview of different payment methods in
   Sharetribe.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Payment methods overview
 
@@ -64,7 +65,7 @@ money is reserved but not yet charged from the customer's credit card.
 After a charge, Stripe moves money to the provider's Connect Account
 Balance in Stripe and holds it there until a payout is issued.
 
-![Card payment flow](./card-payment-flow.png "Card payment flow in Sharetribe.")
+![Card payment flow](./card-payment-flow.png 'Card payment flow in Sharetribe.')
 
 The preauthorization is valid for seven days, after which Stripe
 automatically releases it. You can use the preauthorization to configure
@@ -86,7 +87,7 @@ confirms the payment, it gets captured automatically and a charge is
 made immediately. The charge moves money immediately to the provider's
 Stripe Connect account.
 
-![Push payment flow](./push-payment-flow.png "Push payment flow in Sharetribe.")
+![Push payment flow](./push-payment-flow.png 'Push payment flow in Sharetribe.')
 
 This means that refunds can be issued only at a point where money has
 already moved and the marketplace must cover Stripe fees. You should
@@ -105,8 +106,8 @@ same features and capabilities.
 The
 [default processes](https://github.com/sharetribe/example-processes/tree/master/)
 in Sharetribe supports card payments. The general article on
-[the transaction process](/concepts/transactions/transaction-process/) describes the
-process in more detail.
+[the transaction process](/concepts/transactions/transaction-process/)
+describes the process in more detail.
 
 <Callout>
 
@@ -131,7 +132,7 @@ recommended changes in the two transitions: `request-push-payment` and
 `confirm-payment-instant-booking`. The example illustrates how you can
 still use the preauthorization step for card payments.
 
-![Push payment process](./push-payment-process.png "Push payment process example.")
+![Push payment process](./push-payment-process.png 'Push payment process example.')
 
 You can find another example process with only an _instant booking_ flow
 and support for both card and push payments in the

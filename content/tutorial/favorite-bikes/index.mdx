@@ -1,9 +1,10 @@
 ---
 title: Add a favorite bikes button
-description: Learn how to add a favorites functionality to Sharetribe Web Template
+description:
+  Learn how to add a favorites functionality to Sharetribe Web Template
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Add a favorite bikes button
 
@@ -61,7 +62,7 @@ import {
   H2,
   Button, // add these rows to the
   SecondaryButton, // existing import from '../../components'
-} from "../../components";
+} from '../../components';
 ```
 
 Next, let’s add some props that we will need to build the functionality.
@@ -86,13 +87,16 @@ listing has already been favorited. Add this snippet before the
 ```js
 const isFavorite =
   currentUser?.attributes.profile.privateData.favorites?.includes(
-    listing.id.uuid,
+    listing.id.uuid
   );
 
 const toggleFavorites = () => onToggleFavorites(isFavorite);
 
 const favoriteButton = isFavorite ? (
-  <SecondaryButton className={css.favoriteButton} onClick={toggleFavorites}>
+  <SecondaryButton
+    className={css.favoriteButton}
+    onClick={toggleFavorites}
+  >
     <FormattedMessage id="OrderPanel.unfavoriteButton" />
   </SecondaryButton>
 ) : (
@@ -112,7 +116,7 @@ Above, we define the `isFavorite` constant like this:
 ```js
 const isFavorite =
   currentUser?.attributes.profile.privateData.favorites?.includes(
-    listing.id.uuid,
+    listing.id.uuid
   );
 ```
 
@@ -261,8 +265,8 @@ export const handleToggleFavorites = (parameters) => (isFavorite) => {
 
     // Sign up and return back to the listing page.
     history.push(
-      createResourceLocatorString("SignupPage", routes, {}, {}),
-      state,
+      createResourceLocatorString('SignupPage', routes, {}, {}),
+      state
     );
   } else {
     const { params, onUpdateFavorites } = parameters;
@@ -301,7 +305,8 @@ This function receives the necessary information and actions from its
 parameters, so all we need to know in this function is that we are
 updating the current user’s private data.
 
-Next, we call this function from _ListingPageCarousel.js_. We will first import the function we just created.
+Next, we call this function from _ListingPageCarousel.js_. We will first
+import the function we just created.
 
 <Callout>
 
@@ -324,10 +329,10 @@ import {
   handleSubmitInquiry,
   handleSubmit,
   handleToggleFavorites, // add this row to the existing './ListingPage.shared' import
-} from "./ListingPage.shared";
+} from './ListingPage.shared';
 
 // Add this whole import statement
-import { updateProfile } from "../ProfileSettingsPage/ProfileSettingsPage.duck";
+import { updateProfile } from '../ProfileSettingsPage/ProfileSettingsPage.duck';
 ```
 
 <details>
@@ -645,7 +650,7 @@ which allows us to get data from the store as props.
 ```js
 const FavoriteListingsPage = compose(
   connect(mapStateToProps),
-  injectIntl,
+  injectIntl
 )(FavoriteListingsPageComponent);
 
 export default FavoriteListingsPage;
@@ -680,7 +685,10 @@ behavior for each of the three action types defined earlier, as well as
 a default.
 
 ```jsx
-const favoriteListingsPageReducer = (state = initialState, action = {}) => {
+const favoriteListingsPageReducer = (
+  state = initialState,
+  action = {}
+) => {
   const { type, payload } = action;
   switch (type) {
     case FETCH_LISTINGS_REQUEST:
@@ -738,7 +746,8 @@ export const queryFavoriteListings =
   (queryParams) => (dispatch, getState, sdk) => {
     dispatch(queryFavoritesRequest(queryParams));
     const { currentUser } = getState().user;
-    const { favorites } = currentUser?.attributes.profile.privateData || {};
+    const { favorites } =
+      currentUser?.attributes.profile.privateData || {};
 
     const favoriteIds = favorites ? { ids: favorites } : { ids: [] };
     const { perPage, ...rest } = queryParams;

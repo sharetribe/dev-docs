@@ -1,7 +1,8 @@
 ---
 title: Listing availability management
 sidebarTitle: Availability management
-description: Reference documentation for listing availability management.
+description:
+  Reference documentation for listing availability management.
 ---
 
 # Listing availability management
@@ -24,15 +25,14 @@ available on not:
 
 The availability plan and exceptions, together with booking information
 can be combined to determine if a particular time range is available for
-booking or not. For instance, the
-`/timeslots/query`
-API endpoint returns availability information for future dates, taking
-into account the listing's availability plan, exceptions and bookings.
+booking or not. For instance, the `/timeslots/query` API endpoint
+returns availability information for future dates, taking into account
+the listing's availability plan, exceptions and bookings.
 
 All bookings are created through transactions, governed by your
-[transaction process](/concepts/transactions/transaction-process/). The transaction
-process ensures that bookings are only created for available time
-ranges.
+[transaction process](/concepts/transactions/transaction-process/). The
+transaction process ensures that bookings are only created for available
+time ranges.
 
 ## Seats
 
@@ -101,20 +101,21 @@ and from 1 PM to 6 PM.
 
 Timeslots are periods of time, which are available to be booked. E.g. if
 you have set a plan with 1 available seat from 7-22 on Mondays, that
-means that one person can book 5 minutes `07:00` - `07:05`. Then the next
-customer can only book times within the range of `07:05` - `22:00` on the
-same day. So, the plan creates a weekly schedule, against which
+means that one person can book 5 minutes `07:00` - `07:05`. Then the
+next customer can only book times within the range of `07:05` - `22:00`
+on the same day. So, the plan creates a weekly schedule, against which
 availability exceptions and bookings are making reservations.
 
 Exceptions can be used for restricting availability on a specific day.
-E.g. if you have set availability to `07` - `22` on Mondays and you add an
-exception `21-22` with seat `0` on Monday `28.10.2019`, the timeslots query
-returns timeslot `07-21` on that day if there are no bookings.
+E.g. if you have set availability to `07` - `22` on Mondays and you add
+an exception `21-22` with seat `0` on Monday `28.10.2019`, the timeslots
+query returns timeslot `07-21` on that day if there are no bookings.
 
 Exceptions can also be used for expanding the availability on a specific
-day. E.g. if you have set availability to `07` - `22` on Mondays and you add
-an exception `22-23` with seat `1` on Monday `28.10.2019`, the timeslots query
-returns timeslot `07-23` on that day if there are no bookings.
+day. E.g. if you have set availability to `07` - `22` on Mondays and you
+add an exception `22-23` with seat `1` on Monday `28.10.2019`, the
+timeslots query returns timeslot `07-23` on that day if there are no
+bookings.
 
 For time-based plans, both availability exceptions and bookings are
 interpreted literally, i.e. covering the exact time intervals determined
@@ -129,8 +130,7 @@ contained within the sub-intervals. This can be particularly useful for
 checking day-by-day availability over an extended period for
 fixed-duration bookings.
 
-Interval based filtering is supported by the
-`/timeslots/query`
+Interval based filtering is supported by the `/timeslots/query`
 endpoint. It is controlled via four query parameters:
 
 - `intervalDuration`: the length of each sub-interval (e.g. `"PT30M"`,

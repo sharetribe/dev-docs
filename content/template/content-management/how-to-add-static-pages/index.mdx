@@ -1,12 +1,13 @@
 ---
 title: How to add a static page
 sidebarTitle: Add a static page
-description: This guide describes how to add a non-dynamic static page using the
+description:
+  This guide describes how to add a non-dynamic static page using the
   Sharetribe Web Template
 ---
 
-import { Callout } from "nextra/components";
-import { Steps } from "nextra/components";
+import { Callout } from 'nextra/components';
+import { Steps } from 'nextra/components';
 
 # How to add a static page
 
@@ -50,19 +51,19 @@ Template for a single column static page (SocialMediaPage.js): (We'll go
 through this line-by-line below.)
 
 ```jsx
-import React from "react";
+import React from 'react';
 import {
   NamedLink,
   ExternalLink,
   LayoutComposer,
   Heading,
-} from "../../components";
+} from '../../components';
 
-import StaticPage from "../PageBuilder/StaticPage";
-import TopbarContainer from "../TopbarContainer/TopbarContainer";
-import FooterContainer from "../FooterContainer/FooterContainer";
+import StaticPage from '../PageBuilder/StaticPage';
+import TopbarContainer from '../TopbarContainer/TopbarContainer';
+import FooterContainer from '../FooterContainer/FooterContainer';
 
-import css from "./SocialMediaPage.module.css";
+import css from './SocialMediaPage.module.css';
 
 const SocialMediaPage = () => {
   const layoutAreas = `
@@ -76,10 +77,10 @@ const SocialMediaPage = () => {
       className={css.root}
       title="Social media"
       schema={{
-        "@context": "http://schema.org",
-        "@type": "SocialMediaPage",
-        description: "Description of this page",
-        name: "Social media page",
+        '@context': 'http://schema.org',
+        '@type': 'SocialMediaPage',
+        description: 'Description of this page',
+        name: 'Social media page',
       }}
     >
       <LayoutComposer areas={layoutAreas} className={css.layout}>
@@ -99,7 +100,10 @@ const SocialMediaPage = () => {
                 Go to our home page
               </NamedLink>
               or
-              <ExternalLink className={css.link} href="https://google.com">
+              <ExternalLink
+                className={css.link}
+                href="https://google.com"
+              >
                 Go to Google
               </ExternalLink>
             </div>
@@ -120,7 +124,7 @@ components and pages. Therefore, we need to import React to our new
 component which is done in the first line.
 
 ```jsx
-import React from "react";
+import React from 'react';
 ```
 
 <Steps>
@@ -146,7 +150,7 @@ import {
   ExternalLink,
   LayoutComposer,
   Heading,
-} from "../../components";
+} from '../../components';
 ```
 
 After that we import three containers:
@@ -158,9 +162,9 @@ After that we import three containers:
   it needs.
 
 ```jsx
-import StaticPage from "../PageBuilder/StaticPage";
-import TopbarContainer from "../TopbarContainer/TopbarContainer";
-import FooterContainer from "../FooterContainer/FooterContainer";
+import StaticPage from '../PageBuilder/StaticPage';
+import TopbarContainer from '../TopbarContainer/TopbarContainer';
+import FooterContainer from '../FooterContainer/FooterContainer';
 ```
 
 Then we need to import styles and possible other files from current
@@ -169,7 +173,7 @@ folder. The template uses
 class names locally to prevent conflicts.
 
 ```jsx
-import css from "./SocialMediaPage.module.css";
+import css from './SocialMediaPage.module.css';
 ```
 
 After all the imports, we are finally getting into phase were we define
@@ -281,7 +285,7 @@ like:
  * This import ensures that the page and components inside will get correct media queries,
  * when the app is build.
  */
-@import "../../styles/customMediaQueries.css";
+@import '../../styles/customMediaQueries.css';
 
 .content {
   margin: 0 auto;
@@ -311,8 +315,8 @@ with other page imports:
 const SocialMediaPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "SocialMediaPage" */ "../containers/SocialMediaPage/SocialMediaPage"
-    ),
+      /* webpackChunkName: "SocialMediaPage" */ '../containers/SocialMediaPage/SocialMediaPage'
+    )
 );
 ```
 

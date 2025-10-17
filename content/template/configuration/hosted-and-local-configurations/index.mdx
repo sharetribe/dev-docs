@@ -1,12 +1,13 @@
 ---
 title: How to manage hosted and local configurations
 sidebarTitle: Hosted vs local configurations
-description: The Sharetribe Web Template has both local and asset-based
+description:
+  The Sharetribe Web Template has both local and asset-based
   configurations available. Learn how to combine both types of
   configurations.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # How to manage hosted and local configurations
 
@@ -64,13 +65,16 @@ export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
     // Analytics might come from hosted assets at some point.
     analytics: mergeAnalyticsConfig(
       configAsset.analytics,
-      defaultConfigs.analytics,
+      defaultConfigs.analytics
     ),
 
     // Branding configuration comes entirely from hosted assets,
     // but defaults to values set in defaultConfigs.branding for
     // marketplace color, logo, brandImage and Facebook and Twitter images
-    branding: mergeBranding(configAsset.branding, defaultConfigs.branding),
+    branding: mergeBranding(
+      configAsset.branding,
+      defaultConfigs.branding
+    ),
 
     // Layout configuration comes entirely from hosted assets,
     // but defaultConfigs is used if type of the hosted configs is unknown
@@ -80,7 +84,10 @@ export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
     listing: mergeListingConfig(configAsset, defaultConfigs),
 
     // Hosted search configuration does not yet contain sortConfig
-    search: mergeSearchConfig(configAsset.search, defaultConfigs.search),
+    search: mergeSearchConfig(
+      configAsset.search,
+      defaultConfigs.search
+    ),
 
     // Map provider info might come from hosted assets. Other map configs come from defaultConfigs.
     maps: mergeMapConfig(configAsset.maps, defaultConfigs.maps),
@@ -107,10 +114,10 @@ configurations and local configurations.
 const mergeListingConfig = (hostedConfig, defaultConfigs) => {
   // Listing configuration is splitted to several assets in Console
   const hostedListingTypes = restructureListingTypes(
-    hostedConfig.listingTypes?.listingTypes,
+    hostedConfig.listingTypes?.listingTypes
   );
   const hostedListingFields = restructureListingFields(
-    hostedConfig.listingFields?.listingFields,
+    hostedConfig.listingFields?.listingFields
   );
 
   // The default values for local debugging
@@ -124,10 +131,10 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
   // Otherwise, use listing types and fields from hosted assets.
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
   const listingTypes = shouldMerge
-    ? union(hostedListingTypes, defaultListingTypes, "listingType")
+    ? union(hostedListingTypes, defaultListingTypes, 'listingType')
     : hostedListingTypes;
   const listingFields = shouldMerge
-    ? union(hostedListingFields, defaultListingFields, "key")
+    ? union(hostedListingFields, defaultListingFields, 'key')
     : hostedListingFields;
 
   const listingTypesInUse = getListingTypeStringsInUse(listingTypes);
@@ -136,7 +143,8 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
     ...rest,
     listingFields: validListingFields(listingFields, listingTypesInUse),
     listingTypes: validListingTypes(listingTypes),
-    enforceValidListingType: defaultConfigs.listing.enforceValidListingType,
+    enforceValidListingType:
+      defaultConfigs.listing.enforceValidListingType,
   };
 };
 ```

@@ -102,10 +102,10 @@ different client applications.
 ### Routing and loadData calls
 
 Sharetribe Web Template uses React Router to
-[create routes](/template/routing/how-routing-works-in-template/) to different
-pages. This is best demonstrated through an example. When a user
-navigates to the about page, it triggers the loadData function specified
-in
+[create routes](/template/routing/how-routing-works-in-template/) to
+different pages. This is best demonstrated through an example. When a
+user navigates to the about page, it triggers the loadData function
+specified in
 [routeConfiguration.js](https://github.com/sharetribe/web-template/blob/main/src/routing/routeConfiguration.js#L76):
 
 ```js
@@ -159,8 +159,8 @@ uses a predefined path for fetching the page asset
 `content/pages/privacy-policy`
 
 ```js
-import { fetchPageAssets } from "../../ducks/hostedAssets.duck";
-export const ASSET_NAME = "privacy-policy";
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
+export const ASSET_NAME = 'privacy-policy';
 
 export const loadData = (params, search) => (dispatch) => {
   const pageAsset = {
@@ -173,7 +173,7 @@ export const loadData = (params, search) => (dispatch) => {
 Whereas the CMSPage uses a dynamic ID that is passed through the URL
 
 ```js
-import { fetchPageAssets } from "../../ducks/hostedAssets.duck";
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 
 export const loadData = (params, search) => (dispatch) => {
   const pageId = params.pageId;

@@ -1,10 +1,13 @@
 ---
 title: Implement user deletion
 sidebarTitle: Implement user deletion
-description: This article guides you in implementing a feature where a user can delete their own account through the Sharetribe Web Template Account settings section.
+description:
+  This article guides you in implementing a feature where a user can
+  delete their own account through the Sharetribe Web Template Account
+  settings section.
 ---
 
-import { Callout, FileTree } from "nextra/components";
+import { Callout, FileTree } from 'nextra/components';
 
 # Implement user deletion
 
@@ -151,20 +154,20 @@ application's route configuration.
 const ContactDetailsPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "ContactDetailsPage" */ "../containers/ContactDetailsPage/ContactDetailsPage"
-    ),
+      /* webpackChunkName: "ContactDetailsPage" */ '../containers/ContactDetailsPage/ContactDetailsPage'
+    )
 );
 const DeleteAccountPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "DeleteAccountPage" */ "../containers/DeleteAccountPage/DeleteAccountPage"
-    ),
+      /* webpackChunkName: "DeleteAccountPage" */ '../containers/DeleteAccountPage/DeleteAccountPage'
+    )
 );
 const EditListingPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "EditListingPage" */ "../containers/EditListingPage/EditListingPage"
-    ),
+      /* webpackChunkName: "EditListingPage" */ '../containers/EditListingPage/EditListingPage'
+    )
 );
 ```
 
@@ -174,11 +177,11 @@ array.
 
 ```js
 export const ACCOUNT_SETTINGS_PAGES = [
-  "ContactDetailsPage",
-  "PasswordChangePage",
-  "StripePayoutPage",
-  "PaymentMethodsPage",
-  "DeleteAccountPage",
+  'ContactDetailsPage',
+  'PasswordChangePage',
+  'StripePayoutPage',
+  'PaymentMethodsPage',
+  'DeleteAccountPage',
 ];
 ```
 
@@ -269,7 +272,7 @@ First, create the form component depending on whether current user
 exists.
 
 ```js
-import DeleteAccountForm from "./DeleteAccountForm/DeleteAccountForm";
+import DeleteAccountForm from './DeleteAccountForm/DeleteAccountForm';
 ```
 
 ```js
@@ -480,14 +483,14 @@ First, create the endpoint in the client-side API file.
 // must be modified to accommodate the transaction processes used in
 // the marketplace.
 export const deleteUserAccount = (body) => {
-  return post("/api/delete-account", body);
+  return post('/api/delete-account', body);
 };
 ```
 
 Then, import the endpoint in DeleteAccountPage.duck.js.
 
 ```js
-import { deleteUserAccount } from "../../util/api";
+import { deleteUserAccount } from '../../util/api';
 ```
 
 Now, clicking the delete button should show a 404 error in the dev tools
@@ -530,13 +533,13 @@ profile.
 // of an unmodified default-booking process i.e. the transitions where we do not want to
 // allow the user to delete their account.
 const nonFinalTransitions = [
-  "transition/request-payment",
-  "transition/request-payment-after-inquiry",
-  "transition/confirm-payment",
-  "transition/accept",
-  "transition/complete",
-  "transition/review-1-by-customer",
-  "transition/review-1-by-provider",
+  'transition/request-payment',
+  'transition/request-payment-after-inquiry',
+  'transition/confirm-payment',
+  'transition/accept',
+  'transition/complete',
+  'transition/review-1-by-customer',
+  'transition/review-1-by-provider',
 ];
 ```
 

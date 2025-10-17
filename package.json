@@ -23,7 +23,7 @@
     "start": "npx serve@latest out",
     "postbuild": "node scripts/generate-llms-txt.js && next-sitemap && pagefind --site out/docs --output-path out/docs/_pagefind",
     "format": "prettier . --write",
-    "format-docs": "prettier --print-width=72 --write \"content/**/*.mxd\"",
+    "format-docs": "prettier --print-width=72 --write \"content/**/*.mdx\"",
     "prepare": "husky"
   },
   "lint-staged": {

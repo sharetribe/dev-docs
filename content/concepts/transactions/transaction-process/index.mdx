@@ -1,12 +1,13 @@
 ---
 title: Introduction to transaction processes
 sidebarTitle: Introduction
-description: This article introduces transaction processes as a concept, their
+description:
+  This article introduces transaction processes as a concept, their
   parts, and how they define user interactions and order flows in your
   marketplace.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Introduction to transaction processes
 
@@ -145,7 +146,9 @@ Possible actions are defined by the capacity of the Sharetribe API. The
 list of all transaction process actions can be found
 [in the transaction process actions reference documentation](/references/transaction-process-actions/).
 
-<Callout type="warning">Creating custom actions is not possible.</Callout>
+<Callout type="warning">
+  Creating custom actions is not possible.
+</Callout>
 
 ![Transaction actions](./transaction-actions-v2.png)
 
@@ -166,8 +169,9 @@ a notification prompting them to review the customer. The customer
 receives an email notification to review the provider.
 
 To review what notifications are sent as part of the Sharetribe default
-process, visit your [Sharetribe Console](/concepts/development/console-overview/)
-Build tab. Each included
+process, visit your
+[Sharetribe Console](/concepts/development/console-overview/) Build tab.
+Each included
 [email notification has a template](/references/email-templates/#editing-transaction-emails)
 that can be customized using the Sharetribe CLI. You can also edit the
 content of the transaction notifications in the Console, under Build >

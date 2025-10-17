@@ -69,19 +69,20 @@ format using JavaScript libraries
 listing:
 
 ```javascript
-const edn = require("jsedn");
-const { v4: uuidv4 } = require("uuid");
+const edn = require('jsedn');
+const { v4: uuidv4 } = require('uuid');
 
 const tagged = (tag, value) => new edn.Tagged(new edn.Tag(tag), value);
-const uuid = () => tagged("uuid", uuidv4());
-const price = (amount, currency) => tagged("im/money", [amount, currency]);
+const uuid = () => tagged('uuid', uuidv4());
+const price = (amount, currency) =>
+  tagged('im/money', [amount, currency]);
 
 const email = (data) => {
   const { emailAddress } = data;
   return new edn.Map([
-    edn.kw(":im.email/address"),
+    edn.kw(':im.email/address'),
     emailAddress,
-    edn.kw(":im.email/verified"),
+    edn.kw(':im.email/verified'),
     true,
   ]);
 };
@@ -89,9 +90,9 @@ const email = (data) => {
 const profile = (data) => {
   const { firstName, lastName } = data;
   return new edn.Map([
-    edn.kw(":im.userProfile/firstName"),
+    edn.kw(':im.userProfile/firstName'),
     firstName,
-    edn.kw(":im.userProfile/lastName"),
+    edn.kw(':im.userProfile/lastName'),
     lastName,
   ]);
 };
@@ -99,20 +100,20 @@ const profile = (data) => {
 const user = (data) => {
   const { alias, emailAddress, firstName, lastName } = data;
   const role = new edn.Vector([
-    edn.kw(":user.role/customer"),
-    edn.kw(":user.role/provider"),
+    edn.kw(':user.role/customer'),
+    edn.kw(':user.role/provider'),
   ]);
 
   return new edn.Vector([
-    new edn.Vector([edn.kw(":im.user/id"), uuid(), alias]),
+    new edn.Vector([edn.kw(':im.user/id'), uuid(), alias]),
     new edn.Map([
-      edn.kw(":im.user/primaryEmail"),
+      edn.kw(':im.user/primaryEmail'),
       email(data),
-      edn.kw(":im.user/createdAt"),
-      tagged("inst", new Date().toISOString()),
-      edn.kw(":im.user/role"),
+      edn.kw(':im.user/createdAt'),
+      tagged('inst', new Date().toISOString()),
+      edn.kw(':im.user/role'),
       role,
-      edn.kw(":im.user/profile"),
+      edn.kw(':im.user/profile'),
       profile(data),
     ]),
   ]);
@@ -121,39 +122,39 @@ const user = (data) => {
 const listing = (data) => {
   const { alias, title, priceAmount, author } = data;
   return new edn.Vector([
-    new edn.Vector([edn.kw(":im.listing/id"), uuid(), alias]),
+    new edn.Vector([edn.kw(':im.listing/id'), uuid(), alias]),
     new edn.Map([
-      edn.kw(":im.listing/title"),
+      edn.kw(':im.listing/title'),
       title,
-      edn.kw(":im.listing/createdAt"),
-      tagged("inst", new Date().toISOString()),
-      edn.kw(":im.listing/state"),
-      edn.kw(":listing.state/published"),
-      edn.kw(":im.listing/price"),
-      price(priceAmount, "EUR"),
-      edn.kw(":im.listing/author"),
-      tagged("im/ref", author),
+      edn.kw(':im.listing/createdAt'),
+      tagged('inst', new Date().toISOString()),
+      edn.kw(':im.listing/state'),
+      edn.kw(':listing.state/published'),
+      edn.kw(':im.listing/price'),
+      price(priceAmount, 'EUR'),
+      edn.kw(':im.listing/author'),
+      tagged('im/ref', author),
     ]),
   ]);
 };
 
-const userAlias = edn.kw(":user/john");
+const userAlias = edn.kw(':user/john');
 const e = new edn.Map([
-  edn.kw(":ident"),
-  edn.kw(":mymarketplace"),
-  edn.kw(":data"),
+  edn.kw(':ident'),
+  edn.kw(':mymarketplace'),
+  edn.kw(':data'),
   new edn.Vector([
     listing({
-      alias: edn.kw(":listing/rock-sauna"),
-      title: "A solid rock sauna",
+      alias: edn.kw(':listing/rock-sauna'),
+      title: 'A solid rock sauna',
       priceAmount: 12.2,
       author: userAlias,
     }),
     user({
       alias: userAlias,
-      emailAddress: "foo@sharetribe.com",
-      firstName: "John",
-      lastName: "Doe",
+      emailAddress: 'foo@sharetribe.com',
+      firstName: 'John',
+      lastName: 'Doe',
     }),
   ]),
 ]);

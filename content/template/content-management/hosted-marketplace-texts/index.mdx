@@ -1,7 +1,8 @@
 ---
 title: Hosted marketplace texts with Asset Delivery API
 sidebarTitle: Hosted marketplace texts
-description: This article describes how hosted marketplace texts work in the
+description:
+  This article describes how hosted marketplace texts work in the
   Sharetribe Web Template.
 ---
 
@@ -37,7 +38,7 @@ than the default English.
 // CDN assets for the app. Configurable through Sharetribe Console.
 // Currently, only translation.json is available.
 const appCdnAssets = {
-  translations: "content/translations.json",
+  translations: 'content/translations.json',
 };
 ```
 
@@ -71,8 +72,8 @@ specified version.
 
 ```js
 sdk.assetByVersion({
-  path: "content/translations.json",
-  version: "<some-hash-string>",
+  path: 'content/translations.json',
+  version: '<some-hash-string>',
 });
 ```
 
@@ -92,8 +93,8 @@ visible in a Live environment. These cache times are subject to change.
 
 ```js
 sdk.assetByAlias({
-  path: "content/translations.json",
-  alias: "latest",
+  path: 'content/translations.json',
+  alias: 'latest',
 });
 ```
 

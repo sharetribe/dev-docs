@@ -1,10 +1,12 @@
 ---
 title: Page asset schema
 sidebarTitle: Page asset schema
-description: Reference documentation providing information on the page asset schema.
+description:
+  Reference documentation providing information on the page asset
+  schema.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Page asset schema
 
@@ -55,9 +57,9 @@ The page asset schema itself has two main parts:
 - properties
 - `$defs`
 
-Properties describe the main structure of the page asset, whereas `$defs`
-contain subschemas. Subschemas are additional attributes that can be
-reused in several properties.
+Properties describe the main structure of the page asset, whereas
+`$defs` contain subschemas. Subschemas are additional attributes that
+can be reused in several properties.
 
 - Read more about
   [defs in JSON schema](https://json-schema.org/understanding-json-schema/structuring.html#defs)
@@ -756,7 +758,11 @@ subject to change.
                                   ]
                                 }
                               },
-                              "required": ["alt", "image", "aspectRatio"],
+                              "required": [
+                                "alt",
+                                "image",
+                                "aspectRatio"
+                              ],
                               "allOf": [
                                 {
                                   "if": {
@@ -888,7 +894,10 @@ subject to change.
                                   "$ref": "#/$defs/aspectRatio"
                                 }
                               },
-                              "required": ["youtubeVideoId", "aspectRatio"]
+                              "required": [
+                                "youtubeVideoId",
+                                "aspectRatio"
+                              ]
                             }
                           }
                         ]
@@ -1136,7 +1145,10 @@ subject to change.
           "description": "Include only the path after your domain. For example, if you want to link to your About page, use \"/p/about\", or if you want to link to your landing page, use \"/\".",
           "title": "Internal link address",
           "type": "string",
-          "examples": ["#section-id-as-anchor", "/absolute/path/to/page"],
+          "examples": [
+            "#section-id-as-anchor",
+            "/absolute/path/to/page"
+          ],
           "pattern": "^(?![a-zA-Z][a-zA-Z+.-]*:)",
           "minLength": 1
         }
@@ -1173,7 +1185,10 @@ subject to change.
           "description": "Include only the path after your domain. For example, if you want to link to your About page, use \"/p/about\", or if you want to link to your landing page, use \"/\".",
           "title": "Internal link address",
           "type": "string",
-          "examples": ["#section-id-as-anchor", "/absolute/path/to/page"],
+          "examples": [
+            "#section-id-as-anchor",
+            "/absolute/path/to/page"
+          ],
           "pattern": "^(?![a-zA-Z][a-zA-Z+.-]*:)",
           "minLength": 1
         }

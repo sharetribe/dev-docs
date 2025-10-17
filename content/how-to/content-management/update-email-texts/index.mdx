@@ -7,15 +7,15 @@ description:
   use for marketplaces started before this feature was released.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Update your email templates to use email texts
 
 <Callout type="info">
-  Since 10/2023, new marketplaces have supported modifying email texts in
-  Console without modifying the email template code. If your marketplace was
-  started before that, there are some changes you need to make in your email
-  templates to take this feature into use.
+  Since 10/2023, new marketplaces have supported modifying email texts
+  in Console without modifying the email template code. If your
+  marketplace was started before that, there are some changes you need
+  to make in your email templates to take this feature into use.
 </Callout>
 
 ## Transaction process notifications
@@ -34,8 +34,8 @@ whether the manual work is worth the effort.
 1. Before the `<html>` tag in each template, add the following lines
 
 ```handlebars
-{{set-translations (asset "content/email-texts.json")}}
-{{set-locale (asset "general/localization.json" "locale" "en_US")}}
+{{set-translations (asset 'content/email-texts.json')}}
+{{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
 {{set-timezone transaction.listing.availability-plan.timezone}}
 ```
 
@@ -99,8 +99,8 @@ manual work is worth the effort.
 1. Before the `<html>` tag in each template, add the following lines
 
 ```handlebars
-{{set-translations (asset "content/email-texts.json")}}
-{{set-locale (asset "general/localization.json" "locale" "en_US")}}
+{{set-translations (asset 'content/email-texts.json')}}
+{{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
 ```
 
 2. Replace the text elements with the usage of the `{{t}}` helper with
@@ -112,8 +112,9 @@ manual work is worth the effort.
 
 <!-- becomes {{t "templatename.messagekey" "fallbackmessage" variableName1=variableValue1 variableName2=variableValue2... }} -->
 <h1>
-  {{t "UserJoined.Greeting" "Hi {firstName}, welcome to {marketplaceName}!"
-  firstName=recipient.first-name marketplaceName=marketplace.name}}
+  {{t "UserJoined.Greeting" "Hi {firstName}, welcome to
+  {marketplaceName}!" firstName=recipient.first-name
+  marketplaceName=marketplace.name}}
 </h1>
 ```
 

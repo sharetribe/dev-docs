@@ -3,7 +3,7 @@ title: Add a new listing wizard tab
 description: Learn how to add a new tab to the listing creation wizard.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Add a new listing wizard tab
 
@@ -300,7 +300,9 @@ we need to compose
 when exporting the component.
 
 ```js
-export default compose(injectIntl)(EditListingExtraFeaturesFormComponent);
+export default compose(injectIntl)(
+  EditListingExtraFeaturesFormComponent
+);
 ```
 
 </details>
@@ -319,7 +321,9 @@ Listing Wizard. The wizard has a layered structure:
 So to use our new _EditListingExtraFeaturesPanel_ component, we need to
 
 - import it in the _EditListingWizardTab_ componen
+
   t
+
 - render it in the correct context, and
 - add `EXTRAFEATURES` to the list of supported tabs
 
@@ -349,15 +353,15 @@ supported panels, so let’s add the new EXTRAFEATURES panel in that list,
 as well as into the SUPPORTED_TABS array.
 
 ```js
-export const DETAILS = "details";
-export const PRICING = "pricing";
-export const PRICING_AND_STOCK = "pricing-and-stock";
-export const EXTRAFEATURES = "extra-features";
-export const DELIVERY = "delivery";
-export const LOCATION = "location";
-export const AVAILABILITY = "availability";
-export const PHOTOS = "photos";
-export const STYLE = "style";
+export const DETAILS = 'details';
+export const PRICING = 'pricing';
+export const PRICING_AND_STOCK = 'pricing-and-stock';
+export const EXTRAFEATURES = 'extra-features';
+export const DELIVERY = 'delivery';
+export const LOCATION = 'location';
+export const AVAILABILITY = 'availability';
+export const PHOTOS = 'photos';
+export const STYLE = 'style';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
@@ -429,14 +433,20 @@ import EditListingWizardTab, {
   AVAILABILITY,
   PHOTOS,
   STYLE,
-} from "./EditListingWizardTab";
+} from './EditListingWizardTab';
 ```
 
 Next, add the `EXTRAFEATURES` tab to the existing `TABS_BOOKING` array.
 
 ```js
 const TABS_DETAILS_ONLY = [DETAILS];
-const TABS_PRODUCT = [DETAILS, PRICING_AND_STOCK, DELIVERY, PHOTOS, STYLE];
+const TABS_PRODUCT = [
+  DETAILS,
+  PRICING_AND_STOCK,
+  DELIVERY,
+  PHOTOS,
+  STYLE,
+];
 const TABS_BOOKING = [
   DETAILS,
   LOCATION,
@@ -551,7 +561,7 @@ ListingPageCarousel:
 ```js
 <SectionTextMaybe
   text={publicData.extraFeatures}
-  heading={intl.formatMessage({ id: "ListingPage.extraFeaturesTitle" })}
+  heading={intl.formatMessage({ id: 'ListingPage.extraFeaturesTitle' })}
 />
 ```
 
