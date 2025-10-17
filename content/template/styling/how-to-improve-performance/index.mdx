@@ -59,12 +59,13 @@ under the assumption that users will only visit a single page on the
 website.
 
 We recommend using
-[code-splitting](/template/routing/code-splitting-in-template/) to improve
-initial page load times. You can further optimise performance by moving
-components only used on specific pages to page directories (with page
-directories being the directories you can find under `src/containers/`).
-Code located in the `src/components` directory is loaded into the
-`main.bundle.js` file served to the client on the initial page load.
+[code-splitting](/template/routing/code-splitting-in-template/) to
+improve initial page load times. You can further optimise performance by
+moving components only used on specific pages to page directories (with
+page directories being the directories you can find under
+`src/containers/`). Code located in the `src/components` directory is
+loaded into the `main.bundle.js` file served to the client on the
+initial page load.
 
 ## Optimize static image sizes
 
@@ -123,7 +124,10 @@ const createCacheProxy = (ttl) => {
   return new Proxy(cache, {
     get(target, property) {
       const cachedData = target[property];
-      if (cachedData && Date.now() - cachedData.timestamp < ttl * 1000) {
+      if (
+        cachedData &&
+        Date.now() - cachedData.timestamp < ttl * 1000
+      ) {
         return cachedData;
       }
       return {

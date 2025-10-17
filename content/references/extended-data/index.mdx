@@ -1,10 +1,12 @@
 ---
 title: Extended data
 sidebarTitle: Extended data
-description: Reference documentation providing information on all the different types of extended data.
+description:
+  Reference documentation providing information on all the different
+  types of extended data.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Extended data
 
@@ -25,9 +27,9 @@ _protected data_ and _public data_. Each type has different access
 semantics (i.e. who is allowed to read or write the data).
 
 <Callout type="important">
-  Extended data support in API resources is work in progress. See the [API
-  reference](/concepts/api-sdk/api/) for each resource for information on
-  supported extended data.
+  Extended data support in API resources is work in progress. See the
+  [API reference](/concepts/api-sdk/api/) for each resource for
+  information on supported extended data.
 </Callout>
 
 ### Public data
@@ -65,11 +67,8 @@ operators.
 _Metadata_ is writable by marketplace operators and can be read via all
 API endpoints returning the corresponding resource. Metadata is
 supported for users and listings. It can also be used as filters when
-searching via
-`/listings/query` in Marketplace API,
-`/listings/query` in Integration API
-or
-`/users/query` in Integration API.
+searching via `/listings/query` in Marketplace API, `/listings/query` in
+Integration API or `/users/query` in Integration API.
 
 Metadata can be used to store data about listings and users that must
 only be writable by marketplace operators or through integrations to
@@ -83,8 +82,7 @@ via the Marketplace API, Integration API and Console without any prior
 configuration. _Search schema_ may optionally be defined for some value
 types of extended data. When a schema is provided for a given extended
 data key, the API can use this information to make querying the extended
-data possible via some API endpoints. For instance
-`/listings/query`
+data possible via some API endpoints. For instance `/listings/query`
 supports querying listings by public data or metadata.
 
 Search schemas can be managed with

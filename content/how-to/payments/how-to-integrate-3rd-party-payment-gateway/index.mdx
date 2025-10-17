@@ -1,11 +1,14 @@
 ---
-title: How to integrate a 3rd-party payment gateway with your marketplace
+title:
+  How to integrate a 3rd-party payment gateway with your marketplace
 sidebarTitle: Integrate 3rd-Party Gateway
-description: This guide describes, on a high-level, how to integrate any 3rd-party payment gateway with your Sharetribe-powered marketplace.
+description:
+  This guide describes, on a high-level, how to integrate any 3rd-party
+  payment gateway with your Sharetribe-powered marketplace.
 ---
 
-import { Steps } from "nextra/components";
-import { Callout } from "nextra/components";
+import { Steps } from 'nextra/components';
+import { Callout } from 'nextra/components';
 
 # How to integrate a 3rd-party payment gateway with your marketplace
 
@@ -38,8 +41,8 @@ steps. The following diagram illustrates a timeline of these steps:
 
 ![Marketplace payment flow](./payment-flow.png)
 
-{
-//Diagram source: https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
+{ //Diagram source:
+https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
 }
 
 <Steps>
@@ -341,8 +344,8 @@ status.
 
 ![Redirect and return URL call sequence](./redirect-url-sequence.png)
 
-{
-// Diagram source: https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
+{ // Diagram source:
+https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
 }
 
 The payment gateway appends data about the onboarding or payment result
@@ -456,8 +459,8 @@ Marketplace API is called again after the payment action is completed.
 
 ![Privileged transitions call sequence](./privileged-transitions-sequence.png)
 
-{
-// Diagram source: https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
+{ // Diagram source:
+https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
 }
 
 Error handling in this model is simple. Because all the calls to the
@@ -476,8 +479,8 @@ the payment gateway API.
 
 ![Events call sequence](./events-sequence.png)
 
-{
-// Diagram source: https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
+{ // Diagram source:
+https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
 }
 
 Error handling in this model needs more attention than in the privileged
@@ -534,13 +537,12 @@ endpoint for this][marketplace-api-update-user-profile].
 <Callout>
 **Recommendation:**
 
-Use hosted pages for onboarding if they are
-available. Building the necessary forms, including the file upload
-forms, can be avoided using hosted pages. Besides, the KYC requirements
-tend to change over time. By using hosted pages, you avoid the need to
-change your application when the requirements change. The payment
-provider will keep the hosted pages up to date with the regulatory
-requirements.
+Use hosted pages for onboarding if they are available. Building the
+necessary forms, including the file upload forms, can be avoided using
+hosted pages. Besides, the KYC requirements tend to change over time. By
+using hosted pages, you avoid the need to change your application when
+the requirements change. The payment provider will keep the hosted pages
+up to date with the regulatory requirements.
 
 </Callout>
 
@@ -597,8 +599,8 @@ The transaction process should look something like this:
 
 ![Customer checkout transaction process](./checkout-transaction-process.png)
 
-{
-// Diagram source: https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
+{ // Diagram source:
+https://whimsical.com/how-to-integrate-a-3rd-party-payment-gateway-PBY6qRjauyb7v5pEdXY4pS
 }
 
 The steps to implement this stage are:
@@ -646,10 +648,9 @@ answer from the provider, the payment should be voided.
 <Callout>
 **Recommendation:**
 
-Use **events** for this step. Poll the
-transaction/transition events and react on accept/decline/expire
-transitions. Call the payment gateway API to either capture or void the
-payment.
+Use **events** for this step. Poll the transaction/transition events and
+react on accept/decline/expire transitions. Call the payment gateway API
+to either capture or void the payment.
 
 </Callout>
 
@@ -665,9 +666,9 @@ Customer refund usually happens during this period.
 <Callout>
 **Recommendation:**
 
-Use **events** for this step. Poll the
-transaction/transition events and react on transitions where a refund is
-needed by calling the payment gateway API.
+Use **events** for this step. Poll the transaction/transition events and
+react on transitions where a refund is needed by calling the payment
+gateway API.
 
 </Callout>
 
@@ -683,9 +684,9 @@ account. The delay is on a scale of days, but not weeks.
 <Callout>
 **Recommendation:**
 
-Use **events** for this step. Poll the
-transaction/transition events and react on transitions where the payout
-is needed by calling the payment gateway API.
+Use **events** for this step. Poll the transaction/transition events and
+react on transitions where the payout is needed by calling the payment
+gateway API.
 
 </Callout>
 
@@ -714,32 +715,51 @@ marketplace payment flow and gave recommendations on how to integrate a
   documentation][paypal-commerce-platform-docs]
 - [MANGOPAY API Documentation][mangopay-api-docs]
 
-[academy-payment-service-providers]: https://www.sharetribe.com/academy/marketplace-payments/
-[paypal-commerce-platform]: https://www.paypal.com/us/business/platforms-and-marketplaces
-[paypal-commerce-platform-docs]: https://developer.paypal.com/docs/platforms/
-[paypal-redirect-seller]: https://developer.paypal.com/docs/platforms/seller-onboarding/before-payment/#4-redirect-seller
-[paypal-rest-endpoint-feature]: https://developer.paypal.com/docs/api/partner-referrals/v2/#definition-rest_endpoint_feature
-[paypal-track-seller-onboarding]: https://developer.paypal.com/docs/platforms/seller-onboarding/before-payment/#5-track-seller-onboarding-status
+[academy-payment-service-providers]:
+  https://www.sharetribe.com/academy/marketplace-payments/
+[paypal-commerce-platform]:
+  https://www.paypal.com/us/business/platforms-and-marketplaces
+[paypal-commerce-platform-docs]:
+  https://developer.paypal.com/docs/platforms/
+[paypal-redirect-seller]:
+  https://developer.paypal.com/docs/platforms/seller-onboarding/before-payment/#4-redirect-seller
+[paypal-rest-endpoint-feature]:
+  https://developer.paypal.com/docs/api/partner-referrals/v2/#definition-rest_endpoint_feature
+[paypal-track-seller-onboarding]:
+  https://developer.paypal.com/docs/platforms/seller-onboarding/before-payment/#5-track-seller-onboarding-status
 [mangopay-marketplaces]: https://www.mangopay.com/marketplaces/
 [mangopay-api-docs]: https://docs.mangopay.com/
 [adyen-for-platforms]: https://www.adyen.com/platform-payments
-[adyen-platforms-get-started]: https://docs.adyen.com/platforms/get-started/
-[adyen-pay-by-link]: https://docs.adyen.com/development-resources/pci-dss-compliance-guide?tab=pay_by_link_1#online-payments
-[adyen-drop-in-or-components]: https://docs.adyen.com/development-resources/pci-dss-compliance-guide?tab=drop_in_or_components_2#online-payments
+[adyen-platforms-get-started]:
+  https://docs.adyen.com/platforms/get-started/
+[adyen-pay-by-link]:
+  https://docs.adyen.com/development-resources/pci-dss-compliance-guide?tab=pay_by_link_1#online-payments
+[adyen-drop-in-or-components]:
+  https://docs.adyen.com/development-resources/pci-dss-compliance-guide?tab=drop_in_or_components_2#online-payments
 [stripe-connect]: https://stripe.com/connect
 [stripe-connect-onboarding]: https://stripe.com/connect/onboarding
-[stripe-how-helps-pci]: https://stripe.com/en-fi/guides/pci-compliance#how-stripe-helps-organizations-achieve-and-maintain-pci-compliance
-[stripe-integration-security]: https://stripe.com/docs/security/guide#validating-pci-compliance
+[stripe-how-helps-pci]:
+  https://stripe.com/en-fi/guides/pci-compliance#how-stripe-helps-organizations-achieve-and-maintain-pci-compliance
+[stripe-integration-security]:
+  https://stripe.com/docs/security/guide#validating-pci-compliance
 [giropay]: https://www.giropay.de/
 [ideal]: https://www.ideal.nl/en/
-[dev-docs-concepts-privileged-transitions]: /concepts/transactions/privileged-transitions/
+[dev-docs-concepts-privileged-transitions]:
+  /concepts/transactions/privileged-transitions/
 [dev-docs-refence-events]: /references/events/
 [dev-docs-howto-reacting-to-events]: /how-to/events/reacting-to-events/
 [dev-docs-reference-extended-data]: /references/extended-data/
-[pci-saq-a-pdf]: https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-A.pdf
-[marketplace-api-update-user-profile]: https://www.sharetribe.com/api-reference/marketplace.html#update-user-profile
-[integration-api-update-transaction-metadata]: https://www.sharetribe.com/api-reference/integration.html#update-transaction-metadata
-[integration-api-update-user-profile]: https://www.sharetribe.com/api-reference/integration.html#update-user-profile
-[integration-api-transition-transaction]: https://www.sharetribe.com/api-reference/integration.html#transition-transaction
-[web-template-api-router]: https://github.com/sharetribe/web-template/blob/main/server/apiRouter.js
-[template-initiate-privileged]: https://github.com/sharetribe/web-template/blob/main/server/api/initiate-privileged.js
+[pci-saq-a-pdf]:
+  https://www.pcisecuritystandards.org/documents/PCI-DSS-v3_2_1-SAQ-A.pdf
+[marketplace-api-update-user-profile]:
+  https://www.sharetribe.com/api-reference/marketplace.html#update-user-profile
+[integration-api-update-transaction-metadata]:
+  https://www.sharetribe.com/api-reference/integration.html#update-transaction-metadata
+[integration-api-update-user-profile]:
+  https://www.sharetribe.com/api-reference/integration.html#update-user-profile
+[integration-api-transition-transaction]:
+  https://www.sharetribe.com/api-reference/integration.html#transition-transaction
+[web-template-api-router]:
+  https://github.com/sharetribe/web-template/blob/main/server/apiRouter.js
+[template-initiate-privileged]:
+  https://github.com/sharetribe/web-template/blob/main/server/api/initiate-privileged.js

@@ -1,7 +1,8 @@
 ---
 title: How to customise a Section, Block or Field using options
 sidebarTitle: Customizing Sections, Blocks or Fields
-description: In this guide, we will customise a Section component on the landing
+description:
+  In this guide, we will customise a Section component on the landing
   page using the options prop.
 ---
 
@@ -137,7 +138,7 @@ import the new component and use the _options_ prop in
 **LandingPage.js**:
 
 ```js
-import SectionArticleAlignLeft from "../../containers/PageBuilder/SectionBuilder/SectionArticleAlignLeft";
+import SectionArticleAlignLeft from '../../containers/PageBuilder/SectionBuilder/SectionArticleAlignLeft';
 ```
 
 We can then define an object in **LandingPage.js** that will be passed
@@ -186,7 +187,7 @@ used the following mapping:
 
 ```js
 const blockOverrides = {
-  ["defaultBlock"]: { component: CustomBlock },
+  ['defaultBlock']: { component: CustomBlock },
 };
 ```
 
@@ -213,7 +214,7 @@ ensure data validation. You can import the _exposeContentAsChildren_
 function from **Field.helpers**:
 
 ```js
-import { exposeContentAsChildren } from "../PageBuilder/Field/Field.helpers";
+import { exposeContentAsChildren } from '../PageBuilder/Field/Field.helpers';
 ```
 
 In this case, we would define our custom heading component in the
@@ -225,19 +226,19 @@ export const CustomH1 = React.forwardRef((props, ref) => {
   return (
     <Heading
       rootClassName={rootClass || css.h1custom}
-      as={as || "h1"}
+      as={as || 'h1'}
       tagRef={ref}
       {...otherProps}
     />
   );
 });
-CustomH1.displayName = "CustomH1";
+CustomH1.displayName = 'CustomH1';
 ```
 
 And export it in the **PageBuilder/Primitives/Heading/index.js** file:
 
 ```js
-export { CustomH1, H1, H2, H3, H4, H5, H6 } from "./Heading";
+export { CustomH1, H1, H2, H3, H4, H5, H6 } from './Heading';
 ```
 
 Finally, we’d pass it on to the _options_ prop in **LandingPage.js**:
