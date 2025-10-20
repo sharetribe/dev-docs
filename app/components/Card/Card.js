@@ -8,9 +8,9 @@
  * @param {string} [href] - Optional URL to make the card clickable as a link
  * @param {string} [className] - Additional CSS classes to apply to the card
  */
-const CustomCard = ({ title, description, href, className = "" }) => {
+const CustomCard = ({ title, description, href, className = '' }) => {
   // Use 'a' element for links, 'article' for static cards
-  const CardComponent = href ? "a" : "article";
+  const CardComponent = href ? 'a' : 'article';
 
   return (
     <CardComponent
@@ -26,12 +26,12 @@ const CustomCard = ({ title, description, href, className = "" }) => {
         gap-2 ${className}
       `
         .trim()
-        .replace(/\s+/g, " ")}
-      style={{ cursor: href ? "pointer" : "default" }}
+        .replace(/\s+/g, ' ')}
+      style={{ cursor: href ? 'pointer' : 'default' }}
     >
       {/* Card title with optional arrow indicator for links */}
       <h3
-        className={`font-semibold text-lg mb-0 flex items-center gap-2 ${href ? 'after:content-["→"] after:transition-transform after:duration-75 group-hover:after:translate-x-0.5 group-focus:after:translate-x-0.5' : ""}`}
+        className={`font-semibold text-lg mb-0 flex items-center gap-2 ${href ? 'after:content-["→"] after:transition-transform after:duration-75 group-hover:after:translate-x-0.5 group-focus:after:translate-x-0.5' : ''}`}
       >
         {title}
       </h3>
@@ -49,11 +49,11 @@ const CustomCard = ({ title, description, href, className = "" }) => {
  * @param {React.ReactNode} children - The card components to display
  * @param {string} [className] - Additional CSS classes to apply to the container
  */
-export const CustomCards = ({ children, className = "" }) => {
+export const CustomCards = ({ children, className = '' }) => {
   return (
     <div
       className={`mt-4 grid gap-4 ${className}`.trim()}
-      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}
+      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}
     >
       {children}
     </div>

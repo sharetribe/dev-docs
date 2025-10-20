@@ -52,7 +52,8 @@ yarn start
 
 ## Syntax higlighting
 
-The project uses MDX files so you'll likely need to install a plugin that supports MDX syntax highlighting. MDX is markdown that also supports JSX.
+The project uses MDX files so you'll likely need to install a plugin that
+supports MDX syntax highlighting. MDX is markdown that also supports JSX.
 
 ## Project Structure
 
@@ -71,15 +72,24 @@ The project uses MDX files so you'll likely need to install a plugin that suppor
 
 ## How MDX Routing Works
 
-The `[[...mdxPath]]` directory uses Next.js dynamic routing to handle all documentation pages:
+The `[[...mdxPath]]` directory uses Next.js dynamic routing to handle all
+documentation pages:
 
-- **Dynamic Catch-All Routes**: The `[[...mdxPath]]` folder name creates a catch-all route that matches any path depth (e.g., `/concepts/users`, `/tutorial/getting-started`)
-- **Nextra Integration**: The `page.jsx` file uses Nextra's `importPage` function to dynamically load MDX files from the `content/` directory based on the URL path
-- **Static Generation**: `generateStaticParams` pre-builds all possible routes at build time
-- **Metadata Handling**: Each MDX file can include frontmatter metadata that gets extracted and used for SEO and page information
+- **Dynamic Catch-All Routes**: The `[[...mdxPath]]` folder name creates a
+  catch-all route that matches any path depth (e.g., `/concepts/users`,
+  `/tutorial/getting-started`)
+- **Nextra Integration**: The `page.jsx` file uses Nextra's `importPage`
+  function to dynamically load MDX files from the `content/` directory based on
+  the URL path
+- **Static Generation**: `generateStaticParams` pre-builds all possible routes
+  at build time
+- **Metadata Handling**: Each MDX file can include frontmatter metadata that
+  gets extracted and used for SEO and page information
 
-This structure allows you to simply add new `.mdx` files to the `content/` directory and they automatically become accessible via their file path as URLs.
+This structure allows you to simply add new `.mdx` files to the `content/`
+directory and they automatically become accessible via their file path as URLs.
 
 ## Deployment
 
-The site automatically deploys to Vercel when changes are pushed to the main branch.
+The site automatically deploys to Vercel when changes are pushed to the main
+branch.

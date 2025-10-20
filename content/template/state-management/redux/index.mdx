@@ -5,7 +5,7 @@ description:
   state management.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # State management and redux
 
@@ -55,7 +55,7 @@ Redux store with `mapStateToProps` and `mapDispatchToProps` functions:
 ```js
 const TransactionPage = compose(
   connect(mapStateToProps, mapDispatchToProps),
-  injectIntl,
+  injectIntl
 )(TransactionPageComponent);
 ```
 
@@ -90,9 +90,9 @@ With those exports, we are able to create appReducer
 (`src/reducers.js`):
 
 ```js
-import { combineReducers } from "redux";
-import * as globalReducers from "./ducks";
-import * as pageReducers from "./containers/reducers";
+import { combineReducers } from 'redux';
+import * as globalReducers from './ducks';
+import * as pageReducers from './containers/reducers';
 
 const appReducer = combineReducers({
   ...globalReducers,
@@ -123,27 +123,28 @@ As with every other Redux store actions, you can find Thunks inside
 with the following thunk function:
 
 ```js
-export const fetchReviews = (listingId) => (dispatch, getState, sdk) => {
-  // Make store aware of a request to fetch reviews
-  dispatch(fetchReviewsRequest);
-  // Fetch reviews using Sharetribe SDK
-  return sdk.reviews
-    .query({
-      listingId,
-      state: "public",
-      include: ["author", "author.profileImage"],
-      "fields.image": ["variants.square-small"],
-    })
-    .then((response) => {
-      const reviews = denormalisedResponseEntities(response);
-      // If fetch succeeds, make store aware of fetched data
-      dispatch(fetchReviewsSuccess(reviews));
-    })
-    .catch((e) => {
-      // If fetch throws an error, save the error to the store (so that UI can react to it)
-      dispatch(fetchReviewsError(storableError(e)));
-    });
-};
+export const fetchReviews =
+  (listingId) => (dispatch, getState, sdk) => {
+    // Make store aware of a request to fetch reviews
+    dispatch(fetchReviewsRequest);
+    // Fetch reviews using Sharetribe SDK
+    return sdk.reviews
+      .query({
+        listingId,
+        state: 'public',
+        include: ['author', 'author.profileImage'],
+        'fields.image': ['variants.square-small'],
+      })
+      .then((response) => {
+        const reviews = denormalisedResponseEntities(response);
+        // If fetch succeeds, make store aware of fetched data
+        dispatch(fetchReviewsSuccess(reviews));
+      })
+      .catch((e) => {
+        // If fetch throws an error, save the error to the store (so that UI can react to it)
+        dispatch(fetchReviewsError(storableError(e)));
+      });
+  };
 ```
 
 <Callout>

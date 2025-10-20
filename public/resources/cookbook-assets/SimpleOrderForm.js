@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import { bool, func, object, shape, string } from "prop-types";
-import { Form as FinalForm } from "react-final-form";
-import classNames from "classnames";
+import React, { Component } from 'react';
+import { bool, func, object, shape, string } from 'prop-types';
+import { Form as FinalForm } from 'react-final-form';
+import classNames from 'classnames';
 
 import {
   FormattedMessage,
   injectIntl,
   intlShape,
-} from "../../../util/reactIntl";
+} from '../../../util/reactIntl';
 
 import {
   Heading,
   Form,
   PrimaryButton,
   FieldTextInput,
-} from "../../../components";
+} from '../../../components';
 
-import ShippingDetails from "../ShippingDetails/ShippingDetails";
+import ShippingDetails from '../ShippingDetails/ShippingDetails';
 
-import css from "./StripePaymentForm.module.css";
+import css from './StripePaymentForm.module.css';
 
 const LocationOrShippingDetails = (props) => {
   const {
@@ -36,7 +36,7 @@ const LocationOrShippingDetails = (props) => {
     ? `${listingLocation.building}, ${listingLocation.address}`
     : listingLocation?.address
       ? listingLocation.address
-      : intl.formatMessage({ id: "StripePaymentForm.locationUnknown" });
+      : intl.formatMessage({ id: 'StripePaymentForm.locationUnknown' });
 
   return askShippingDetails ? (
     <ShippingDetails intl={intl} formApi={formApi} locale={locale} />
@@ -126,23 +126,23 @@ class SimpleOrderForm extends Component {
 
     // Note: totalPrice might not be available initially
     // when speculateTransaction call is in progress.
-    const totalPriceMaybe = totalPrice || "";
+    const totalPriceMaybe = totalPrice || '';
 
     const messagePlaceholder = intl.formatMessage(
-      { id: "StripePaymentForm.messagePlaceholder" },
-      { name: authorDisplayName },
+      { id: 'StripePaymentForm.messagePlaceholder' },
+      { name: authorDisplayName }
     );
 
     const messageOptionalText = intl.formatMessage({
-      id: "StripePaymentForm.messageOptionalText",
+      id: 'StripePaymentForm.messageOptionalText',
     });
 
     const initialMessageLabel = intl.formatMessage(
-      { id: "StripePaymentForm.messageLabel" },
-      { messageOptionalText: messageOptionalText },
+      { id: 'StripePaymentForm.messageLabel' },
+      { messageOptionalText: messageOptionalText }
     );
 
-    const isBookingYesNo = isBooking ? "yes" : "no";
+    const isBookingYesNo = isBooking ? 'yes' : 'no';
 
     return (
       <Form

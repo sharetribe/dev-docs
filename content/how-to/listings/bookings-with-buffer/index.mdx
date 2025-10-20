@@ -1,10 +1,12 @@
 ---
 title: Add buffer time to bookings in time-based listings
 sidebarTitle: Add buffer time to bookings
-description: This guide describes how to modify booking times in time-based listings to have a buffer after the time slots
+description:
+  This guide describes how to modify booking times in time-based
+  listings to have a buffer after the time slots
 ---
 
-import { FileTree } from "nextra/components";
+import { FileTree } from 'nextra/components';
 
 # Add buffer time to bookings in time-based listings
 
@@ -216,8 +218,8 @@ export const findNextBoundary = (timeZone, currentMomentOrDate) =>
   moment(currentMomentOrDate)
     .clone()
     .tz(timeZone)
-    .add(1, "hour") // The default handling uses hours
-    .startOf("hour") // By default, the time slot is rounded to the start of the hour
+    .add(1, 'hour') // The default handling uses hours
+    .startOf('hour') // By default, the time slot is rounded to the start of the hour
     .toDate();
 ```
 
@@ -255,12 +257,13 @@ value is a factor of an hour, e.g. 15, 20 or 30 minutes.
  * @returns Moment rounded to the start of the specified time value
  */
 moment.fn.startOfDuration = function (value, timeUnit) {
-  const getMs = (val, unit) => moment.duration(val, unit).asMilliseconds();
+  const getMs = (val, unit) =>
+    moment.duration(val, unit).asMilliseconds();
   const ms = getMs(value, timeUnit);
 
   // Get UTC offset to account for potential time zone difference between
   // customer and listing
-  const offsetMs = this._isUTC ? 0 : getMs(this.utcOffset(), "minute");
+  const offsetMs = this._isUTC ? 0 : getMs(this.utcOffset(), 'minute');
   return moment(Math.floor((this.valueOf() + offsetMs) / ms) * ms);
 };
 ```
@@ -288,12 +291,16 @@ export const findNextCustomBoundary = (
   timeUnit,
   timeZone,
   isFirst,
-  isStart,
+  isStart
 ) => {
   // For end time slots (i.e. not start slots), add a full hour.
   // For the first start slot, use the actual start time.
   // For other start slots, use the buffer time.
-  const increment = !isStart ? hourMinutes : isFirst ? 0 : bufferMinutes;
+  const increment = !isStart
+    ? hourMinutes
+    : isFirst
+      ? 0
+      : bufferMinutes;
 
   return moment(currentMomentOrDate)
     .clone()

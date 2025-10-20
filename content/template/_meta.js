@@ -1,42 +1,42 @@
 export default {
   // Introduction
-  introduction: "Introduction",
+  introduction: 'Introduction',
 
   // Configuration and Environment Variables
-  configuration: "Configuration",
+  configuration: 'Configuration',
 
   // Content Management
-  "content-management": "Content Management",
+  'content-management': 'Content Management',
 
   // Availability management
-  availability: "Availability Management",
+  availability: 'Availability Management',
 
   // Styling
-  styling: "Styling",
+  styling: 'Styling',
 
   // Routing
-  routing: "Routing",
+  routing: 'Routing',
 
   // Data flow and Redux
-  "state-management": "State Management",
+  'state-management': 'State Management',
 
   // Maps
-  maps: "Maps",
+  maps: 'Maps',
 
   // Security
-  security: "Security",
+  security: 'Security',
 
   // Testing
-  testing: "Testing",
+  testing: 'Testing',
 
   // Hosting
-  hosting: "Hosting",
+  hosting: 'Hosting',
 
   // Analytics
-  analytics: "Analytics",
+  analytics: 'Analytics',
 
   // Legacy
-  legacy: "Legacy",
+  legacy: 'Legacy',
 };
 
 // Introduction

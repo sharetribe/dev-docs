@@ -48,7 +48,7 @@ contains
 [an example transaction process](https://github.com/sharetribe/example-processes/tree/master/automatic-off-session-payment)
 corresponding to the flow described.
 
-![Example transaction process with delayed payment](./tx-delayed-payments.png "Example transaction process with delayed payment")
+![Example transaction process with delayed payment](./tx-delayed-payments.png 'Example transaction process with delayed payment')
 
 In this example, a transaction goes as follows:
 
@@ -72,7 +72,11 @@ In this example, a transaction goes as follows:
 How does creating and capturing an off-session payment work?
 </summary>
 
-In the auto-payment transition, the payment intent creation needs to be configured to use the customer's saved payment information, if it exists. When the action is configured like this, it both creates and confirms the payment intent. Therefore, only capturing the payment intent remains necessary.
+In the auto-payment transition, the payment intent creation needs to be
+configured to use the customer's saved payment information, if it
+exists. When the action is configured like this, it both creates and
+confirms the payment intent. Therefore, only capturing the payment
+intent remains necessary.
 
 ```clojure
  {:name :transition/auto-payment,

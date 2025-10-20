@@ -1,15 +1,15 @@
-import { generateStaticParamsFor, importPage } from "nextra/pages";
-import { useMDXComponents as getMDXComponents } from "../../mdx-components";
+import { generateStaticParamsFor, importPage } from 'nextra/pages';
+import { useMDXComponents as getMDXComponents } from '../../mdx-components';
 
-export const generateStaticParams = generateStaticParamsFor("mdxPath");
+export const generateStaticParams = generateStaticParamsFor('mdxPath');
 
 export async function generateMetadata(props) {
   const params = await props.params;
   const { metadata } = await importPage(params.mdxPath);
 
   // Generate canonical URL
-  const baseUrl = "https://www.sharetribe.com/docs";
-  const canonicalPath = params.mdxPath ? params.mdxPath.join("/") : "";
+  const baseUrl = 'https://www.sharetribe.com/docs';
+  const canonicalPath = params.mdxPath ? params.mdxPath.join('/') : '';
   const canonicalUrl = `${baseUrl}/${canonicalPath}`;
 
   return {

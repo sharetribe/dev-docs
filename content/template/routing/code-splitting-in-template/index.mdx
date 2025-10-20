@@ -5,7 +5,7 @@ description:
   Template.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Code splitting
 
@@ -26,8 +26,8 @@ components use the
 const AboutPage = loadable(
   () =>
     import(
-      /* webpackChunkName: "AboutPage" */ "./containers/AboutPage/AboutPage"
-    ),
+      /* webpackChunkName: "AboutPage" */ './containers/AboutPage/AboutPage'
+    )
 );
 ```
 

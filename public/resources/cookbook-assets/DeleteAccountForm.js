@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { compose } from "redux";
+import React, { useEffect, useState } from 'react';
+import { compose } from 'redux';
 import {
   FormattedMessage,
   injectIntl,
   intlShape,
-} from "../../../util/reactIntl";
-import { Form as FinalForm } from "react-final-form";
-import isEqual from "lodash/isEqual";
-import classNames from "classnames";
-import { propTypes } from "../../../util/types";
-import * as validators from "../../../util/validators";
-import { ensureCurrentUser } from "../../../util/data";
-import { isChangePasswordWrongPassword } from "../../../util/errors";
-import { Form, FieldTextInput, Button } from "../../../components";
+} from '../../../util/reactIntl';
+import { Form as FinalForm } from 'react-final-form';
+import isEqual from 'lodash/isEqual';
+import classNames from 'classnames';
+import { propTypes } from '../../../util/types';
+import * as validators from '../../../util/validators';
+import { ensureCurrentUser } from '../../../util/data';
+import { isChangePasswordWrongPassword } from '../../../util/errors';
+import { Form, FieldTextInput, Button } from '../../../components';
 
-import css from "./DeleteAccountForm.module.css";
+import css from './DeleteAccountForm.module.css';
 
 const RESET_TIMEOUT = 800;
 
@@ -65,60 +65,60 @@ export const DeleteAccountFormComponent = (props) => {
         // Password validation
         const passwordMinLengthMessage = intl.formatMessage(
           {
-            id: "DeleteAccountForm.passwordTooShort",
+            id: 'DeleteAccountForm.passwordTooShort',
           },
           {
             minLength: validators.PASSWORD_MIN_LENGTH,
-          },
+          }
         );
         const passwordMaxLengthMessage = intl.formatMessage(
           {
-            id: "DeleteAccountForm.passwordTooLong",
+            id: 'DeleteAccountForm.passwordTooLong',
           },
           {
             maxLength: validators.PASSWORD_MAX_LENGTH,
-          },
+          }
         );
 
         const passwordMinLength = validators.minLength(
           passwordMinLengthMessage,
-          validators.PASSWORD_MIN_LENGTH,
+          validators.PASSWORD_MIN_LENGTH
         );
         const passwordMaxLength = validators.maxLength(
           passwordMaxLengthMessage,
-          validators.PASSWORD_MAX_LENGTH,
+          validators.PASSWORD_MAX_LENGTH
         );
 
         const passwordLabel = intl.formatMessage({
-          id: "DeleteAccountForm.passwordLabel",
+          id: 'DeleteAccountForm.passwordLabel',
         });
         const passwordPlaceholder = intl.formatMessage({
-          id: "DeleteAccountForm.passwordPlaceholder",
+          id: 'DeleteAccountForm.passwordPlaceholder',
         });
         const passwordRequiredMessage = intl.formatMessage({
-          id: "DeleteAccountForm.passwordRequired",
+          id: 'DeleteAccountForm.passwordRequired',
         });
 
         const passwordRequired = validators.requiredStringNoTrim(
-          passwordRequiredMessage,
+          passwordRequiredMessage
         );
 
         const passwordFailedMessage = intl.formatMessage({
-          id: "DeleteAccountForm.passwordFailed",
+          id: 'DeleteAccountForm.passwordFailed',
         });
 
         const passwordTried =
           !!values.currentPassword &&
           submittedValues.currentPassword === values.currentPassword;
         const passwordErrorText = isChangePasswordWrongPassword(
-          deleteAccountError,
+          deleteAccountError
         )
           ? passwordFailedMessage
           : null;
 
         const confirmClasses = classNames(
           css.confirmChangesSection,
-          css.confirmChangesSectionVisible,
+          css.confirmChangesSectionVisible
         );
 
         const genericFailure =
@@ -166,7 +166,7 @@ export const DeleteAccountFormComponent = (props) => {
                     </span>
                   ),
                 }}
-              />{" "}
+              />{' '}
               {resendPasswordLink}
             </>
           ) : (
@@ -211,7 +211,7 @@ export const DeleteAccountFormComponent = (props) => {
                 validate={validators.composeValidators(
                   passwordRequired,
                   passwordMinLength,
-                  passwordMaxLength,
+                  passwordMaxLength
                 )}
                 customErrorText={passwordTried ? null : passwordErrorText}
               />
@@ -235,6 +235,6 @@ export const DeleteAccountFormComponent = (props) => {
 };
 
 const DeleteAccountForm = compose(injectIntl)(DeleteAccountFormComponent);
-DeleteAccountForm.displayName = "DeleteAccountForm";
+DeleteAccountForm.displayName = 'DeleteAccountForm';
 
 export default DeleteAccountForm;

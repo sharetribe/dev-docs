@@ -1,26 +1,26 @@
-import { storableError } from "../../util/errors";
+import { storableError } from '../../util/errors';
 // import { deleteUserAccount } from '../../util/api';
 
 // ================ Action types ================ //
 
 export const DELETE_ACCOUNT_REQUEST =
-  "app/DeleteAccountPage/DELETE_ACCOUNT_REQUEST";
+  'app/DeleteAccountPage/DELETE_ACCOUNT_REQUEST';
 export const DELETE_ACCOUNT_SUCCESS =
-  "app/DeleteAccountPage/DELETE_ACCOUNT_SUCCESS";
+  'app/DeleteAccountPage/DELETE_ACCOUNT_SUCCESS';
 export const DELETE_ACCOUNT_ERROR =
-  "app/DeleteAccountPage/DELETE_ACCOUNT_ERROR";
+  'app/DeleteAccountPage/DELETE_ACCOUNT_ERROR';
 export const DELETE_ACCOUNT_CLEANUP =
-  "app/DeleteAccountPage/DELETE_ACCOUNT_CLEANUP";
+  'app/DeleteAccountPage/DELETE_ACCOUNT_CLEANUP';
 
 export const DELETE_ACCOUNT_CLEAR =
-  "app/DeleteAccountPage/DELETE_ACCOUNT_CLEAR";
+  'app/DeleteAccountPage/DELETE_ACCOUNT_CLEAR';
 
 export const RESET_PASSWORD_REQUEST =
-  "app/DeleteAccountPage/RESET_PASSWORD_REQUEST";
+  'app/DeleteAccountPage/RESET_PASSWORD_REQUEST';
 export const RESET_PASSWORD_SUCCESS =
-  "app/DeleteAccountPage/RESET_PASSWORD_SUCCESS";
+  'app/DeleteAccountPage/RESET_PASSWORD_SUCCESS';
 export const RESET_PASSWORD_ERROR =
-  "app/DeleteAccountPage/RESET_PASSWORD_ERROR";
+  'app/DeleteAccountPage/RESET_PASSWORD_ERROR';
 
 // ================ Reducer ================ //
 

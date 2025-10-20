@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { FormattedMessage, injectIntl, intlShape } from "../../util/reactIntl";
-import { propTypes } from "../../util/types";
-import { isScrollingDisabled } from "../../ducks/ui.duck";
-import { LayoutSideNavigation, Page, UserNav, H3 } from "../../components";
-import TopbarContainer from "../TopbarContainer/TopbarContainer";
-import FooterContainer from "../FooterContainer/FooterContainer";
+import React, { useEffect } from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { propTypes } from '../../util/types';
+import { isScrollingDisabled } from '../../ducks/ui.duck';
+import { LayoutSideNavigation, Page, UserNav, H3 } from '../../components';
+import TopbarContainer from '../TopbarContainer/TopbarContainer';
+import FooterContainer from '../FooterContainer/FooterContainer';
 
 import {
   deleteAccount,
   deleteAccountClear,
   resetPassword,
-} from "./DeleteAccountPage.duck";
-import { logout } from "../../ducks/auth.duck";
-import css from "./DeleteAccountPage.module.css";
+} from './DeleteAccountPage.duck';
+import { logout } from '../../ducks/auth.duck';
+import css from './DeleteAccountPage.module.css';
 
 export const DeleteAccountPageComponent = (props) => {
   const {
@@ -47,15 +47,15 @@ export const DeleteAccountPageComponent = (props) => {
       <FormattedMessage
         id={
           deleteAccountError?.status == 409
-            ? "DeleteAccountPage.error"
-            : "DeleteAccountPage.details"
+            ? 'DeleteAccountPage.error'
+            : 'DeleteAccountPage.details'
         }
         values={{ errorCause: deleteAccountError?.message }}
       />
     </div>
   );
 
-  const title = intl.formatMessage({ id: "DeleteAccountPage.title" });
+  const title = intl.formatMessage({ id: 'DeleteAccountPage.title' });
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -116,7 +116,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const DeleteAccountPage = compose(
   connect(mapStateToProps, mapDispatchToProps),
-  injectIntl,
+  injectIntl
 )(DeleteAccountPageComponent);
 
 export default DeleteAccountPage;

@@ -1,4 +1,4 @@
-import { useMDXComponents as getThemeComponents } from "nextra-theme-docs";
+import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs';
 
 // Get the default MDX components from Nextra theme
 // This includes components like headings, links, code blocks, etc.

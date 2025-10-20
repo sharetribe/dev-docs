@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   arrayOf,
   bool,
@@ -7,27 +7,27 @@ import {
   oneOfType,
   shape,
   string,
-} from "prop-types";
+} from 'prop-types';
 
 // Import contexts and util modules
-import { FormattedMessage, intlShape } from "../../util/reactIntl";
-import { pathByRouteName } from "../../util/routes";
+import { FormattedMessage, intlShape } from '../../util/reactIntl';
+import { pathByRouteName } from '../../util/routes';
 import {
   propTypes,
   LINE_ITEM_HOUR,
   DATE_TYPE_DATE,
   DATE_TYPE_DATETIME,
-} from "../../util/types";
-import { ensureTransaction } from "../../util/data";
-import { createSlug } from "../../util/urlHelpers";
-import { isTransactionInitiateListingNotFoundError } from "../../util/errors";
+} from '../../util/types';
+import { ensureTransaction } from '../../util/data';
+import { createSlug } from '../../util/urlHelpers';
+import { isTransactionInitiateListingNotFoundError } from '../../util/errors';
 import {
   getProcess,
   isBookingProcessAlias,
-} from "../../transactions/transaction";
+} from '../../transactions/transaction';
 
 // Import shared components
-import { H3, H4, NamedLink, OrderBreakdown, Page } from "../../components";
+import { H3, H4, NamedLink, OrderBreakdown, Page } from '../../components';
 
 import {
   bookingDatesMaybe,
@@ -37,16 +37,16 @@ import {
   getTransactionTypeData,
   processCheckoutWithoutPayment,
   setOrderPageInitialValues,
-} from "./CheckoutPageTransactionHelpers.js";
-import { getErrorMessages } from "./ErrorMessages";
+} from './CheckoutPageTransactionHelpers.js';
+import { getErrorMessages } from './ErrorMessages';
 
-import CustomTopbar from "./CustomTopbar";
-import SimpleOrderForm from "./StripePaymentForm/SimpleOrderForm";
-import DetailsSideCard from "./DetailsSideCard";
-import MobileListingImage from "./MobileListingImage";
-import MobileOrderBreakdown from "./MobileOrderBreakdown";
+import CustomTopbar from './CustomTopbar';
+import SimpleOrderForm from './StripePaymentForm/SimpleOrderForm';
+import DetailsSideCard from './DetailsSideCard';
+import MobileListingImage from './MobileListingImage';
+import MobileOrderBreakdown from './MobileOrderBreakdown';
 
-import css from "./CheckoutPage.module.css";
+import css from './CheckoutPage.module.css';
 
 /**
  * Construct orderParams object using pageData from session storage, shipping details, and optional payment params.
@@ -90,14 +90,14 @@ const getOrderParams = (pageData, shippingDetails, config) => {
 const fetchSpeculatedTransactionIfNeeded = (
   orderParams,
   pageData,
-  fetchSpeculatedTransaction,
+  fetchSpeculatedTransaction
 ) => {
   const tx = pageData ? pageData.transaction : null;
   const pageDataListing = pageData.listing;
   const processName =
     tx?.attributes?.processName ||
     pageDataListing?.attributes?.publicData?.transactionProcessAlias?.split(
-      "/",
+      '/'
     )[0];
   const process = processName ? getProcess(processName) : null;
 
@@ -122,7 +122,7 @@ const fetchSpeculatedTransactionIfNeeded = (
       processAlias,
       transactionId,
       requestTransition,
-      isPrivileged,
+      isPrivileged
     );
   }
 };
@@ -157,7 +157,7 @@ export const loadInitialData = ({
   fetchSpeculatedTransactionIfNeeded(
     orderParams,
     pageData,
-    fetchSpeculatedTransaction,
+    fetchSpeculatedTransaction
   );
 };
 
@@ -210,11 +210,11 @@ const handleSubmit = (values, process, props, submitting, setSubmitting) => {
 
       const initialMessageFailedToTransaction = messageSuccess ? null : orderId;
       const orderDetailsPath = pathByRouteName(
-        "OrderDetailsPage",
+        'OrderDetailsPage',
         routeConfiguration,
         {
           id: orderId.uuid,
-        },
+        }
       );
       const initialValues = {
         initialMessageFailedToTransaction,
@@ -263,7 +263,7 @@ export const CheckoutPageWithoutPayment = (props) => {
   const speculatedTransaction = ensureTransaction(
     speculatedTransactionMaybe,
     {},
-    null,
+    null
   );
 
   // If existing transaction has line-items, it has gone through one of the request-payment transitions.
@@ -331,12 +331,12 @@ export const CheckoutPageWithoutPayment = (props) => {
     null,
     null,
     speculateTransactionError,
-    listingLink,
+    listingLink
   );
 
   const txTransitions = existingTransaction?.attributes?.transitions || [];
   const hasInquireTransition = txTransitions.find(
-    (tr) => tr.transition === transitions.INQUIRE,
+    (tr) => tr.transition === transitions.INQUIRE
   );
   const showInitialMessageInput = !hasInquireTransition;
 
@@ -352,7 +352,7 @@ export const CheckoutPageWithoutPayment = (props) => {
     name: userName,
     recipientName: userName,
   };
-  const askShippingDetails = orderData?.deliveryMethod === "shipping";
+  const askShippingDetails = orderData?.deliveryMethod === 'shipping';
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -399,7 +399,7 @@ export const CheckoutPageWithoutPayment = (props) => {
                     process,
                     props,
                     submitting,
-                    setSubmitting,
+                    setSubmitting
                   )
                 }
                 inProgress={submitting}
@@ -411,7 +411,7 @@ export const CheckoutPageWithoutPayment = (props) => {
                 initialValues={initalValuesForStripePayment}
                 initiateOrderError={initiateOrderError}
                 askShippingDetails={askShippingDetails}
-                showPickUplocation={orderData?.deliveryMethod === "pickup"}
+                showPickUplocation={orderData?.deliveryMethod === 'pickup'}
                 listingLocation={listing?.attributes?.publicData?.location}
                 totalPrice={totalPrice}
                 locale={config.localization.locale}

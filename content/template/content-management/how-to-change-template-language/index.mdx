@@ -6,7 +6,7 @@ description:
   Web Template.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # How to change marketplace language
 
@@ -32,11 +32,11 @@ directory for you to start customizing marketplace texts.
 </Callout>
 
 Even if you use
-[hosted marketplace texts](/template/content-management/hosted-marketplace-texts/) to
-manage your marketplace texts, it is still important to have a built-in
-language-specific marketplace text file in the template as well, so that
-the application can show meaningful messages for any keys missing from
-the Sharetribe Console marketplace text asset.
+[hosted marketplace texts](/template/content-management/hosted-marketplace-texts/)
+to manage your marketplace texts, it is still important to have a
+built-in language-specific marketplace text file in the template as
+well, so that the application can show meaningful messages for any keys
+missing from the Sharetribe Console marketplace text asset.
 
 ## Changing the marketplace texts used in the template
 
@@ -57,7 +57,7 @@ localization: {
    import time specific formatting rules for that locale:
 
 ```js
-import "moment/locale/it";
+import 'moment/locale/it';
 ```
 
 <Callout>
@@ -78,7 +78,7 @@ _src/app.js_ before _const MomentLocaleLoader_:
 4.  Point `messagesInLocale` to correct .json file, for example:
 
 ```js
-import messagesInLocale from "./translations/it.json";
+import messagesInLocale from './translations/it.json';
 ```
 
 It is also recommended to change _en.json_ translations. That way,
@@ -98,7 +98,7 @@ text file used in tests change the `messages` variable in
 to match your language in use, for example:
 
 ```js
-import messages from "../translations/it.json";
+import messages from '../translations/it.json';
 ```
 
 ## Developing the Sharetribe Web Template into a multilanguage marketplace

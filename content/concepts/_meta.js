@@ -1,39 +1,39 @@
 export default {
   // Users and Authentication
-  "users-and-authentication": "Users & Authentication",
+  'users-and-authentication': 'Users & Authentication',
 
   // Listings
-  listings: "Listings",
+  listings: 'Listings',
 
   // Transactions and transaction process
-  transactions: "Transactions",
+  transactions: 'Transactions',
 
   // Payments
-  payments: "Payments",
+  payments: 'Payments',
 
   // Pricing and commissions
-  "pricing-and-commissions": "Pricing & Commissions",
+  'pricing-and-commissions': 'Pricing & Commissions',
 
   // Availability and inventory management
-  availability: "Availability",
+  availability: 'Availability',
 
   // Marketplace development & configuration
-  development: "Development",
+  development: 'Development',
 
   // Content Management
-  "content-management": "Content Management",
+  'content-management': 'Content Management',
 
   // Extended data
-  "extended-data": "Extended Data",
+  'extended-data': 'Extended Data',
 
   // APIs & SDKs
-  "api-sdk": "API & SDK",
+  'api-sdk': 'API & SDK',
 
   // Emails & notifications
-  "messages-notifications": "Messages & Notifications",
+  'messages-notifications': 'Messages & Notifications',
 
   // Integrations
-  integrations: "Integrations",
+  integrations: 'Integrations',
 };
 
 // Users and Authentication

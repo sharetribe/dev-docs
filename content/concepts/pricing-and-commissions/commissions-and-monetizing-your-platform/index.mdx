@@ -8,7 +8,7 @@ description:
   supported by Sharetribe for monetizing your platform.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Commissions and monetizing your platform
 
@@ -26,11 +26,11 @@ options.
 
 As background, familiarizing yourself with
 [line items](/concepts/pricing-and-commissions/pricing/#line-items) and
-[privileged transitions](/concepts/transactions/privileged-transitions/) gives you a
-good understanding of the concepts discussed in this article. In
-addition, the article that describes
-[payments in Sharetribe](/concepts/payments/payments-overview/) provides valuable
-information about how the payment flow in Sharetribe works.
+[privileged transitions](/concepts/transactions/privileged-transitions/)
+gives you a good understanding of the concepts discussed in this
+article. In addition, the article that describes
+[payments in Sharetribe](/concepts/payments/payments-overview/) provides
+valuable information about how the payment flow in Sharetribe works.
 
 Configuring commissions happens with the
 [privileged-set-line-items](/references/transaction-process-actions/#actionprivileged-set-line-items)
@@ -68,7 +68,7 @@ A marketplace that charges 10 % from the customer and 12 % from the
 provider would configure the commissions like this:
 
 ```js
-const { calculateTotalFromLineItems } = require("./lineItemHelpers");
+const { calculateTotalFromLineItems } = require('./lineItemHelpers');
 
 const PROVIDER_COMMISSION_PERCENTAGE = -12; // Provider commission is negative
 const CUSTOMER_COMMISSION_PERCENTAGE = 10; // Customer commission is positive
@@ -77,21 +77,21 @@ const order = {
   code,
   unitPrice,
   quantity,
-  includeFor: ["customer", "provider"],
+  includeFor: ['customer', 'provider'],
 };
 
 const providerCommissionPercentage = {
-  code: "line-item/provider-commission",
+  code: 'line-item/provider-commission',
   unitPrice: calculateTotalFromLineItems([order]),
   percentage: PROVIDER_COMMISSION_PERCENTAGE,
-  includeFor: ["provider"],
+  includeFor: ['provider'],
 };
 
 const customerCommissionPercentage = {
-  code: "line-item/customer-commission",
+  code: 'line-item/customer-commission',
   unitPrice: calculateTotalFromLineItems([order]),
   percentage: CUSTOMER_COMMISSION_PERCENTAGE,
-  includeFor: ["customer"],
+  includeFor: ['customer'],
 };
 
 const lineItems = [
@@ -110,9 +110,11 @@ receive 22 EUR minus Stripe fees.
 Commission line items are defined as either positive or negative depending on the transaction
 party.
 
-- Provider commission is defined as **negative**, since the provider's total is the listing price minus the provider commission.
+- Provider commission is defined as **negative**, since the provider's
+  total is the listing price minus the provider commission.
   ![Provider commission](./provider_commission.png)
-- Customer commission is defined as **positive**, since the customer's total is the listing price plus the customer commission.
+- Customer commission is defined as **positive**, since the customer's
+  total is the listing price plus the customer commission.
   ![Customer commission](./customer_commission.png)
 
 </details>
@@ -141,21 +143,21 @@ const order = {
   code,
   unitPrice,
   quantity,
-  includeFor: ["customer", "provider"],
+  includeFor: ['customer', 'provider'],
 };
 
 const providerCommissionFixed = {
-  code: "line-item/provider-commission",
+  code: 'line-item/provider-commission',
   unitPrice: calculateCommission(unitPrice, FIXED_PROVIDER_COMMISSION),
   quantity: 1,
-  includeFor: ["provider"],
+  includeFor: ['provider'],
 };
 
 const customerCommissionFixed = {
-  code: "line-item/customer-commission",
+  code: 'line-item/customer-commission',
   unitPrice: calculateCommission(unitPrice, FIXED_CUSTOMER_COMMISSION),
   quantity: 1,
-  includeFor: ["customer"],
+  includeFor: ['customer'],
 };
 
 const lineItems = [
@@ -195,7 +197,7 @@ const calculateProviderCommission = (order, providerCommission) => {
   const price = this.calculateTotalFromLineItems([order]);
   const commission = calculateTotalPriceFromPercentage(
     price,
-    providerCommission,
+    providerCommission
   );
 
   // Since provider commissions are negative, comparison must be negative as well
@@ -206,37 +208,47 @@ const calculateProviderCommission = (order, providerCommission) => {
   return new Money(MINIMUM_PROVIDER_COMMISSION, price.currency);
 };
 
-const calculateCustomerCommissionPercentage = (order, customerCommission) =>
+const calculateCustomerCommissionPercentage = (
+  order,
+  customerCommission
+) =>
   order.quantity > 4
-    ? customerCommission.percentage - CUSTOMER_COMMISSION_PERCENTAGE_REDUCTION
+    ? customerCommission.percentage -
+      CUSTOMER_COMMISSION_PERCENTAGE_REDUCTION
     : customerCommission.percentage;
 
-exports.getDynamicProviderCommissionMaybe = (order, providerCommission) =>
+exports.getDynamicProviderCommissionMaybe = (
+  order,
+  providerCommission
+) =>
   this.hasCommissionPercentage(providerCommission)
     ? [
         {
-          code: "line-item/provider-commission",
+          code: 'line-item/provider-commission',
           unitPrice: calculateProviderCommission(
             order,
-            getNegation(providerCommission.percentage),
+            getNegation(providerCommission.percentage)
           ),
           quantity: 1,
-          includeFor: ["provider"],
+          includeFor: ['provider'],
         },
       ]
     : [];
 
-exports.getDynamicCustomerCommissionMaybe = (order, customerCommission) =>
+exports.getDynamicCustomerCommissionMaybe = (
+  order,
+  customerCommission
+) =>
   this.hasCommissionPercentage(customerCommission)
     ? [
         {
-          code: "line-item/customer-commission",
+          code: 'line-item/customer-commission',
           unitPrice: this.calculateTotalFromLineItems([order]),
           percentage: calculateCustomerCommissionPercentage(
             order,
-            customerCommission,
+            customerCommission
           ),
-          includeFor: ["customer"],
+          includeFor: ['customer'],
         },
       ]
     : [];
@@ -248,13 +260,13 @@ Then you can use the function like this in _lineItems.js_:
 const {
   getDynamicProviderCommissionMaybe,
   getDynamicCustomerCommissionMaybe,
-} = require("./lineItemHelpers");
+} = require('./lineItemHelpers');
 
 const order = {
   code,
   unitPrice,
   quantity,
-  includeFor: ["customer", "provider"],
+  includeFor: ['customer', 'provider'],
 };
 
 // Let's keep the base price (order) as first line item and provider and customer commissions as last.

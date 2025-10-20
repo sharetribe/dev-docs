@@ -1,4 +1,4 @@
-import nextra from "nextra";
+import nextra from 'nextra';
 
 const withNextra = nextra({
   // Possible options listed below, from https://nextra.site/api/nextraconfig
@@ -14,9 +14,9 @@ const withNextra = nextra({
 });
 
 export default withNextra({
-  output: "export",
+  output: 'export',
   images: { unoptimized: true },
-  basePath: "/docs",
-  assetPrefix: "/docs",
+  basePath: '/docs',
+  assetPrefix: '/docs',
   trailingSlash: true,
 });

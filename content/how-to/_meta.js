@@ -1,11 +1,11 @@
 export default {
-  "users-and-authentication": {},
+  'users-and-authentication': {},
   listings: {},
-  "transaction-process": {},
+  'transaction-process': {},
   payments: {},
   migrations: {},
-  "content-management": {},
-  "emails-and-notifications": {},
+  'content-management': {},
+  'emails-and-notifications': {},
   events: {},
   search: {},
 };

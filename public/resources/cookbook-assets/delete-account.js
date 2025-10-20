@@ -1,17 +1,17 @@
-const { getSdk, getTrustedSdk, handleError } = require("../api-util/sdk");
+const { getSdk, getTrustedSdk, handleError } = require('../api-util/sdk');
 
 // The list of non-final transitions depends on the transaction processes
 // being used on the marketplace. This list contains the non-final transitions
 // of an unmodified default-booking process i.e. the transitions where we do not want to
 // allow the user to delete their account.
 const nonFinalTransitions = [
-  "transition/request-payment",
-  "transition/request-payment-after-inquiry",
-  "transition/confirm-payment",
-  "transition/accept",
-  "transition/complete",
-  "transition/review-1-by-customer",
-  "transition/review-1-by-provider",
+  'transition/request-payment',
+  'transition/request-payment-after-inquiry',
+  'transition/confirm-payment',
+  'transition/accept',
+  'transition/complete',
+  'transition/review-1-by-customer',
+  'transition/review-1-by-provider',
 ];
 
 module.exports = (req, res) => {
@@ -42,7 +42,7 @@ module.exports = (req, res) => {
       // You can use this response for client-side testing purposes before actually
       // deleting your users. Uncomment the rows below to call the SDK live.
 
-      res.status(200).send({ status: 200, statusText: "OK" });
+      res.status(200).send({ status: 200, statusText: 'OK' });
 
       // // If the user has only completed transactions, delete the user
       // trustedSdk.currentUser.delete({ currentPassword })
@@ -62,8 +62,8 @@ module.exports = (req, res) => {
 // of transactions as 'data' in the response body.
 const sendConflictResponse = (incompleteTransactions, res) => {
   const txLabel =
-    incompleteTransactions.length === 1 ? "transaction" : "transactions";
+    incompleteTransactions.length === 1 ? 'transaction' : 'transactions';
   const message = `${incompleteTransactions.length} unfinished ${txLabel}.`;
 
-  res.status(409).send({ status: 409, statusText: "Conflict", message });
+  res.status(409).send({ status: 409, statusText: 'Conflict', message });
 };

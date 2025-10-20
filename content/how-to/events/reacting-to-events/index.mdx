@@ -1,6 +1,7 @@
 ---
 title: Reacting to events
-description: This guide demonstrates how to build an integration that reacts to
+description:
+  This guide demonstrates how to build an integration that reacts to
   events that happen in your Sharetribe marketplace, using the
   Sharetribe Integration API.
 published: true
@@ -17,8 +18,8 @@ using publishing a listing as an example.
 
 This guide assumes that you have already set up a Sharetribe Integration
 API application and have a Node.js app with the
-[Integration API SDK](/concepts/api-sdk/js-sdk/) ready. If you have not yet used
-the Sharetribe Integration API, follow the
+[Integration API SDK](/concepts/api-sdk/js-sdk/) ready. If you have not
+yet used the Sharetribe Integration API, follow the
 [Getting started with the Integration API](/introduction/getting-started-with-integration-api/)
 guide first and you will be ready to proceed with this guide.
 
@@ -59,9 +60,9 @@ one of three ways:
   [published](https://www.sharetribe.com/api-reference/marketplace.html#publish-draft-listing)
   separately
 - in case your marketplace has the
-  [listing approval feature](/concepts/listings/requiring-approval/) on, a
-  listing that is pending approval becomes published when it is approved
-  by an operator
+  [listing approval feature](/concepts/listings/requiring-approval/) on,
+  a listing that is pending approval becomes published when it is
+  approved by an operator
 
 Therefore, in order to cover all cases, we need to process both
 `listing/created` and `listing/updated` events. A query for only these
@@ -69,7 +70,7 @@ types of events looks like this:
 
 ```javascript
 integrationSdk.events.query({
-  eventTypes: "listing/created,listing/updated",
+  eventTypes: 'listing/created,listing/updated',
 });
 ```
 
@@ -83,7 +84,7 @@ const now = new Date();
 const fiveMinutesAgo = new Date(now - 300000);
 integrationSdk.events.query({
   createdAtStart: fiveMinutesAgo,
-  eventTypes: "listing/created,listing/updated",
+  eventTypes: 'listing/created,listing/updated',
 });
 ```
 
@@ -124,27 +125,31 @@ const handleListingPublished = (event) => {
   // Do something about the new published listing, such as send notification,
   // synchronize data to external system, etc.
   console.log(
-    `A new listing has been published: listingId ${listingId}, author ID: ${authorId}`,
+    `A new listing has been published: listingId ${listingId}, author ID: ${authorId}`
   );
 };
 
 const analyzeEvent = (event) => {
-  const { resource: listing, previousValues, eventType } = event.attributes;
+  const {
+    resource: listing,
+    previousValues,
+    eventType,
+  } = event.attributes;
   const listingState = listing.attributes.state;
   const { state: previousState } = previousValues.attributes || {};
 
-  const isPublished = listingState === "published";
-  const isPendingApproval = listingState === "pendingApproval";
-  const wasDraft = previousState === "draft";
-  const wasPendingApproval = previousState === "pendingApproval";
+  const isPublished = listingState === 'published';
+  const isPendingApproval = listingState === 'pendingApproval';
+  const wasDraft = previousState === 'draft';
+  const wasPendingApproval = previousState === 'pendingApproval';
 
   switch (eventType) {
-    case "listing/created":
+    case 'listing/created':
       if (isPublished) {
         handleListingPublished(event);
       }
       break;
-    case "listing/updated":
+    case 'listing/updated':
       if (isPublished && (wasPendingApproval || wasDraft)) {
         handleListingPublished(event);
       }
@@ -155,7 +160,7 @@ const analyzeEvent = (event) => {
 integrationSdk.events
   .query({
     createdAtStart: fiveMinutesAgo,
-    eventTypes: "listing/created,listing/updated",
+    eventTypes: 'listing/created,listing/updated',
   })
   .then((res) => {
     const events = res.data.data;
@@ -191,7 +196,7 @@ For example:
 const lastEventSequenceId = 1234;
 integrationSdk.events.query({
   startAfterSequenceId: lastEventSequenceId,
-  eventTypes: "listing/created,listing/updated",
+  eventTypes: 'listing/created,listing/updated',
 });
 ```
 
@@ -250,7 +255,7 @@ Below is a full polling loop example, using a local file to store the
 last processed event's sequence ID:
 
 ```javascript
-const fs = require("fs");
+const fs = require('fs');
 
 // Start polloing from current time on, when there's no stored state
 const startTime = new Date();
@@ -262,10 +267,10 @@ const pollWait = 1000; // 1s
 
 // File to keep state across restarts. Stores the last seen event sequence ID,
 // which allows continuing polling from the correct place
-const stateFile = "./last-sequence-id.state";
+const stateFile = './last-sequence-id.state';
 
 const queryEvents = (args) => {
-  var filter = { eventTypes: "listing/created,listing/updated" };
+  var filter = { eventTypes: 'listing/created,listing/updated' };
   return integrationSdk.events.query({ ...args, ...filter });
 };
 

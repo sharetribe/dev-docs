@@ -1,11 +1,13 @@
 ---
 title: How saving a payment card works in the Sharetribe Web Template
 sidebarTitle: Saving a Payment Card
-description: An overview of the Sharetribe Web Template functionality for storing payment cards.
+description:
+  An overview of the Sharetribe Web Template functionality for storing
+  payment cards.
 ---
 
-import { Callout } from "nextra/components";
-import { Steps } from "nextra/components";
+import { Callout } from 'nextra/components';
+import { Steps } from 'nextra/components';
 
 # How saving a payment card works in the Sharetribe Web Template
 
@@ -57,14 +59,14 @@ your only option is to replace the card with a new one.
 If the user has no existing default payment card, `PaymentMethodsPage`
 component will show just a form to save payment card details:
 
-![Payment methods page](./payment-methods-page.png "Payment methods page without default payment method.")
+![Payment methods page](./payment-methods-page.png 'Payment methods page without default payment method.')
 
 If there is a default payment methods saved, user will see a dropdown
 instead, where the current default method is selected. There are two
 options the user can do: replace the current payment card (it's an
 option inside the dropdown) or delete the current payment card.
 
-![Payment methods page saved card](./payment-methods-page-saved-card.png "Payment methods page with default payment method.")
+![Payment methods page saved card](./payment-methods-page-saved-card.png 'Payment methods page with default payment method.')
 
 Under the hood, saving a new payment method needs to complete following
 steps:
@@ -89,12 +91,12 @@ making a one-time payment with a different payment card, there's an
 option (checkbox) to save the new payment card as the default payment
 method.
 
-![One-time payment and saving card details for future use](./one-time-payment.png "One-time payment and saving card details for future use")
+![One-time payment and saving card details for future use](./one-time-payment.png 'One-time payment and saving card details for future use')
 
 If the default payment method exists, user needs to select one-time
 payment first and then she is able to replace the default card.
 
-![Pay with one-time payment card](./pay-with-new-one-time-card.png "Pay with one-time payment card")
+![Pay with one-time payment card](./pay-with-new-one-time-card.png 'Pay with one-time payment card')
 
 **Under the hood, there are few changes made to the Payment Intents
 checkout flow:**
@@ -172,7 +174,7 @@ Behind the scenes, this is essentially the following call:
 
 ```js
 sdk.currentUser.show({
-  include: ["stripeCustomer.defaultPaymentMethod"],
+  include: ['stripeCustomer.defaultPaymentMethod'],
 });
 ```
 
@@ -220,7 +222,7 @@ passed if card details are saved at the same time:
 ```js
 sdk.transactions.initiate({
   processAlias,
-  transition: "transition/request-payment",
+  transition: 'transition/request-payment',
   params: {
     listingId,
     bookingStart,
@@ -237,7 +239,7 @@ when requesting payment.
 ```js
 sdk.transactions.initiate({
   processAlias,
-  transition: "transition/request-payment",
+  transition: 'transition/request-payment',
   params: {
     listingId,
     bookingStart,
@@ -274,7 +276,10 @@ from Sharetribe Web Template.
 ##### Confirm card payment
 
 ```js
-stripe.confirmCardPayment(stripePaymentIntentClientSecret, paymentParams);
+stripe.confirmCardPayment(
+  stripePaymentIntentClientSecret,
+  paymentParams
+);
 ```
 
 `paymentParams` should include card element and billing details. See
@@ -298,7 +303,7 @@ issuers site, where 3D secure v2 authentication flow can be completed.
 ```js
 sdk.transactions.transition({
   id: transactionId,
-  transition: "transition/confirm-payment",
+  transition: 'transition/confirm-payment',
   params,
 });
 ```
@@ -336,7 +341,7 @@ Sharetribe API:
 ```js
 sdk.stripeCustomer.create(
   { stripePaymentMethodId },
-  { expand: true, include: ["defaultPaymentMethod"] },
+  { expand: true, include: ['defaultPaymentMethod'] }
 );
 ```
 

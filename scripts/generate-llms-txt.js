@@ -1,13 +1,13 @@
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function extractMDXContent(filePath) {
   try {
-    const content = readFileSync(filePath, "utf-8");
+    const content = readFileSync(filePath, 'utf-8');
 
     // Extract frontmatter
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
@@ -16,31 +16,31 @@ function extractMDXContent(filePath) {
 
     if (frontmatterMatch) {
       const frontmatterText = frontmatterMatch[1];
-      mdxContent = content.replace(frontmatterMatch[0], "").trim();
+      mdxContent = content.replace(frontmatterMatch[0], '').trim();
 
       // Parse basic YAML frontmatter
-      frontmatterText.split("\n").forEach((line) => {
-        const [key, ...valueParts] = line.split(":");
+      frontmatterText.split('\n').forEach((line) => {
+        const [key, ...valueParts] = line.split(':');
         if (key && valueParts.length > 0) {
-          const value = valueParts.join(":").trim();
+          const value = valueParts.join(':').trim();
           frontmatter[key.trim()] = value;
         }
       });
     }
 
     // remove import statements
-    mdxContent = mdxContent.replace(/^import\s+.*$/gm, "");
+    mdxContent = mdxContent.replace(/^import\s+.*$/gm, '');
 
     // remove JSX components but keep their content
-    mdxContent = mdxContent.replace(/<([A-Z][^>]*)>/g, "");
-    mdxContent = mdxContent.replace(/<\/[A-Z][^>]*>/g, "");
+    mdxContent = mdxContent.replace(/<([A-Z][^>]*)>/g, '');
+    mdxContent = mdxContent.replace(/<\/[A-Z][^>]*>/g, '');
 
     // whitespace cleanup
-    mdxContent = mdxContent.replace(/\n\s*\n\s*\n/g, "\n\n").trim();
+    mdxContent = mdxContent.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
 
     return {
-      title: frontmatter.title || "",
-      description: frontmatter.description || "",
+      title: frontmatter.title || '',
+      description: frontmatter.description || '',
       content: mdxContent,
       path: filePath,
     };
@@ -62,7 +62,7 @@ function getAllMDXFiles(dir) {
 
       if (stat.isDirectory()) {
         traverse(fullPath);
-      } else if (entry.endsWith(".mdx")) {
+      } else if (entry.endsWith('.mdx')) {
         files.push(fullPath);
       }
     }
@@ -73,9 +73,9 @@ function getAllMDXFiles(dir) {
 }
 
 function generateLLMSTxt() {
-  const contentDir = join(__dirname, "..", "content");
-  const outputDir = join(__dirname, "..", "out/docs/");
-  const outputFile = join(outputDir, "llms-full.txt");
+  const contentDir = join(__dirname, '..', 'content');
+  const outputDir = join(__dirname, '..', 'out/docs/');
+  const outputFile = join(outputDir, 'llms-full.txt');
 
   // Get all MDX files
   const mdxFiles = getAllMDXFiles(contentDir);
@@ -90,7 +90,7 @@ function generateLLMSTxt() {
     const extracted = extractMDXContent(filePath);
     if (extracted) {
       // Create relative path for reference
-      const relativePath = filePath.replace(contentDir, "").replace(/^\//, "");
+      const relativePath = filePath.replace(contentDir, '').replace(/^\//, '');
 
       llmsContent += `## ${extracted.title || relativePath}\n\n`;
 
@@ -106,10 +106,10 @@ function generateLLMSTxt() {
     }
   }
 
-  writeFileSync(outputFile, llmsContent, "utf-8");
+  writeFileSync(outputFile, llmsContent, 'utf-8');
 
   console.log(
-    `Successfully generated llms.txt with content from ${processedCount} MDX files`,
+    `Successfully generated llms.txt with content from ${processedCount} MDX files`
   );
 }
 
