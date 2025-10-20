@@ -5,7 +5,7 @@ description:
   process.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Add a new email notification
 
@@ -84,8 +84,8 @@ The structure of the helper is as follows:
 
 ```handlebars
 {{t
-  "TemplateName.MessageKey"
-  "Fallback message in case key not found"
+  'TemplateName.MessageKey'
+  'Fallback message in case key not found'
   listingFieldVariable=listing.publicData.someListingField
 }}
 ```
@@ -95,8 +95,8 @@ the listing field "brand", you would add the following snippet:
 
 ```handlebars
 {{t
-  "BookingReminder.BrandDescription"
-  "You have booked a {brand} bike!"
+  'BookingReminder.BrandDescription'
+  'You have booked a {brand} bike!'
   brand=listing.publicData.brand
 }}
 ```

@@ -1,10 +1,12 @@
 ---
 title: Authentication API
 sidebarTitle: Authentication API
-description: Description of the Sharetribe Authentication API and how the Marketplace API and Integration API applications use it
+description:
+  Description of the Sharetribe Authentication API and how the
+  Marketplace API and Integration API applications use it
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Authentication API
 
@@ -13,8 +15,8 @@ import { Callout } from "nextra/components";
 Both the
 [Marketplace API and the Integration API](/concepts/api-sdk/marketplace-api-integration-api/)
 require valid _access tokens_ to be passed in every API request.
-[Applications](/concepts/development/applications/) obtain those access tokens from
-the Authentication API.
+[Applications](/concepts/development/applications/) obtain those access
+tokens from the Authentication API.
 
 As a general rule, applications that access the Marketplace API do so by
 authenticating an end user of the marketplace (via the user' username
@@ -29,9 +31,9 @@ Integration API also have a corresponding _client secret_.
 <Callout type="info">
 
 The easiest way to interact with both the Marketplace API and the
-Integration API is to use our [SDKs](/concepts/api-sdk/js-sdk/). The SDKs handle
-most of the complexity regarding authentication, access, and refresh
-tokens. Below, we discuss some of the underlying mechanisms and
+Integration API is to use our [SDKs](/concepts/api-sdk/js-sdk/). The
+SDKs handle most of the complexity regarding authentication, access, and
+refresh tokens. Below, we discuss some of the underlying mechanisms and
 principles in the Authentication API.
 
 </Callout>
@@ -78,9 +80,9 @@ types_:
   access tokens and can act as the end user's session secret.
 - `token_exchange` grant type is used by Marketplace API to create a
   trusted context for e.g.
-  [privileged transitions](/concepts/transactions/privileged-transitions/) within
-  transactions. It uses both _client ID_ and _client secret_, as well as
-  a valid user access token obtained with `password` grant type.
+  [privileged transitions](/concepts/transactions/privileged-transitions/)
+  within transactions. It uses both _client ID_ and _client secret_, as
+  well as a valid user access token obtained with `password` grant type.
 - `refresh_token` grant type is used by both Marketplace API and
   Integration API applications and grants a fresh _access token_ when
   given a client ID and a valid _refresh token_.

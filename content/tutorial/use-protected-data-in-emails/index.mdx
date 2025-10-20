@@ -7,7 +7,7 @@ description:
 
 # Use protected data in an email notification
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 In this example, we will change a transaction process email notification
 so that it uses protected data. We will send the provider's phone number
@@ -56,7 +56,7 @@ FieldTextInput that collects the email address.
 ```jsx
 <FieldPhoneNumberInput
   className={css.phone}
-  id={formId ? `${formId}.phoneNumber` : "phoneNumber"}
+  id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
   name="phoneNumber"
   label={phoneLabel}
   placeholder={phonePlaceholder}
@@ -71,13 +71,13 @@ declared variables for the email field:
 ```js
 // phone number
 const phoneLabel = intl.formatMessage({
-  id: "SignupForm.phoneLabel",
+  id: 'SignupForm.phoneLabel',
 });
 const phonePlaceholder = intl.formatMessage({
-  id: "SignupForm.phonePlaceholder",
+  id: 'SignupForm.phonePlaceholder',
 });
 const phoneRequiredMessage = intl.formatMessage({
-  id: "SignupForm.phoneRequired",
+  id: 'SignupForm.phoneRequired',
 });
 const phoneRequired = validators.required(phoneRequiredMessage);
 ```

@@ -1,10 +1,13 @@
 ---
 title: Transaction process format
 sidebarTitle: Transaction process format
-description: This reference article describes the format of the process.edn file that is used with Sharetribe CLI to customise the transaction processes of your marketplace.
+description:
+  This reference article describes the format of the process.edn file
+  that is used with Sharetribe CLI to customise the transaction
+  processes of your marketplace.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Transaction process format
 
@@ -199,9 +202,9 @@ operation.
 ## Transitions in the Integration API
 
 It is possible to use the
-[Integration API](/concepts/api-sdk/marketplace-api-integration-api/) to invoke
-transitions, which are defined as having `:actor.role/operator` as the
-`:actor`. This is done via the
+[Integration API](/concepts/api-sdk/marketplace-api-integration-api/) to
+invoke transitions, which are defined as having `:actor.role/operator`
+as the `:actor`. This is done via the
 [transactions/transition](https://www.sharetribe.com/api-reference/integration.html#transition-transaction)
 endpoint. Unlike the Marketplace API, the Integration API currently does
 not provide an endpoint for initiating transactions.
@@ -211,10 +214,10 @@ endpoint to
 [invoke transitions speculatively](https://www.sharetribe.com/api-reference/integration.html#speculatively-transition-transaction).
 
 <Callout>
-  The Integration API provides a trusted context for invoking transitions. This
-  means that these transitions are considered
-  [privileged](/concepts/transactions/privileged-transitions/) and can utilize
-  any of the actions that require a trusted context.
+  The Integration API provides a trusted context for invoking
+  transitions. This means that these transitions are considered
+  [privileged](/concepts/transactions/privileged-transitions/) and can
+  utilize any of the actions that require a trusted context.
 </Callout>
 
 ## Action composition

@@ -5,7 +5,7 @@ description:
   to take it into use in the Sharetribe Web Template.
 ---
 
-import { Callout } from "nextra/components";
+import { Callout } from 'nextra/components';
 
 # Create a new transaction process
 
@@ -314,53 +314,56 @@ export const transitions = {
   // created with the initial request-payment transition.
   // At this transition a PaymentIntent is created by Marketplace API.
   // After this transition, the actual payment must be made on client-side directly to Stripe.
-  REQUEST_PAYMENT: "transition/request-payment",
+  REQUEST_PAYMENT: 'transition/request-payment',
 
   // A customer can also initiate a transaction with an inquiry, and
   // then transition that with a request.
-  INQUIRE: "transition/inquire",
-  REQUEST_PAYMENT_AFTER_INQUIRY: "transition/request-payment-after-inquiry",
+  INQUIRE: 'transition/inquire',
+  REQUEST_PAYMENT_AFTER_INQUIRY:
+    'transition/request-payment-after-inquiry',
 
   // Stripe SDK might need to ask 3D security from customer, in a separate front-end step.
   // Therefore we need to make another transition to Marketplace API,
   // to tell that the payment is confirmed.
-  CONFIRM_PAYMENT: "transition/confirm-payment",
+  CONFIRM_PAYMENT: 'transition/confirm-payment',
 
   // If the payment is not confirmed in the time limit set in transaction process (by default 15min)
   // the transaction will expire automatically.
-  EXPIRE_PAYMENT: "transition/expire-payment",
+  EXPIRE_PAYMENT: 'transition/expire-payment',
 
   // Admin can also cancel the transition.
-  CANCEL: "transition/cancel",
+  CANCEL: 'transition/cancel',
 
   // The backend will mark the transaction completed.
-  COMPLETE: "transition/complete",
+  COMPLETE: 'transition/complete',
 
   // Reviews are given through transaction transitions. Review 1 can be
   // by provider or customer, and review 2 will be the other party of
   // the transaction.
-  REVIEW_1_BY_PROVIDER: "transition/review-1-by-provider",
-  REVIEW_2_BY_PROVIDER: "transition/review-2-by-provider",
-  REVIEW_1_BY_CUSTOMER: "transition/review-1-by-customer",
-  REVIEW_2_BY_CUSTOMER: "transition/review-2-by-customer",
-  EXPIRE_CUSTOMER_REVIEW_PERIOD: "transition/expire-customer-review-period",
-  EXPIRE_PROVIDER_REVIEW_PERIOD: "transition/expire-provider-review-period",
-  EXPIRE_REVIEW_PERIOD: "transition/expire-review-period",
+  REVIEW_1_BY_PROVIDER: 'transition/review-1-by-provider',
+  REVIEW_2_BY_PROVIDER: 'transition/review-2-by-provider',
+  REVIEW_1_BY_CUSTOMER: 'transition/review-1-by-customer',
+  REVIEW_2_BY_CUSTOMER: 'transition/review-2-by-customer',
+  EXPIRE_CUSTOMER_REVIEW_PERIOD:
+    'transition/expire-customer-review-period',
+  EXPIRE_PROVIDER_REVIEW_PERIOD:
+    'transition/expire-provider-review-period',
+  EXPIRE_REVIEW_PERIOD: 'transition/expire-review-period',
 };
 ```
 
 ```js
 export const states = {
-  INITIAL: "initial",
-  INQUIRY: "inquiry",
-  PENDING_PAYMENT: "pending-payment",
-  PAYMENT_EXPIRED: "payment-expired",
-  BOOKED: "booked",
-  CANCELED: "canceled",
-  DELIVERED: "delivered",
-  REVIEWED: "reviewed",
-  REVIEWED_BY_CUSTOMER: "reviewed-by-customer",
-  REVIEWED_BY_PROVIDER: "reviewed-by-provider",
+  INITIAL: 'initial',
+  INQUIRY: 'inquiry',
+  PENDING_PAYMENT: 'pending-payment',
+  PAYMENT_EXPIRED: 'payment-expired',
+  BOOKED: 'booked',
+  CANCELED: 'canceled',
+  DELIVERED: 'delivered',
+  REVIEWED: 'reviewed',
+  REVIEWED_BY_CUSTOMER: 'reviewed-by-customer',
+  REVIEWED_BY_PROVIDER: 'reviewed-by-provider',
 };
 ```
 

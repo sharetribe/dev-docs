@@ -24,7 +24,8 @@ be a provider, they can also be a customer on someone else's listing.
 
 If you want to limit certain users to only customers or only providers,
 you will need to create those limitations in your client application.
-You can use [extended data](/concepts/extended-data/extended-data-introduction/) to
+You can use
+[extended data](/concepts/extended-data/extended-data-introduction/) to
 determine that a user is in a certain group, and then allow a subset of
 your marketplace functionalities, e.g. listing creation, for a specified
 group. You can, for example,
@@ -130,15 +131,17 @@ retrieve data for custom marketplace dashboards.
 
 Sharetribe marketplace users need to sign up with their email address to
 create listings and participate in transactions. Alternatively, they can
-use [social logins](/concepts/users-and-authentication/social-logins-and-sso/) to sign up, or to
-login with an email address that already has a user within Sharetribe.
+use
+[social logins](/concepts/users-and-authentication/social-logins-and-sso/)
+to sign up, or to login with an email address that already has a user
+within Sharetribe.
 
 Sharetribe has a separate
 [Authentication API](/concepts/api-sdk/authentication-api/) that handles
 authentication to other Sharetribe APIs. Both Marketplace API and
 Integration API require valid access tokens to be passed in every API
-request. If you use the [Javascript SDKs](/concepts/api-sdk/js-sdk/) in your
-marketplace client application, they handle authenticating the user
+request. If you use the [Javascript SDKs](/concepts/api-sdk/js-sdk/) in
+your marketplace client application, they handle authenticating the user
 automatically when they enter their credentials.
 
 ## Restricted user states in a Sharetribe marketplace
@@ -235,8 +238,8 @@ transaction process.
 
 Some transitions within a transaction process can include privileged
 actions that require a trusted context i.e. they are
-[privileged transitions](/concepts/transactions/privileged-transitions/). Privileged
-actions include
+[privileged transitions](/concepts/transactions/privileged-transitions/).
+Privileged actions include
 [setting the transaction line items](/references/transaction-process-actions/#actionprivileged-set-line-items)
 and
 [updating the transaction metadata](/references/transaction-process-actions/#actionprivileged-update-metadata).

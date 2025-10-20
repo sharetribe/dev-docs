@@ -1,10 +1,13 @@
 ---
 title: How to customize pricing
 sidebarTitle: Customize pricing
-description: Sharetribe allows lots of flexibility for your providers in terms of how they can set their pricing. This guide walks you through customizing listing pricing and commission.
+description:
+  Sharetribe allows lots of flexibility for your providers in terms of
+  how they can set their pricing. This guide walks you through
+  customizing listing pricing and commission.
 ---
 
-import { Callout, FileTree } from "nextra/components";
+import { Callout, FileTree } from 'nextra/components';
 
 # How to customize pricing
 
@@ -117,11 +120,11 @@ publicData: {
 ```
 
 Sharetribe pricing uses
-[privileged transitions](/concepts/transactions/privileged-transitions/) to ensure
-flexible pricing models while keeping control of the pricing logic in a
-secure environment. Transitioning requests of privileged transitions are
-made from the server-side. Thus we'll need to update the pricing logic
-in the `/server/api-util/lineItems.js` file:
+[privileged transitions](/concepts/transactions/privileged-transitions/)
+to ensure flexible pricing models while keeping control of the pricing
+logic in a secure environment. Transitioning requests of privileged
+transitions are made from the server-side. Thus we'll need to update the
+pricing logic in the `/server/api-util/lineItems.js` file:
 
 <FileTree>
   <FileTree.Folder name="server" defaultOpen>
@@ -261,9 +264,13 @@ const lineItems = [
     providerCommission,
     order,
     priceAttribute,
-    true,
+    true
   ),
-  ...getCustomerCommissionMaybe(customerCommission, order, priceAttribute),
+  ...getCustomerCommissionMaybe(
+    customerCommission,
+    order,
+    priceAttribute
+  ),
 ];
 ```
 

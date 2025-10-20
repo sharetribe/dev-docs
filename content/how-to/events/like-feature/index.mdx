@@ -1,11 +1,12 @@
 ---
 title: How to implement a like feature using events
 sidebarTitle: Implement a like feature
-description: Following this guide, you'll be able to build a feature that allows
+description:
+  Following this guide, you'll be able to build a feature that allows
   users to like listings using events and user extended data
 ---
 
-import { Steps } from "nextra/components";
+import { Steps } from 'nextra/components';
 
 # How to implement a like feature using events
 
@@ -80,11 +81,11 @@ We'll create a new component that renders an svg and the amount of
 likes:
 
 ```jsx
-import React from "react";
-import { FormattedMessage } from "../../util/reactIntl";
-import classNames from "classnames";
+import React from 'react';
+import { FormattedMessage } from '../../util/reactIntl';
+import classNames from 'classnames';
 
-import css from "./ListingPage.module.css";
+import css from './ListingPage.module.css';
 
 const IconHeart = () => {
   return (
@@ -119,7 +120,7 @@ export default SectionLikes;
 Next, let's import the new component in _ListingPageCarousel.js_:
 
 ```jsx
-import SectionLikes from "./SectionLikes";
+import SectionLikes from './SectionLikes';
 ```
 
 ### Create an instance of the component into a variable
@@ -235,7 +236,7 @@ in _ListingPage.module.css_:
 Now, you should be able to see a heart-shaped icon with a like counter
 next to it if you navigate to the listing page:
 
-![Example of heart icon](./heart-icon.png "Example of heart icon")
+![Example of heart icon](./heart-icon.png 'Example of heart icon')
 
 ## Update user extended data
 
@@ -255,15 +256,17 @@ import {
   fetchCurrentUser,
   fetchCurrentUserHasOrdersSuccess,
   currentUserShowSuccess,
-} from "../../ducks/user.duck";
+} from '../../ducks/user.duck';
 ```
 
 ### Add new action types
 
 ```jsx
-export const UPDATE_LIKES_REQUEST = "app/ListingPage/UPDATE_LIKES_REQUEST";
-export const UPDATE_LIKES_SUCCESS = "app/ListingPage/UPDATE_LIKES_SUCCESS";
-export const UPDATE_LIKES_ERROR = "app/ListingPage/UPDATE_LIKES_ERROR";
+export const UPDATE_LIKES_REQUEST =
+  'app/ListingPage/UPDATE_LIKES_REQUEST';
+export const UPDATE_LIKES_SUCCESS =
+  'app/ListingPage/UPDATE_LIKES_SUCCESS';
+export const UPDATE_LIKES_ERROR = 'app/ListingPage/UPDATE_LIKES_ERROR';
 ```
 
 ### Add new initialStates:
@@ -333,8 +336,11 @@ export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
 
     const queryParams = {
       expand: true,
-      include: ["profileImage"],
-      "fields.image": ["variants.square-small", "variants.square-small2x"],
+      include: ['profileImage'],
+      'fields.image': [
+        'variants.square-small',
+        'variants.square-small2x',
+      ],
     };
 
     // if listingId already exists in currentLikes, it should be removed from currentLikes
@@ -354,7 +360,7 @@ export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {
           throw new Error(
-            "Expected a resource in the sdk.currentUser.updateProfile response",
+            'Expected a resource in the sdk.currentUser.updateProfile response'
           );
         }
         const currentUser = entities[0];
@@ -381,7 +387,7 @@ import {
   fetchTransactionLineItems,
   setInitialValues,
   updateLikes,
-} from "./ListingPage.duck";
+} from './ListingPage.duck';
 ```
 
 ### Initialise new props in ListingPage component
@@ -539,7 +545,7 @@ const updateListing = (listingId, likeAddition) => {
             likes: updatedLikes,
           },
         },
-        { expand: true },
+        { expand: true }
       );
     });
 };
@@ -570,7 +576,8 @@ const getLikedListingId = (previousLikes, currentLikes) => {
 };
 
 const getLikeCount = (previousLikes, currentLikes) => {
-  return previousLikes === null || previousLikes.length < currentLikes.length
+  return previousLikes === null ||
+    previousLikes.length < currentLikes.length
     ? 1
     : -1;
 };
@@ -580,14 +587,23 @@ const groupEvents = (events) => {
   return (likesToBeUpdated = events.reduce((likes, event) => {
     const { resource: user, previousValues } = event.attributes;
     // we might have a user/updated event that doesn't target likedListings
-    if (!previousValues.attributes?.profile?.privateData?.likedListings) {
+    if (
+      !previousValues.attributes?.profile?.privateData?.likedListings
+    ) {
       return {};
     }
     const { likedListings: previouslyLikedListings } =
       previousValues.attributes.profile.privateData || {};
-    const likedListings = user.attributes.profile?.privateData?.likedListings;
-    const likeCount = getLikeCount(previouslyLikedListings, likedListings);
-    const listingId = getLikedListingId(previouslyLikedListings, likedListings);
+    const likedListings =
+      user.attributes.profile?.privateData?.likedListings;
+    const likeCount = getLikeCount(
+      previouslyLikedListings,
+      likedListings
+    );
+    const listingId = getLikedListingId(
+      previouslyLikedListings,
+      likedListings
+    );
     likes[listingId] = likes[listingId]
       ? likes[listingId] + likeCount
       : likeCount;
@@ -730,5 +746,6 @@ const SectionLikes = props => {
 Now while running the event listener script you should have a fully
 functional like button. If you're interested in reading more about
 events, you can read
-[our articles on reacting to events](/how-to/events/reacting-to-events/) and
+[our articles on reacting to events](/how-to/events/reacting-to-events/)
+and
 [user Events as triggers in Zapier](https://www.sharetribe.com/help/en/articles/8529989#h_1197b66f66).
