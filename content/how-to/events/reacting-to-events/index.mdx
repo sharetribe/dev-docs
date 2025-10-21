@@ -97,9 +97,9 @@ events.
 Even with the event type filtering in place, not all `listing/created`
 or `listing/updated` events represent the logical change we may be
 interested in (such as a listing being published for the first time). We
-need to use the event [data](/references//events/#event-data) and in
+need to use the event [data](/references/events/#event-data) and in
 particular the
-[resource and previousValues](/references//events/#resource-data-and-previous-values)
+[resource and previousValues](/references/events/#resource-data-and-previous-values)
 to detect which events correspond to the change we want to react to.
 
 A new listing is first published when one of these happen:
@@ -182,7 +182,7 @@ events continuously. In this section we will show how this is best
 achieved.
 
 In Sharetribe, each event has a unique `sequenceId` and the
-[sequence IDs are strictly increasing](/references//events/#event-sequence-ids).
+[sequence IDs are strictly increasing](/references/events/#event-sequence-ids).
 Moreover, the `/events/query` Integration API endpoint always returns
 events sorted by their sequence IDs in ascending order. This means that
 once a batch of events is processed, the sequence ID of the last event
