@@ -254,6 +254,10 @@ exports.getDynamicCustomerCommissionMaybe = (
     : [];
 ```
 
+<Callout type="info">
+  Remember that the amount defined in the Money object [must be an integer](/concepts/pricing-and-commissions/pricing/#money-type-format).
+</Callout>
+
 Then you can use the function like this in _lineItems.js_:
 
 ```js

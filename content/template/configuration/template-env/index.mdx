@@ -120,17 +120,28 @@ of environment variables.
 
 * **`REACT_APP_FACEBOOK_APP_ID`**
 
-  App ID of a Facebook App when Facebook login is used.
+  App ID of a Facebook App when Facebook login is used. Adding this key
+  does not yet enable the feature. See [how to enable Facebook login](/how-to/users-and-authentication/enable-facebook-login/).
 
 * **`FACEBOOK_APP_SECRET`**
 
   App secret of a Facebook App when Facebook login is used.
 
+* **`REACT_APP_GOOGLE_CLIENT_ID`**
+
+  The Client ID of your Google Sing-In. Corresponds to client ID of
+  the identity provider client in Console. Adding this key does not
+  yet enable the feature. See [how to enable Google login](/how-to/users-and-authentication/enable-google-login//).
+
+* **`GOOGLE_CLIENT_SECRET`**
+
+  GOOGLE_CLIENT_SECRET The Client Secret of your Google Sign-In.
+
 * **`REACT_APP_SHARETRIBE_SDK_ASSET_CDN_BASE_URL`**
 
-Used to initialize the SDK with a custom base URL. Only use this if you
-want to proxy asset SDK calls through your server. The template uses the
-correct base URL by default if left empty.
+  Used to initialize the SDK with a custom base URL. Only use this if you
+  want to proxy asset SDK calls through your server. The template uses the
+  correct base URL by default if left empty.
 
 <Callout>
 
