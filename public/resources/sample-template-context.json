@@ -110,6 +110,24 @@
         "milliseconds" : 0
       }
     },
+    "created-at": {
+      "year": 2018,
+      "month": 10,
+      "day": 3,
+      "hours": 0,
+      "minutes": 0,
+      "seconds": 0,
+      "milliseconds": 0
+    },
+    "last-transitioned-at": {
+      "year": 2018,
+      "month": 10,
+      "day": 3,
+      "hours": 1,
+      "minutes": 0,
+      "seconds": 0,
+      "milliseconds": 0
+    },
     "payout-total" : {
       "amount" : 810,
       "currency" : "USD"
