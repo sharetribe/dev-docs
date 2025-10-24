@@ -1,18 +1,18 @@
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
-import { Banner, Head } from "nextra/components";
-import { getPageMap } from "nextra/page-map";
-import localFont from "next/font/local";
+import { Footer, Layout, Navbar } from 'nextra-theme-docs';
+import { Banner, Head } from 'nextra/components';
+import { getPageMap } from 'nextra/page-map';
+import localFont from 'next/font/local';
 
 // Components
-import Logo from "./components/Logo.js";
-import SlackIcon from "./components/SlackIcon.js";
+import Logo from './components/Logo.js';
+import SlackIcon from './components/SlackIcon.js';
 
 // Styles
-import "nextra-theme-docs/style.css";
-import "./global.css";
+import 'nextra-theme-docs/style.css';
+import './global.css';
 
 // Plausible
-import PlausibleProvider from "next-plausible";
+import PlausibleProvider from 'next-plausible';
 
 const isPreviewEnv = process.env.PLAUSIBLE_ENV === `preview`;
 const isProduction = process.env.NODE_ENV === `production`;
@@ -20,19 +20,19 @@ const isProduction = process.env.NODE_ENV === `production`;
 const circular = localFont({
   src: [
     {
-      path: "./fonts/CircularXXWeb-Italic.woff2",
-      weight: "400",
-      style: "italic",
+      path: './fonts/CircularXXWeb-Italic.woff2',
+      weight: '400',
+      style: 'italic',
     },
     {
-      path: "./fonts/CircularXXWeb-Regular.woff2",
-      weight: "400",
-      style: "normal",
+      path: './fonts/CircularXXWeb-Regular.woff2',
+      weight: '400',
+      style: 'normal',
     },
     {
-      path: "./fonts/CircularXXWeb-Bold.woff2",
-      weight: "700",
-      style: "normal",
+      path: './fonts/CircularXXWeb-Bold.woff2',
+      weight: '700',
+      style: 'normal',
     },
   ],
 });
@@ -75,8 +75,8 @@ export default async function RootLayout({ children }) {
       <Head
         faviconGlyph="none"
         backgroundColor={{
-          light: "rgb(250,250,250)",
-          dark: "rgb(12,10,9)",
+          light: 'rgb(250,250,250)',
+          dark: 'rgb(12,10,9)',
         }}
         color={{
           hue: 13,
@@ -89,12 +89,20 @@ export default async function RootLayout({ children }) {
       >
         <PlausibleProvider
           scriptProps={{
-            src: "/docs/stats/js/script/",
-            "data-api": "/docs/stats/api/event/",
+            src: '/docs/stats/js/script/',
+            'data-api': '/docs/stats/api/event/',
           }}
           enabled={isProduction}
-          domain={isPreviewEnv ? "flex-docs.vercel.app" : "sharetribe.com/docs"}
+          domain={isPreviewEnv ? 'flex-docs.vercel.app' : 'sharetribe.com/docs'}
         />
+        <script
+          async
+          src="https://widget.kapa.ai/kapa-widget.bundle.js"
+          data-website-id="dd497fc3-4a12-4cfc-931d-bb6c3f4742eb"
+          data-project-name="Sharetribe"
+          data-project-color="#eb9534"
+          data-project-logo="./icon.png"
+        ></script>
       </Head>
       <body>
         <Layout
