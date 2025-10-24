@@ -54,6 +54,14 @@ yarn start
 
 The project uses MDX files so you'll likely need to install a plugin that supports MDX syntax highlighting. MDX is markdown that also supports JSX.
 
+## Search
+
+Search is only available when running a producton build, i.e. `yarn run build`.
+
+## Formatting
+
+The project uses 
+
 ## Project Structure
 
 ```
