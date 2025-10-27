@@ -53,19 +53,25 @@ identity provider client in Sharetribe Console.
 
 <Steps>
 
-{<h3>Add a new IdP Client</h3>} Go to the
+{<h3>Add a new IdP Client</h3>}
+
+Go to the
 [Social logins & SSO](https://console.sharetribe.com/advanced/social-logins-and-sso)
 page in Console and click "+ Add new" to add a new identity provider
 client. Fill in a name for the client.
 
-{<h3>Add a new provider</h3>} In the identity provider dropdown, select
-"+ Add a new identity provider..."
+{<h3>Add a new provider</h3>}
+
+In the identity provider dropdown, select "+ Add a new identity
+provider..."
 
 ![Add OpenID Connect client](./oidc-client-1.png)
 
-{<h3>Fill in information</h3>} Fill in information regarding your OpenID
-Connect identity provider. This is the service that your users
-authenticate to in order to log into Sharetribe.
+{<h3>Fill in information</h3>}
+
+Fill in information regarding your OpenID Connect identity provider.
+This is the service that your users authenticate to in order to log into
+Sharetribe.
 
 - **Identity provider name**: A descriptive name for the identity
   provider that helps you to distinguish it from other providers.
@@ -77,21 +83,26 @@ authenticate to in order to log into Sharetribe.
   signing keys used by the identity provider. See below _Discovery
   document and JSON Web keys_ for more details.
 
-{<h3>Add Client ID</h3>} Fill in the Client ID. This is the identifier
-of your Sharetribe marketplace at you identity provider. It will be the
-_audience_ of the ID token returned from the identity provider.
+{<h3>Add Client ID</h3>}
 
-{<h3>List additional clients</h3>} If you have multiple clients
-configured at your identity provider to be used to log into your
-Sharetribe marketplace, list the additional client IDs as trusted client
-IDs. The idea is, that every client ID that is included as an audience
-(`aud` claim) in an ID token returned from your identity provider should
-be included as the client ID or trusted client ID in the client.
+Fill in the Client ID. This is the identifier of your Sharetribe
+marketplace at you identity provider. It will be the _audience_ of the
+ID token returned from the identity provider.
+
+{<h3>List additional clients</h3>}
+
+If you have multiple clients configured at your identity provider to be
+used to log into your Sharetribe marketplace, list the additional client
+IDs as trusted client IDs. The idea is, that every client ID that is
+included as an audience (`aud` claim) in an ID token returned from your
+identity provider should be included as the client ID or trusted client
+ID in the client.
 
 ![Add OpenID Connect client](./oidc-client-2.png)
 
-{<h3>Add client</h3>} Click "Add client" to create the client and
-identity provider.
+{<h3>Add client</h3>}
+
+Click "Add client" to create the client and identity provider.
 
 </Steps>
 
@@ -117,36 +128,48 @@ integration.
 
 <Steps>
 
-{<h3>Create auth file</h3>} Replicate either
+{<h3>Create auth file</h3>}
+
+Replicate either
 [facebook.js](https://github.com/sharetribe/web-template/blob/main/server/api/auth/facebook.js)
 or
 [google.js](https://github.com/sharetribe/web-template/blob/main/server/api/auth/google.js)
 and rename it for your identity provider.
 
-{<h3>Update passport strategy</h3>} Replace the
+{<h3>Update passport strategy</h3>}
+
+Replace the
 [passport module](https://github.com/sharetribe/web-template/blob/main/server/api/auth/facebook.js#L2)
 with one for your provider. Update the
 [strategy options](https://github.com/sharetribe/web-template/blob/main/server/api/auth/facebook.js#L22-L28)
 accordingly.
 
-{<h3>Configure credentials</h3>} Add your provider and Sharetribe SSO
-client credentials to `.env`. Update
+{<h3>Configure credentials</h3>}
+
+Add your provider and Sharetribe SSO client credentials to `.env`.
+Update
 [your new file](https://github.com/sharetribe/web-template/blob/main/server/api/auth/facebook.js#L8-L9)
 and
 [createWithIdp.js](https://github.com/sharetribe/web-template/blob/main/server/api/auth/createUserWithIdp.js#L12-L16).
 Also update the
 [identity provider selection logic](https://github.com/sharetribe/web-template/blob/main/server/api/auth/createUserWithIdp.js#L49-L50).
 
-{<h3>Define a callback</h3>} Import your new file in
+{<h3>Define a callback</h3>}
+
+Import your new file in
 [server/apiRouter.js](https://github.com/sharetribe/web-template/blob/main/server/apiRouter.js#L21)
 and define
 [callback endpoints](https://github.com/sharetribe/web-template/blob/main/server/apiRouter.js#L65-L71).
 Add the callback URL to your provider’s settings.
 
-{<h3>Add login buttons</h3>} Add buttons for your service in the
+{<h3>Add login buttons</h3>}
+
+Add buttons for your service in the
 [AuthenticationPage](https://github.com/sharetribe/web-template/blob/main/src/containers/AuthenticationPage/AuthenticationPage.js#L60).
 
-{<h3>Implement verify callback</h3>} Update the
+{<h3>Implement verify callback</h3>}
+
+Update the
 [verifyCallback function](https://github.com/sharetribe/web-template/blob/main/server/api/auth/facebook.js#L45-L61)
 to parse provider response parameters, extract the ID token, and pass it
 to `done`. This ensures tokens flow correctly to Sharetribe’s
