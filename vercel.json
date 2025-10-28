@@ -35,7 +35,7 @@
     },
     {
       "source": "/docs/background/getting-started/",
-      "destination": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
       "permanent": true
     },
     {
@@ -45,7 +45,7 @@
     },
     {
       "source": "/docs/background/introducing-flex/",
-      "destination": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
       "permanent": true
     },
     {
@@ -55,7 +55,7 @@
     },
     {
       "source": "/docs/background/overview/",
-      "destination": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
       "permanent": true
     },
     {
@@ -350,7 +350,7 @@
     },
     {
       "source": "/docs/tutorial-transaction-process/customize-pricing-tutorial/",
-      "destination": "/docs/tutorial/customize-pricing-tutorial/",
+      "destination": "/docs/tutorial/customize-pricing/",
       "permanent": true
     },
     {
@@ -950,7 +950,7 @@
     },
     {
       "source": "/docs/introduction/introducing-flex/",
-      "destination": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
       "permanent": true
     },
     {
@@ -1150,7 +1150,7 @@
     },
     {
       "source": "/docs/introduction/introducing-sharetribe/",
-      "destination": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
       "permanent": true
     },
     {

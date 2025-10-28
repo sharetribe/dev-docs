@@ -1,6 +1,5 @@
 export default {
   "getting-started-with-web-template": {},
-  "introducing-sharetribe-developer-platform": {},
   "development-skills": {},
   "introduction-to-customizing": {},
   "introducing-template": {},
