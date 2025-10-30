@@ -49,9 +49,9 @@ Configuring the user data this way allows you to
 
 ## Add a new top-level attribute
 
-Let's extend the default user data by adding an attribute 'accessories'
-to show what accessories are included. The full configuration looks like
-this:
+Let's extend the default user data by adding an attribute
+'additionalServices' to show what additional services are included. The
+full configuration looks like this:
 
 ```js
 {
@@ -112,9 +112,22 @@ The `ProfileSettingsPage` and `AuthenticationPage` are configured to
 show specific inputs for specific schema types. This means that you only
 need to configure how the attribute shows up in the panel.
 
-By default, all user fields are shown on both the profile settings page
-and the authentication page. If you want to hide a field from the signup
-page, you will need to set `displayInSignup` as `false`.
+By default, public user fields are collected on the profile settings
+page and shown on the public user profile page.
+
+All configured user fields are collected on the authentication page. If
+you want to hide a field from the signup page, you will need to set
+`displayInSignup` as `false`.
+
+<Callout>
+  Starting in template version [XX.XX.XX](TODO), private and protected
+  data fields are modified in `ManageAccountPage`. In earlier versions,
+  all user fields were shown and modified on `ProfileSettingsPage`. If
+  you have added user fields with non-public scopes (private and
+  protected) in an earlier version, double check whether you want to
+  keep editing those fields on the `ProfileSettingsPage` or move the
+  logic onto the `ManageAccountPage`.
+</Callout>
 
 You can separately determine the label for editing the attribute and
 displaying the attribute. You can also set the attribute as required.
