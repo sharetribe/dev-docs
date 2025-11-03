@@ -6,7 +6,7 @@ description:
   Sharetribe Web Template.
 ---
 
-import { FileTree } from 'nextra/components';
+import { FileTree, Steps, Callout } from 'nextra/components';
 
 # Hosted marketplace texts with Asset Delivery API
 
@@ -30,18 +30,32 @@ has not modified.
 
 The template specifies the path to the hosted marketplace texts as part
 of the app-wide configuration in
-[_config/configDefault.js_](https://github.com/sharetribe/web-template/blob/main/src/config/configDefault.js#L78).
+[_config/configDefault.js_](https://github.com/sharetribe/web-template/blob/main/src/config/configDefault.js#L89).
 These hosted marketplace texts live in a file called
 _content/translations.js_, since language-specific marketplace text
 files make it fairly easy to translate the template to languages other
 than the default English.
 
-```js
-// CDN assets for the app. Configurable through Sharetribe Console.
-// Currently, only translation.json is available.
-const appCdnAssets = {
-  translations: 'content/translations.json',
-};
+```jsx filename="config/configDefault.js" showLineNumbers{89}
+appCdnAssets: {
+  translations: '/content/translations.json',
+  footer: '/content/footer.json',
+  topbar: '/content/top-bar.json',
+  branding: '/design/branding.json',
+  layout: '/design/layout.json',
+  localization: '/general/localization.json',
+  accessControl: '/general/access-control.json',
+  userTypes: '/users/user-types.json',
+  userFields: '/users/user-fields.json',
+  categories: '/listings/listing-categories.json',
+  listingTypes: '/listings/listing-types.json',
+  listingFields: '/listings/listing-fields.json',
+  search: '/listings/listing-search.json',
+  transactionSize: '/transactions/minimum-transaction-size.json',
+  analytics: '/integrations/analytics.json',
+  googleSearchConsole: '/integrations/google-search-console.json',
+  maps: '/integrations/map.json',
+},
 ```
 
 In addition, the template has a global Redux file
@@ -72,7 +86,7 @@ Since the template uses Sharetribe SDK, the response always contains the
 data for the requested asset, even if the asset has not changed in the
 specified version.
 
-```js
+```jsx
 sdk.assetByVersion({
   path: 'content/translations.json',
   version: '<some-hash-string>',
@@ -106,146 +120,177 @@ This setup is in use when the server is running, i.e. when you run
 `yarn start` in your host environment or `yarn run dev-server` on your
 local machine.
 
-1. Export **fetchAppAssets** from _src/index.js_ to make it available
-   for the server.
-2. SSR: initialize the store
+<Steps>
 
-<FileTree>
-  <FileTree.Folder name="server" defaultOpen>
+{<h3></h3>}
 
-        <FileTree.File name="dataLoader.js" active />
+Export `fetchAppAssets` from _src/index.js_ to make it available for the
+server. {<h3></h3>}
 
-  </FileTree.Folder>
-</FileTree>
+The server initialises the store using `fetchAppAssets`:
 
-```jsx filename="dataLoader.js"
+```jsx filename="server/dataLoader.js"
 const store = configureStore({ initialState: {}, sdk });
 return store.dispatch(fetchAppAssets(defaultConfig.appCdnAssets));
 ```
 
-3. SSR: `fetchAppAssets` thunk fetches the latest version of
-   `content/translations.json` asset by using _latest_ alias with
-   `sdk.assetByAlias`. This ensures that the server-side rendering has
-   the most recent version of asset to render the page
-4. SSR: make a `loadData` call if the route specifies it:
+Here the `fetchAppAssets` thunk fetches the latest version of
+`content/translations.json` asset by using _latest_ alias with
+`sdk.assetByAlias`. This ensures that the server-side rendering has the
+most recent version of asset to render the page
 
-```jsx filename="dataLoader.js"
+{<h3></h3>}
+
+A`loadData` call is made if the route specifies it:
+
+```jsx filename="server/dataLoader.js"
   .then(fetchedAppAssets => {
     const { translations: translationsRaw, ...rest } = fetchedAppAssets || {};
-
-    // We'll handle translations as a separate data.
-    // It's given to React Intl instead of pushing to config Context
     translations = translationsRaw?.data || {};
-
-    // Rest of the assets are considered as hosted configs
-    // This structure just gives possibilities to add initial config data
     hostedConfig = { ...hostedConfig, ...extractHostedConfig(rest) };
     return Promise.all(dataLoadingCalls(hostedConfig));
 ```
 
-5. SSR: asset **version** is saved to the store and passed to the
-   browser through the _preloadedState_.
-   - Server-side rendering must match with client-side rendering when
-     browser hydrates the server-side rendered content.
-   - To ensure that client-side rendering has the same version of
-     marketplace texts, the asset version is passed (through preloaded
-     state) to front end.
-   - Note: The template does not pass the marketplace text asset itself
-     from the server to browser. The reason is that if browser fetches
-     the versioned asset file directly, it can leverage browser's cache.
-     So, every page load, after the initial one, will use the
-     _translation.json_ file from the browser's local cache.
+{<h3></h3>}
 
-   ```js
-     .then(() => {
-       return { preloadedState: store.getState(), translations };
-     })
-   ```
+An asset **version** is saved to the store and passed to the browser
+through `preloadedState`:
 
-6. SSR: call **renderApp** function, which renders the `<ServerApp>` in
-   _src/app.js_
-   - Hosted marketplace text file from Asset Delivery API is passed as
-     props to _ServerApp_.
+```jsx filename="server/dataLoader.js"
+.then(() => {
+   return { preloadedState: store.getState(), translations, hostedConfig };
+ })
+```
 
-   ```shell
-   └── server
-       └── renderer.js
-   ```
+- Server-side rendering must match with client-side rendering when the
+  browser hydrates the server-side rendered content.
+- To ensure that client-side rendering has the same version of
+  marketplace texts, the asset version is passed (through preloaded
+  state) to front end.
 
-   ```js
-   // Render the app with given route, preloaded state, hosted microcopy.
-    // Render the app with given route, preloaded state, hosted translations.
-   return renderApp(
-    requestUrl,
-    context,
-    preloadedState,
-    translations,
-    hostedConfig,
-    collectWebChunks
-   ).then(({ head, body }) => {
-   ```
+  <Callout>
+    {' '}
+    The template does not pass the marketplace text asset itself from
+    the server to browser. The reason is that if browser fetches the
+    versioned asset file directly, it can leverage browser's cache. So,
+    every page load, after the initial one, will use the
+    _translation.json_ file from the browser's local cache.
+  </Callout>
 
-   ```shell
-   └── src
-       └── app.js
-   ```
+{<h3></h3>}
 
-   ```js
-   <ServerApp
-     url={url}
-     context={serverContext}
-     helmetContext={helmetContext}
-     store={store}
-     hostedTranslations={hostedTranslations}
-   />
-   ```
+The app calls the **renderApp** function, which renders `<ServerApp>` in
+_src/app.js_. The hosted marketplace text file from Asset Delivery API
+is passed as a prop to `<ServerApp>`:
 
-- Hosted marketplace texts are then merged with the default marketplace
-  texts in _ServerApp_ component.
-  ```jsx
-  export const ServerApp = props => {
-    const { url, context, helmetContext, store, hostedTranslations = {}, hostedConfig = {} } = props;
-    const appConfig = mergeConfig(hostedConfig, defaultConfig);
-    HelmetProvider.canUseDOM = false;
-    return (
-      <Configurations appConfig={appConfig}>
-        <IntlProvider
-          locale={appConfig.localization.locale}
-          messages={{ ...localeMessages, ...hostedTranslations }}
-          textComponent="span"
-        >
-    {/* etc. */}
-  ```
+```jsx filename="server/renderer.js"
+// Render the app with given route, preloaded state, hosted microcopy.
+ // Render the app with given route, preloaded state, hosted translations.
+return renderApp(
+ requestUrl,
+ context,
+ preloadedState,
+ translations,
+ hostedConfig,
+ collectWebChunks
+).then(({ head, body }) => {
+```
 
-7. Browser: initialize the store with a preloaded state
-   - The asset version that the SSR used, is included in that preloaded
-     state
-8. Browser: **fetchAppAssets** thunk fetch assets using asset version:
-   calls **sdk.assetByVersion**.
-9. Browser: make **loadData** call
-10. Browser: hydrate the `<ClientApp>` and pass marketplace texts as
-    props.
+```jsx filename="src/app.js"
+<ServerApp
+  url={url}
+  context={serverContext}
+  helmetContext={helmetContext}
+  store={store}
+  hostedTranslations={hostedTranslations}
+  hostedConfig={hostedConfig}
+/>
+```
 
-- Hosted marketplace texts are merged with default marketplace texts in
-  _ClientApp_ component.
+{<h3></h3>}
 
-  ```js
-  <ClientApp store={store} hostedTranslations={translations} hostedConfig={hostedConfig} />,
+Hosted marketplace texts are then merged with the default marketplace
+texts in the _ServerApp_ component.
 
-  ```
+```jsx filename="src/app.js" {20}
+export const ServerApp = props => {
+const { url, context, helmetContext, store, hostedTranslations = {}, hostedConfig = {} } = props;
+const appConfig = mergeConfig(hostedConfig, defaultConfig);
+HelmetProvider.canUseDOM = false;
+
+// Show MaintenanceMode if the mandatory configurations are not available
+if (!appConfig.hasMandatoryConfigurations) {
+  return (
+    <MaintenanceModeError
+      locale={appConfig.localization.locale}
+      messages={{ ...localeMessages, ...hostedTranslations }}
+      helmetContext={helmetContext}
+    />
+  );
+}
+  return (
+  <Configurations appConfig={appConfig}>
+    <IntlProvider
+      locale={appConfig.localization.locale}
+      messages={{ ...localeMessages, ...hostedTranslations }}
+      textComponent="span"
+    >
+```
+
+{<h3></h3>}
+
+The browser initializes the store with a preloaded state. The asset
+version that the SSR used, is included in that preloaded state.
+{<h3></h3>}
+
+The browser uses the `fetchAppAssets` thunk to fetch assets by version,
+using the `sdk.assetByVersion` method. {<h3></h3>}
+
+The browser loads the initial data using a load data call.
+
+{<h3></h3>}
+
+Hydrate the `<ClientApp>` and pass marketplace texts as props. Hosted
+marketplace texts are merged with default marketplace texts in the
+ClientApp component.
+
+```jsx filename="src/index.js" showLineNumbers{90}
+<ClientApp
+  store={store}
+  hostedTranslations={translations}
+  hostedConfig={hostedConfig}
+/>
+```
+
+</Steps>
 
 ## How development build works with hosted marketplace texts
 
-This is setup is in use if you run **_yarn run dev_** on local machine.
+This is setup is in use if you run `yarn run dev` on your local machine.
 
-1. Browser: initialize the store
-2. Browser: **fetchAppAssets** thunk fetches assets using _latest_ alias
-   by calling **sdk.assetByAlias**
-   - Because SSR is not available to fetch the latest version of the
-     asset files, this call needs to be made from browser.
-3. Browser: make **loadData** call
-4. Browser: render the `<ClientApp>` and pass marketplace texts as
-   props.
+<Steps>
+
+{<h3></h3>}
+
+The browser initialises the store.
+
+{<h3></h3>}
+
+The browser uses the **fetchAppAssets** thunk to fetch assets using
+_latest_ alias, calling **sdk.assetByAlias**. As the server is not
+available to fetch the latest version of the asset files, this call
+needs to be made from browser.
+
+{<h3></h3>}
+
+The browser makes a **loadData** call.
+
+{<h3></h3>}
+
+The browser renders the `<ClientApp>` and passes marketplace texts as
+props.
+
+</Steps>
 
 ## Read more
 

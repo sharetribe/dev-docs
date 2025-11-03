@@ -49,6 +49,7 @@ export const queryFavoriteListingsThunk = createAsyncThunk(
 const favoriteListingsSlice = createSlice({
   name: 'FavoriteListingsPage',
   initialState: initialState,
+  reducer: {},
   extraReducers: builder => {
     builder
       .addCase(queryFavoriteListingsThunk.pending, (state, action) => {
