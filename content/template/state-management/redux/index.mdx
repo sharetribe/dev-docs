@@ -7,7 +7,7 @@ description:
 
 import { Callout } from 'nextra/components';
 
-# State management and redux
+# State management and Redux
 
 The Sharetribe Web Template is single-page application built using
 React. This means that the app needs to be able to render several
@@ -149,6 +149,45 @@ Ducks module naming schema, this means that:
   and
 - the state of the global `user` object can be found from `state.user`.
 
+## Slices
+
+In Redux Toolkit, state and reducers are defined in slices using
+`createSlice`. Each slice represents a portion of the overall Redux
+state and contains its initial state, reducers, and automatically
+generated action creators.
+
+A typical slice in the template is defined like this:
+
+```jsx filename="src/ducks/emailVerification.duck.js"
+const emailVerificationSlice = createSlice({
+  name: 'emailVerification',
+  initialState: {
+    isVerified: false,
+    verificationError: null,
+    verificationInProgress: false,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(verifyEmail.pending, (state) => {
+        state.verificationInProgress = true;
+        state.verificationError = null;
+      })
+      .addCase(verifyEmail.fulfilled, (state) => {
+        state.verificationInProgress = false;
+        state.isVerified = true;
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        state.verificationInProgress = false;
+        state.verificationError = action.payload;
+      });
+  },
+});
+```
+
+Synchronous actions are defined under the `reducers` object, whereas
+asynchronous thunks are listed under `extraReducers`.
+
 ## Thunks
 
 One essential part of state management in the template is filling the
@@ -156,7 +195,7 @@ Redux store with data fetched from the Sharetribe API. This is done with
 [Redux Thunks](https://redux.js.org/tutorials/fundamentals/part-8-modern-redux#writing-thunks),
 which is a Redux middleware to create asynchronous action creators.
 
-As with every other Redux store actions, you can find Thunks inside
+As with every other Redux store action, you can find Thunks inside
 `*.duck.js` files. For example, fetching listing reviews can be done
 with the following thunk function:
 
@@ -182,6 +221,21 @@ export const fetchReviewsThunk = createAsyncThunk(
       });
   }
 );
+```
+
+The thunk will usually be wrapped in a helper function (see example
+below). This structure is to enable better backward compatibility with
+versions of the template that predate Redux Toolkit. The `unwrap`
+function returns a new Promise that either has the actual action.payload
+value from a fulfilled action, or throws an error if it's the rejected
+action. This allows presentational components to handle success and
+failure using try/catch logic.
+
+```jsx filename="ListingPage.duck.js"
+export const fetchReviews =
+  (listingId) => (dispatch, getState, sdk) => {
+    return dispatch(fetchReviewsThunk({ listingId })).unwrap();
+  };
 ```
 
 <Callout>
