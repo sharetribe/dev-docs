@@ -4,7 +4,7 @@ description:
   Learn how to add a favorites functionality to Sharetribe Web Template
 ---
 
-import { Callout } from 'nextra/components';
+import { Callout, FileTree } from 'nextra/components';
 
 # Add a favorite bikes button
 
@@ -22,9 +22,8 @@ In this tutorial, you will
 
 <Callout>
 
-This tutorial uses the following marketplace configurations:
-
-- Layout > Listing page image layout: **Image carousel with thumbnails**
+This tutorial uses the following no-code marketplace configurations:
+![Design > Layout > Listing page image layout: **Image carousel with thumbnails**](./listing-page-image-layout.png)
 
 </Callout>
 
@@ -39,29 +38,31 @@ In addition, the listing’s title is shown in the _OrderPanel_ component,
 and we want to add the favorite button as close to the listing title as
 possible.
 
-```shell
-└── src
-    └── components
-        └── OrderPanel
-            ├── OrderPanel.js
-            └── OrderPanel.module.css
-
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="OrderPanel" defaultOpen>
+        <FileTree.File name="OrderPanel.js" />
+        <FileTree.File name="OrderPanel.module.css" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 First, let’s import the button components. The _OrderPanel_ already
 imports _PrimaryButton_, which is used as the “buy” button in the order
 form, but we want our favorite button to look a bit different, so we
 will import the components for _Button_ and _SecondaryButton_ as well.
 
-```js
+```jsx filename="OrderPanel.js" / Button/ /SecondaryButton/
 import {
   ModalInMobile,
   PrimaryButton,
   AvatarSmall,
   H1,
   H2,
-  Button, // add these rows to the
-  SecondaryButton, // existing import from '../../components'
+  Button,
+  SecondaryButton,
 } from '../../components';
 ```
 
@@ -69,14 +70,14 @@ Next, let’s add some props that we will need to build the functionality.
 We are not yet receiving the props from the parent, so we can expect
 some errors before we add them to the parent.
 
-```diff
-…
+```jsx filename="OrderPanel.js" {5-6} showLineNumbers{294}
   fetchLineItemsInProgress,
   fetchLineItemsError,
-+ onToggleFavorites,
-+ currentUser,
+  payoutDetailsWarning,
+  showListingImage,
+  onToggleFavorites,
+  currentUser,
 } = props;
-…
 ```
 
 Then, let’s create a button. We will add the button into a constant,
@@ -84,7 +85,7 @@ since we want to show a different button depending on whether the
 listing has already been favorited. Add this snippet before the
 `return (` row in the component.
 
-```js
+```jsx filename="OrderPanel.js"
 const isFavorite =
   currentUser?.attributes.profile.privateData.favorites?.includes(
     listing.id.uuid
@@ -137,7 +138,7 @@ For instance,
 The button we added uses a css class _favoriteButton_. Let’s add it to
 the end of _OrderPanel.module.css_.
 
-```css
+```css filename="OrderPanel.module.css"
 .favoriteButton {
   margin: 12px 0 36px 0;
 }
@@ -147,24 +148,28 @@ Finally, we will show this component in the order panel, right under the
 author information. Add the `{favoriteButton}` row under the `</div>`
 with _className_ `css.author`.
 
-```jsx
-…
-  <div className={css.author}>
-    <AvatarSmall user={author} className={css.providerAvatar} />
-    <span className={css.providerNameLinked}>
-      <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
-    </span>
-    <span className={css.providerNamePlain}>
-      <FormattedMessage id="OrderPanel.author" values={{ name: authorDisplayName }} />
-    </span>
-  </div>
-  {favoriteButton} {/* Add this row */}
-  {showPriceMissing ? (
-    <PriceMissing />
-  ) : showInvalidCurrency ? (
-    <InvalidCurrency />
-  ) : showBookingTimeForm ? (
-…
+```jsx filename="OrderPanel.js" {10} showLineNumbers{468}
+<div className={css.author}>
+  <AvatarSmall user={author} className={css.providerAvatar} />
+  <span className={css.providerNameLinked}>
+    <FormattedMessage
+      id="OrderPanel.author"
+      values={{ name: authorLink }}
+    />
+  </span>
+  <span className={css.providerNamePlain}>
+    <FormattedMessage
+      id="OrderPanel.author"
+      values={{ name: authorDisplayName }}
+    />
+  </span>
+</div>;
+{
+  favoriteButton;
+}
+{
+  /* Add this row */
+}
 ```
 
 Now, you can see the button in the order panel. However, the button text
@@ -177,8 +182,7 @@ Let’s fix that by adding all the marketplace texts we need in this
 tutorial. You can add them in Sharetribe Console > Build > Content >
 Marketplace texts, or in src/translations/en.js.
 
-```json
-…
+```json filename="src/translations/en.json"
   "FavoriteListingsPage.loadingFavoriteListings": "Loading listings…",
   "FavoriteListingsPage.noResults": "You haven't listed any bikes.",
   "FavoriteListingsPage.queryError": "Query failed. Please try again.",
@@ -186,8 +190,7 @@ Marketplace texts, or in src/translations/en.js.
   "FavoriteListingsPage.youHaveListings": "You have {count} favorite {count, plural, one {listing} other {listings}}",
   "OrderPanel.addFavoriteButton":"Add to favorites",
   "OrderPanel.unfavoriteButton":"Unfavorite",
-  "UserNav.favoriteListings": "Favorite bikes"
-…
+  "UserNav.favoriteListings": "Favorite bikes",
 ```
 
 After adding the marketplace texts and saving your changes, you can
@@ -230,6 +233,8 @@ page component we are using. Since the layout configuration in our
 marketplace is _Image carousel with thumbnails_, the corresponding
 listing page component is _ListingPageCarousel.js_.
 
+Finally, we need to pass the necessary props to OrderPanel.js.
+
 <Callout>
 
 If your listing page configuration is _Screen-wide cover photo_, you
@@ -237,23 +242,25 @@ will need to modify the component _ListingPageCoverPhoto.js_ instead.
 
 </Callout>
 
-Finally, we need to pass the necessary props to OrderPanel.js.
+Start by locating the ListingPage.shared.js file:
 
-```shell
-└── src
-    └── containers
-        └── ListingPage
-            ├── ListingPage.shared.js
-            └── _ListingPageCarousel.js
-
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="ListingPage.shared.js" active />
+        <FileTree.File name="ListingPageCarousel.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 First, we will add a _handleToggleFavorites_ function in the
 _ListingPage.shared.js_ file. If the user is not logged in, we redirect
 them to the signup page, and otherwise we toggle the listing id in their
 favorites list.
 
-```jsx
+```jsx filename="ListingPage.shared.js"
 export const handleToggleFavorites = (parameters) => (isFavorite) => {
   const { currentUser, routes, location, history } = parameters;
 
@@ -319,7 +326,7 @@ In addition, we need to import the Redux action that we will use to
 actually update the user’s profile. For that, we can use the
 _updateProfile_ action from _ProfileSettingsPage.duck.js_.
 
-```js
+```js filename="ListingPageCarousel.js" {9, 13} showLineNumbers{72}
 import {
   LoadingPage,
   ErrorPage,
@@ -367,12 +374,24 @@ component there.
 Find the _mapDispatchToProps_ function in the component, and add the
 _onUpdateFavorites_ row below.
 
-```jsx
-const mapDispatchToProps = dispatch => ({
- …
-  onFetchTimeSlots: (listingId, start, end, timeZone) =>
-    dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
+```jsx filename="ListingPageCarousel.js" {2} showLineNumbers{602}
+const mapDispatchToProps = (dispatch) => ({
   onUpdateFavorites: (payload) => dispatch(updateProfile(payload)), // add this row
+  onManageDisableScrolling: (componentId, disableScrolling) =>
+    dispatch(manageDisableScrolling(componentId, disableScrolling)),
+  callSetInitialValues: (
+    setInitialValues,
+    values,
+    saveToSessionStorage
+  ) => dispatch(setInitialValues(values, saveToSessionStorage)),
+  onFetchTransactionLineItems: (params) =>
+    dispatch(fetchTransactionLineItems(params)), // for OrderPanel
+  onSendInquiry: (listing, message) =>
+    dispatch(sendInquiry(listing, message)),
+  onInitializeCardPaymentData: () =>
+    dispatch(initializeCardPaymentData()),
+  onFetchTimeSlots: (listingId, start, end, timeZone, options) =>
+    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)), // for OrderPanel
 });
 ```
 
@@ -384,22 +403,21 @@ function that we can use. Let’s add it to the
 [destructured](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 list in the beginning of the component.
 
-```js
-  const {
-    isAuthenticated,
-    currentUser,
-…
+```jsx filename="ListingPageCarousel.js" {5} showLineNumbers{131}
+    onInitializeCardPaymentData,
+    config,
     routeConfiguration,
+    showOwnListingsOnly,
     onUpdateFavorites, // add this row
+    ...restOfProps
   } = props;
-
 ```
 
 Now, we can add a function that we can pass to _OrderPanel_ as the
 _onToggleFavorites_ prop. Add the following block before the `return (`
 statement of the component.
 
-```js
+```jsx filename="ListingPageCarousel.js"
 const onToggleFavorites = handleToggleFavorites({
   ...commonParams,
   currentUser,
@@ -413,15 +431,15 @@ functionality with the button we created earlier. Add the _currentUser_
 and _onToggleFavorites_ props to the _OrderPanel_ component in
 _ListingPageCarousel_.
 
-```js
-    <OrderPanel
-      className={css.productOrderPanel}
-      …
-      marketplaceName={config.marketplaceName}
-      onToggleFavorites={onToggleFavorites}
-      currentUser={currentUser}
-    />
-
+```jsx filename="ListingPageCarousel.js" {7}
+<OrderPanel
+  className={classNames(css.productOrderPanel, {
+    [css.imagesEnabled]: showListingImage,
+  })}
+  listing={currentListing}
+  isOwnListing={isOwnListing}
+  onToggleFavorites={onToggleFavorites}
+/>
 ```
 
 Now, when you navigate to a listing’s page and open your
@@ -447,8 +465,8 @@ The flow of the data happens like this:
   _privateData.favorites_
 - when the sdk call succeeds, it returns the updated _currentUser_
   resource
-- the Redux action then calls _currentUserShowSuccess_, which updates
-  the _currentUser_ in the store with the updated resource
+- the Redux action then calls _updateProfile_, which updates the
+  _currentUser_ in the store with the updated resource
 - the _currentUser_ prop that we pass from _ListingPageCarousel_ to
   _OrderPanel_ is mapped to Redux state, so any changes to _currentUser_
   in state are immediately reflected in the prop
@@ -469,16 +487,21 @@ page, we want to show all favorited listings on a separate page. For
 that reason, let’s make a new page called _FavoriteListingsPage_.
 
 First, let’s add a new folder to _containers_ directory for
-_FavoriteListingsPage_.
+_FavoriteListingsPage_, and create three new files:
 
-```shell
-└── src
-    └── containers
-        └── FavoriteListingsPage
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="FavoriteListingsPage" defaultOpen>
+        <FileTree.File name="FavoriteListingsPage.js" />
+        <FileTree.File name="FavoriteListingsPage.duck.js" />
+        <FileTree.File name="FavoriteListingsPage.module.css" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
-```
-
-Then, add the following files in the folder:
+You can download the files here:
 
 - [FavoriteListingsPage.js](/tutorial-assets/FavoriteListingsPage.js)
 - [FavoriteListingsPage.duck.js](/tutorial-assets/FavoriteListingsPage.duck.js)
@@ -668,103 +691,111 @@ detail.
 First, we import the necessary elements, and define the result page
 size.
 
-Then, we start creating the different elements of the
-[Redux ducks pattern](https://github.com/erikras/ducks-modular-redux):
+Then, we start creating the different elements using
+[Redux Toolkit](https://redux-toolkit.js.org/):
 
-- [Actions](https://redux.js.org/usage/reducing-boilerplate#actions)
-- [Reducer](https://redux.js.org/usage/reducing-boilerplate#reducers)
-- [Action creators](https://redux.js.org/usage/reducing-boilerplate#action-creators)
-- [Thunks](https://redux.js.org/usage/writing-logic-thunks)
+- [State Slice](https://redux-toolkit.js.org/api/createSlice)
+- [Reducer](https://redux-toolkit.js.org/api/createReducer)
+- [Thunks](https://redux-toolkit.js.org/api/createAsyncThunk)
 
-For action types, we export three different ones: a request action, a
-success action, and an error action for fetching listings.
-
-Then, we define initial state and a helper function _resultIds_, and
-create and export the reducer for the page. The reducer defines state
-behavior for each of the three action types defined earlier, as well as
-a default.
+We define initial state and a helper function _resultIds_:
 
 ```jsx
-const favoriteListingsPageReducer = (
-  state = initialState,
-  action = {}
-) => {
-  const { type, payload } = action;
-  switch (type) {
-    case FETCH_LISTINGS_REQUEST:
-      return {
-        ...state,
-        queryParams: payload.queryParams,
-        queryInProgress: true,
-        queryFavoritesError: null,
-        currentPageResultIds: [],
-      };
-    case FETCH_LISTINGS_SUCCESS:
-      return {
-        ...state,
-        currentPageResultIds: resultIds(payload.data),
-        pagination: payload.data.meta,
-        queryInProgress: false,
-      };
-    case FETCH_LISTINGS_ERROR:
-      // eslint-disable-next-line no-console
-      console.error(payload);
-      return {
-        ...state,
-        queryInProgress: false,
-        queryFavoritesError: payload,
-      };
-    default:
-      return state;
-  }
+const initialState = {
+  pagination: null,
+  queryParams: null,
+  queryInProgress: false,
+  queryFavoritesError: null,
+  currentPageResultIds: [],
 };
+
+const resultIds = (data) => data.data.map((l) => l.id);
 ```
 
-Next, we export action creators, one for each action type.
+We then create a `slice` where we define the initial state, an object of
+reducer functions, and a "slice name". The slice automatically generates
+action creators and action types that correspond to the reducers and
+state. The slice handles three different outcomes:
 
-Finally, we create our thunks to call SDK. The main SDK call we want to
-make on this page is fetching listings based on the user's favorite
-listings. We therefore export a _queryFavoriteListings_ thunk.
+- **pending**
+- **fulfilled**
+- **rejected**
+
+```jsx
+const favoriteListingsSlice = createSlice({
+  name: 'FavoriteListingsPage',
+  initialState: initialState,
+  extraReducers: (builder) => {
+    builder
+      .addCase(queryFavoriteListingsThunk.pending, (state, action) => {
+        state.queryParams = action.meta.arg;
+        state.queryInProgress = true;
+        state.queryFavoritesError = null;
+        state.currentPageResultIds = [];
+      })
+      .addCase(
+        queryFavoriteListingsThunk.fulfilled,
+        (state, action) => {
+          state.currentPageResultIds = resultIds(action.payload.data);
+          state.pagination = action.payload.meta;
+          state.queryInProgress = false;
+        }
+      )
+      .addCase(queryFavoriteListingsThunk.rejected, (state, action) => {
+        console.error(action.payload || action.error);
+        state.queryInProgress = false;
+        state.queryFavoritesError = action.payload;
+      });
+  },
+});
+
+export default favoriteListingsSlice.reducer;
+```
+
+Finally, we create our thunk to call the SDK. The main SDK call we want
+to make on this page is fetching listings based on the user's favorite
+listings.
 
 The structure of the thunk serves an example of most of the thunks in
 the Sharetribe Web Template.
 
-- Dispatch a **request** action – this sets a selection of values in
-  state, for instance _queryInProgress: true_, which the page can then
-  use to display a loading indicator
 - Set up SDK call parameters
 - Make SDK call
-- For a successful SDK response, handle the response data and dispatch a
-  **success** action – this again sets a selection values in state,
+- For a successful SDK response, handle the response data and return a
+  **fulfilled** status – this again sets a selection values in state,
   which the page can use to stop loading indication and display the data
-- In case of an error, dispatch an **error** action – this sets a
-  selection of values in state that the page can use to stop loading
-  indication and display an error message.
+- In case of an error, return `rejectWithValue` and a **rejected**
+  status, which will store a selection of values in state that the page
+  can use to stop loading indication and display an error message.
 
 ```jsx
-export const queryFavoriteListings =
-  (queryParams) => (dispatch, getState, sdk) => {
-    dispatch(queryFavoritesRequest(queryParams));
-    const { currentUser } = getState().user;
-    const { favorites } =
-      currentUser?.attributes.profile.privateData || {};
+export const queryFavoriteListingsPayloadCreater = (
+  queryParams,
+  { extra: sdk, dispatch, rejectWithValue, getState }
+) => {
+  const { currentUser } = getState().user;
+  const { favorites } =
+    currentUser?.attributes.profile.privateData || {};
 
-    const favoriteIds = favorites ? { ids: favorites } : { ids: [] };
-    const { perPage, ...rest } = queryParams;
-    const params = { ...favoriteIds, ...rest, perPage };
+  const favoritesMaybe = favorites ? { ids: favorites } : {};
+  const { perPage, ...rest } = queryParams;
+  const params = { ...favoritesMaybe, ...rest, perPage };
 
-    return sdk.listings
-      .query(params)
-      .then((response) => {
-        dispatch(addMarketplaceEntities(response));
-        dispatch(queryFavoritesSuccess(response));
-        return response;
-      })
-      .catch((e) => {
-        dispatch(queryFavoritesError(storableError(e)));
-        throw e;
-      });
-  };
+  return sdk.listings
+    .query(params)
+    .then((response) => {
+      dispatch(addMarketplaceEntities(response));
+      return response;
+    })
+    .catch((e) => {
+      return rejectWithValue(storableError(e));
+    });
+};
+
+export const queryFavoriteListingsThunk = createAsyncThunk(
+  'app/FavoriteListingsPage/queryFavoriteListings',
+  queryFavoriteListingsPayloadCreater
+);
 ```
 
 In addition to the _queryFavoriteListings_ thunk, we export a _loadData_
@@ -776,42 +807,46 @@ _queryFavoriteListings_ thunk to initiate the listing fetching process.
 Now, since we are creating a new container with a new Redux file, we
 will need to take it into use in _reducers.js_ as well.
 
-```shell
-└── src
-	└── containers
-		└── reducers.js
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.File name="reducers.js" active />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 Add an import and an export for _FavoriteListingsPage_ in the
 _reducers.js_ file.
 
-```jsx
+```jsx filename="src/containers/reducers.js" {1, 5}
 import FavoriteListingsPage from './FavoriteListingsPage/FavoriteListingsPage.duck';
-…
+
 export {
   CheckoutPage,
   ContactDetailsPage,
   EditListingPage,
   FavoriteListingsPage,
-  …
 ```
 
 Next, in order to show the page in a specific route, we need to add a
 route and a data loading function. We will do this in the following
 files:
 
-```shell
-└── src
-	├── containers
-	│	└── pageDataLoadingAPI.js
-	└── routing
-		└── routeConfiguration.js
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.File name="pageDataLoadingAPI.js" />
+    </FileTree.Folder>
+    <FileTree.Folder name="routing" defaultOpen>
+      <FileTree.File name="routeConfiguration.js" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 Add import for _FavoriteListingsPageLoader_, and a new property in the
 return object, in _pageDataLoadingAPI.js_.
 
-```js
+```jsx filename="pageDataLoadingAPI.js"
 import { loadData as FavoriteListingsPageLoader } from './FavoriteListingsPage/FavoriteListingsPage.duck';
 …
 const getPageDataLoadingAPI = () => {
@@ -830,7 +865,7 @@ to import the page, and then we add an object specifying the path and
 the necessary elements, including the load data function we just added
 to _pageDataLoadingAPI_.
 
-```js
+```jsx filename="src/routing/routeConfiguration.js"
 const FavoriteListingsPage = loadable(() => import(/* webpackChunkName: "FavoriteListingsPage" */ '../containers/FavoriteListingsPage/FavoriteListingsPage'));
 …
   return [
@@ -851,7 +886,7 @@ const FavoriteListingsPage = loadable(() => import(/* webpackChunkName: "Favorit
     },
 ```
 
-Now, when you navigate to _localhost:3000/favorites_, you can see your
+Now, when you navigate to `localhost:3000/favorites`, you can see your
 favorited listings.
 
 ![Favorite listings page](./biketribe-favorites-page.png)
@@ -873,6 +908,16 @@ You can add a link to
             └── UserNav.js
 ```
 
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="UserNav" defaultOpen>
+        <FileTree.File name="userNav.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
 The last addition comes to the UserNav component.
 
 When we click on the the link for favorite listings, we get to the page.
@@ -884,40 +929,39 @@ page.
 Let’s add the link next. Open the _UserNav.js_ file and replace the tabs
 array with the following code:
 
-```
-  const tabs = [
-    {
-      text: <FormattedMessage id="UserNav.yourListings" />,
-      selected: currentPage === 'ManageListingsPage',
-      linkProps: {
-        name: 'ManageListingsPage',
-      },
+```jsx filename="userNav.js"
+const tabs = [
+  {
+    text: <FormattedMessage id="UserNav.yourListings" />,
+    selected: currentPage === 'ManageListingsPage',
+    linkProps: {
+      name: 'ManageListingsPage',
     },
-    {
-      text: <FormattedMessage id="UserNav.favoriteListings" />,
-      selected: currentPage === 'FavoriteListingsPage',
-      linkProps: {
-        name: 'FavoriteListingsPage',
-      },
+  },
+  {
+    text: <FormattedMessage id="UserNav.favoriteListings" />,
+    selected: currentPage === 'FavoriteListingsPage',
+    linkProps: {
+      name: 'FavoriteListingsPage',
     },
-    {
-      text: <FormattedMessage id="UserNav.profileSettings" />,
-      selected: currentPage === 'ProfileSettingsPage',
-      disabled: false,
-      linkProps: {
-        name: 'ProfileSettingsPage',
-      },
+  },
+  {
+    text: <FormattedMessage id="UserNav.profileSettings" />,
+    selected: currentPage === 'ProfileSettingsPage',
+    disabled: false,
+    linkProps: {
+      name: 'ProfileSettingsPage',
     },
-    {
-      text: <FormattedMessage id="UserNav.accountSettings" />,
-      selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
-      disabled: false,
-      linkProps: {
-        name: 'ContactDetailsPage',
-      },
+  },
+  {
+    text: <FormattedMessage id="UserNav.accountSettings" />,
+    selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
+    disabled: false,
+    linkProps: {
+      name: 'ContactDetailsPage',
     },
-  ];
-
+  },
+];
 ```
 
 Now, when you save the file and refresh the app, you will see a link to

@@ -1,3 +1,4 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { storableError } from '../../util/errors';
 import { createImageVariantConfig } from '../../util/sdkLoader';
 import { parse } from '../../util/urlHelpers';
@@ -7,14 +8,6 @@ import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 // Current design has max 3 columns 42 is divisible by 2 and 3
 // So, there's enough cards to fill all columns on full pagination pages
 const RESULT_PAGE_SIZE = 42;
-
-// ================ Action types ================ //
-
-export const FETCH_LISTINGS_REQUEST = 'app/FavoriteListingsPage/FETCH_LISTINGS_REQUEST';
-export const FETCH_LISTINGS_SUCCESS = 'app/FavoriteListingsPage/FETCH_LISTINGS_SUCCESS';
-export const FETCH_LISTINGS_ERROR = 'app/FavoriteListingsPage/FETCH_LISTINGS_ERROR';
-
-// ================ Reducer ================ //
 
 const initialState = {
   pagination: null,
@@ -26,63 +19,10 @@ const initialState = {
 
 const resultIds = data => data.data.map(l => l.id);
 
-const favoriteListingsPageReducer = (state = initialState, action = {}) => {
-  const { type, payload } = action;
-  switch (type) {
-    case FETCH_LISTINGS_REQUEST:
-      return {
-        ...state,
-        queryParams: payload.queryParams,
-        queryInProgress: true,
-        queryFavoritesError: null,
-        currentPageResultIds: [],
-      };
-    case FETCH_LISTINGS_SUCCESS:
-      return {
-        ...state,
-        currentPageResultIds: resultIds(payload.data),
-        pagination: payload.data.meta,
-        queryInProgress: false,
-      };
-    case FETCH_LISTINGS_ERROR:
-      // eslint-disable-next-line no-console
-      console.error(payload);
-      return {
-        ...state,
-        queryInProgress: false,
-        queryFavoritesError: payload
-      };
-
-    default:
-      return state;
-  }
-};
-
-export default favoriteListingsPageReducer;
-
-// ================ Action creators ================ //
-
-export const queryFavoritesRequest = queryParams => ({
-  type: FETCH_LISTINGS_REQUEST,
-  payload: { queryParams },
-});
-
-export const queryFavoritesSuccess = response => ({
-  type: FETCH_LISTINGS_SUCCESS,
-  payload: { data: response.data },
-});
-
-export const queryFavoritesError = e => ({
-  type: FETCH_LISTINGS_ERROR,
-  error: true,
-  payload: e,
-});
-
-// ================ Thunks ================ //
-
-// Throwing error for new (loadData may need that info)
-export const queryFavoriteListings = queryParams => (dispatch, getState, sdk) => {
-  dispatch(queryFavoritesRequest(queryParams));
+export const queryFavoriteListingsPayloadCreater = (
+  queryParams,
+  { extra: sdk, dispatch, rejectWithValue, getState }
+) => {
   const { currentUser } = getState().user;
   const { favorites } = currentUser?.attributes.profile.privateData || {};
 
@@ -94,14 +34,43 @@ export const queryFavoriteListings = queryParams => (dispatch, getState, sdk) =>
     .query(params)
     .then(response => {
       dispatch(addMarketplaceEntities(response));
-      dispatch(queryFavoritesSuccess(response));
       return response;
     })
     .catch(e => {
-      dispatch(queryFavoritesError(storableError(e)));
-      throw e;
+      return rejectWithValue(storableError(e));
     });
 };
+
+export const queryFavoriteListingsThunk = createAsyncThunk(
+  'app/FavoriteListingsPage/queryFavoriteListings',
+  queryFavoriteListingsPayloadCreater
+);
+
+const favoriteListingsSlice = createSlice({
+  name: 'FavoriteListingsPage',
+  initialState: initialState,
+  extraReducers: builder => {
+    builder
+      .addCase(queryFavoriteListingsThunk.pending, (state, action) => {
+        state.queryParams = action.meta.arg;
+        state.queryInProgress = true;
+        state.queryFavoritesError = null;
+        state.currentPageResultIds = [];
+      })
+      .addCase(queryFavoriteListingsThunk.fulfilled, (state, action) => {
+        state.currentPageResultIds = resultIds(action.payload.data);
+        state.pagination = action.payload.meta;
+        state.queryInProgress = false;
+      })
+      .addCase(queryFavoriteListingsThunk.rejected, (state, action) => {
+        console.error(action.payload || action.error);
+        state.queryInProgress = false;
+        state.queryFavoritesError = action.payload;
+      });
+  },
+});
+
+export default favoriteListingsSlice.reducer;
 
 export const loadData = (params, search, config) => {
   const queryParams = parse(search);
@@ -114,7 +83,7 @@ export const loadData = (params, search, config) => {
   } = config.layout.listingImage;
   const aspectRatio = aspectHeight / aspectWidth;
 
-  return queryFavoriteListings({
+  return queryFavoriteListingsThunk({
     ...queryParams,
     page,
     perPage: RESULT_PAGE_SIZE,

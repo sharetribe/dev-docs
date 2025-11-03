@@ -6,6 +6,8 @@ description:
   Sharetribe Web Template.
 ---
 
+import { FileTree } from 'nextra/components';
+
 # Hosted marketplace texts with Asset Delivery API
 
 Marketplace texts can be managed both in the built-in marketplace text
@@ -100,37 +102,46 @@ sdk.assetByAlias({
 
 ## How production build works with hosted marketplace texts
 
-This setup is in use if you run **_yarn start_** in your host
-environment or **_yarn run dev-server_** on your local machine.
+This setup is in use when the server is running, i.e. when you run
+`yarn start` in your host environment or `yarn run dev-server` on your
+local machine.
 
 1. Export **fetchAppAssets** from _src/index.js_ to make it available
    for the server.
 2. SSR: initialize the store
 
-   ```shell
-   └── server
-       └── dataLoader.js
-   ```
+<FileTree>
+  <FileTree.Folder name="server" defaultOpen>
 
-   ```js
-   let translations = {};
-   const store = configureStore({}, sdk);
-   return store.dispatch(fetchAppAssets(config.appCdnAssets));
-   ```
+        <FileTree.File name="dataLoader.js" active />
 
-3. SSR: **fetchAppAssets** thunk fetches the latest version of
-   _content/translations.json_ asset by using _latest_ alias with
-   **sdk.assetByAlias**
-   - This ensures that the server-side rendering has the most recent
-     version of asset to render the page
-4. SSR: make a **loadData** call if the route specifies it and
+  </FileTree.Folder>
+</FileTree>
 
-   ```js
-     .then(fetchedAssets => {
-       translations = fetchedAssets?.translations?.data || {};
-       return Promise.all(dataLoadingCalls);
-   })
-   ```
+```jsx filename="dataLoader.js"
+const store = configureStore({ initialState: {}, sdk });
+return store.dispatch(fetchAppAssets(defaultConfig.appCdnAssets));
+```
+
+3. SSR: `fetchAppAssets` thunk fetches the latest version of
+   `content/translations.json` asset by using _latest_ alias with
+   `sdk.assetByAlias`. This ensures that the server-side rendering has
+   the most recent version of asset to render the page
+4. SSR: make a `loadData` call if the route specifies it:
+
+```jsx filename="dataLoader.js"
+  .then(fetchedAppAssets => {
+    const { translations: translationsRaw, ...rest } = fetchedAppAssets || {};
+
+    // We'll handle translations as a separate data.
+    // It's given to React Intl instead of pushing to config Context
+    translations = translationsRaw?.data || {};
+
+    // Rest of the assets are considered as hosted configs
+    // This structure just gives possibilities to add initial config data
+    hostedConfig = { ...hostedConfig, ...extractHostedConfig(rest) };
+    return Promise.all(dataLoadingCalls(hostedConfig));
+```
 
 5. SSR: asset **version** is saved to the store and passed to the
    browser through the _preloadedState_.
