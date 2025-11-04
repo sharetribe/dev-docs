@@ -7,6 +7,8 @@ description:
   access messages through Zapier.
 ---
 
+import { Steps } from 'nextra/components';
+
 # Messages
 
 Messages let your users communicate with other users in your
@@ -93,7 +95,7 @@ and react directly to them. See how to
 [Integration API example script repository](https://github.com/sharetribe/integration-api-examples)
 if you’re unsure where to start building your integration.
 
-## Message notifications in Sharetribe Web Template
+## Notification count
 
 By default, Sharetribe Web Template renders a notification symbol when
 there are transactions that require action from the user:
@@ -109,28 +111,36 @@ there are transactions that require action from the user:
 
 This is how the default logic works:
 
-1.  The template
-    [makes two queries](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L311-L328)
-    that retrieve all sales transactions (i.e. transactions where the
-    current user is the provider) that are in a state that
-    [requires provider attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L354),
-    and all order transactions (i.e. transactions where the current user
-    is the provider) that are in a state that
-    [requires customer attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L367)
-2.  The number of relevant sales and order transactions determines the
-    [notification count](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/TopbarContainer.js#L55)
-    that in turn determines whether to show
-    [the notification indicator](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/Topbar/TopbarDesktop/TopbarDesktop.js#L43).
+<Steps>
 
-The variable
-[currentUserNotificationCount](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L64)
-stores the number of active notifications.
+{<h3>The template fetches transactions that require attention</h3>}
+
+The template
+[makes two API calls](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L118-L144)
+that retrieves all sales transactions (i.e. transactions where the
+current user is the provider) that are in a state that
+[requires provider attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L354),
+and all order transactions (i.e. transactions where the current user is
+the provider) that are in a state that
+[requires customer attention](https://github.com/sharetribe/web-template/blob/main/src/transactions/transaction.js#L367).
+
+{<h3>The template renders notification count</h3>}
+
+The number of relevant sales and order transactions determines the
+[notification count](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/TopbarContainer.js#L53)
+that in turn determines whether to show
+[the notification indicator](https://github.com/sharetribe/web-template/blob/main/src/containers/TopbarContainer/Topbar/TopbarDesktop/TopbarDesktop.js#L43).
+The variables
+[currentUserSaleNotificationCount and currentUserOrderNotificationCount](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L302-L303)
+store the number of active notifications.
+
+</Steps>
+
+### Customize the notification logic
 
 You can extend the messaging logic in many ways. For example, a common
 customisation is to display a notification every time a user receives a
-new message. To achieve this, you could change the logic behind
-[currentUserNotificationCount](https://github.com/sharetribe/web-template/blob/main/src/ducks/user.duck.js#L64)
-to display a number stored in extended data. The data attribute would
-represent the number of unread messages, and could be updated every time
-a new message is detected using
-[events](/how-to/events/reacting-to-events/).
+new message. Instead of using the default logic, you could use an
+extended data attribute stored in the user object to store the number of
+unread notifications. This attribute could be updated every time a new
+message is detected using [events](/how-to/events/reacting-to-events/).

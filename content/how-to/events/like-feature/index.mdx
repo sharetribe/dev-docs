@@ -6,7 +6,7 @@ description:
   users to like listings using events and user extended data
 ---
 
-import { Steps } from 'nextra/components';
+import { Steps, FileTree } from 'nextra/components';
 
 # How to implement a like feature using events
 
@@ -29,14 +29,14 @@ easily access the number of likes by querying the
 endpoint and passing the relevant listing ID as a query parameter.
 However, merely storing the number of likes in the listing's extended
 data doesn't provide information about which user has liked the listing.
-If we can associate likes with users, we can build a dislike feature and
-show the user a list of listings they have liked. A naive approach would
-be to store the user ID in the listing's extended data each time they
-like a listing. However, to render a list of liked listings, we would
-need to loop through all listings to find all occurrences of the user
-ID. That is why in this guide, in addition to storing the number of
-likes in the listing's extended data, we choose to save the listing ID
-in the user's extended data.
+If we can associate likes with users, we can build a "liked listings"
+feature and show the user a list of listings they have liked. A naive
+approach would be to store the user ID in the listing's extended data
+each time they like a listing. However, to render a list of liked
+listings, we would need to loop through all listings to find all
+occurrences of the user ID. That is why in this guide, in addition to
+storing the number of likes in the listing's extended data, we choose to
+save the listing ID in the user's extended data.
 
 To allow users to like listings, we introduce a UI-element users can
 interact with to like a listing. However, when we update a listing's
@@ -66,14 +66,19 @@ In this tutorial, we will implement the like feature to the default
 ListingPageCarousel version, but you can just as well follow the
 instructions to implement it in ListingPageCoverPhoto as well.
 
-```shell
-└── src
-    └── containers
-        └── ListingPage
-            ├── SectionLikes.js
-            ├── ListingPageCarousel.js
-            └── ListingPage.module.css
-```
+Start by creating a new file, called `SectionLikes.js`:
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="SectionLikes.js" active />
+        <FileTree.File name="ListingPageCarousel.js" />
+        <FileTree.File name="ListingPage.module.css" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 ### Add the new subcomponent
 
@@ -117,13 +122,13 @@ export default SectionLikes;
 
 ### Import the component
 
-Next, let's import the new component in _ListingPageCarousel.js_:
+Next, let's import the new component in `ListingPageCarousel.js`:
 
-```jsx
+```jsx filename="ListingPageCarousel.js"
 import SectionLikes from './SectionLikes';
 ```
 
-### Create an instance of the component into a variable
+### Assign an instance of the component into a variable
 
 We want to show the like button next to the listing title. In the
 template, where that title is shown depends on whether the listing page
@@ -131,12 +136,10 @@ is viewed on mobile or on desktop. Because of this, we want to set the
 whole instance into a constant, so we can pass it to the correct
 contexts.
 
-```diff
-+  const sectionLikes = (
-+    <SectionLikes
-+      publicData={currentListing?.attributes?.publicData}
-+    />
-+  )
+```jsx filename="ListingPageCarousel.js"
+const sectionLikes = (
+  <SectionLikes publicData={currentListing?.attributes?.publicData} />
+);
 ```
 
 ### Pass the component variable to the render method and OrderPanel
@@ -145,25 +148,27 @@ We've created the new component _SectionLikes.js_, but it still needs to
 be included in the render method of _ListingPageCarousel.js_ to show it
 in a mobile layout:
 
-```diff
-    <div className={css.mobileHeading}>
-      <h1 className={css.orderPanelTitle}>
-        <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-      </h1>
-+     {sectionLikes}
-    </div>
+```jsx filename="ListingPageCarousel.js" {5}
+<div className={css.mobileHeading}>
+  <h1 className={css.orderPanelTitle}>
+    <FormattedMessage
+      id="ListingPage.orderTitle"
+      values={{ title: richTitle }}
+    />
+  </h1>
+  {sectionLikes}
+</div>
 ```
 
 To show the like component on a desktop layout, we need to pass it as a
 prop to OrderPanel.
 
-```diff
+```jsx filename="ListingPageCarousel.js" {5}
     <div className={css.orderColumnForProductLayout}>
     <OrderPanel
       className={css.productOrderPanel}
       listing={currentListing}
-      ...
-+     sectionLikes={sectionLikes}
+     sectionLikes={sectionLikes}
     />
 
 ```
@@ -173,29 +178,32 @@ prop to OrderPanel.
 To show the like component in OrderPanel, we need to pick it from props
 and show it next to the title.
 
-```shell
-└── src
-    └── components
-        └── OrderPanel
-            └── OrderPanel.js
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="OrderPanel" defaultOpen>
+        <FileTree.File name="OrderPanel.js" active />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 Since we are passing the full instance as a prop, you can show it as a
 part of the heading.
 
-```diff
+```jsx filename="OrderPanel.js" {6, 12}
 const OrderPanel = props => {
   const {
     rootClassName,
     className,
     ...
-+   sectionLikes,
+    sectionLikes,
   } = props;
 ...
     <div className={css.orderHeading}>
       {titleDesktop ? titleDesktop : <h2 className={titleClasses}>{title}</h2>}
       {subTitleText ? <div className={css.orderHelp}>{subTitleText}</div> : null}
-+     {sectionLikes}
+      {sectionLikes}
     </div>
 
 ```
@@ -203,9 +211,9 @@ const OrderPanel = props => {
 ### Update ListingPage.module.css
 
 Finally, let's style our new component by adding the following CSS rules
-in _ListingPage.module.css_:
+in `ListingPage.module.css`:
 
-```css
+```css filename="ListingPage.module.css"
 .heartIcon {
   border-radius: 11px;
   cursor: pointer;
@@ -241,99 +249,57 @@ next to it if you navigate to the listing page:
 ## Update user extended data
 
 To update the user extended data, we'll need to make some changes to
-_ListingPage.duck.js_. We'll need to import the _currentUserShowSuccess_
-function from _user.duck.js_ to update the current user. In addition,
+`ListingPage.duck.js`. We'll need to import the `currentUserShowSuccess`
+function from `user.duck.js` to update the current user. In addition,
 we'll be adding a new action type, action creator and reducer to the
 file. For more information on how Redux is setup in the template, refer
 to our [article on Redux](/template/state-management/redux/).
 
 <Steps>
 
-### Import currentUserShowSuccess
+### Import setCurrentUser
 
-```jsx
+```jsx filename="ListingPage.duck.js" {4}
 import {
   fetchCurrentUser,
   fetchCurrentUserHasOrdersSuccess,
-  currentUserShowSuccess,
+  setCurrentUser,
 } from '../../ducks/user.duck';
 ```
 
-### Add new action types
+### Add new variables to initialState:
 
-```jsx
-export const UPDATE_LIKES_REQUEST =
-  'app/ListingPage/UPDATE_LIKES_REQUEST';
-export const UPDATE_LIKES_SUCCESS =
-  'app/ListingPage/UPDATE_LIKES_SUCCESS';
-export const UPDATE_LIKES_ERROR = 'app/ListingPage/UPDATE_LIKES_ERROR';
-```
-
-### Add new initialStates:
-
-```diff
+```jsx filename="ListingPage.duck.js" {6-7}
 const initialState = {
   id: null,
   showListingError: null,
   reviews: [],
   fetchReviewsError: null,
-  timeSlots: null,
-  fetchTimeSlotsError: null,
+  updateLikesError: null,
+  updateLikesInProgress: false,
+  monthlyTimeSlots: {},
+  timeSlotsForDate: {},
   lineItems: null,
   fetchLineItemsInProgress: false,
   fetchLineItemsError: null,
-  sendEnquiryInProgress: false,
-  sendEnquiryError: null,
+  sendInquiryInProgress: false,
+  sendInquiryError: null,
   inquiryModalOpenForListingId: null,
-+ updateLikesError: null,
-+ updateLikesInProgress: false,
 };
-
-```
-
-### Update the reducer:
-
-```jsx
-case UPDATE_LIKES_REQUEST:
-  return { ...state, updateLikesInProgress: true, updateLikesError: null };
-case UPDATE_LIKES_SUCCESS:
-  return { ...state, updateLikesInProgress: false };
-case UPDATE_LIKES_ERROR:
-  return { ...state, updateLikesInProgress: false, updateLikesError: payload };
-```
-
-### Add new action creators:
-
-```jsx
-export const updateLikesRequest = (params) => ({
-  type: UPDATE_LIKES_REQUEST,
-  payload: { params },
-});
-export const updateLikesSuccess = (result) => ({
-  type: UPDATE_LIKES_SUCCESS,
-  payload: result.data,
-});
-export const updateLikesError = (error) => ({
-  type: UPDATE_LIKES_ERROR,
-  payload: error,
-  error: true,
-});
 ```
 
 ### Add new thunk
 
-Thunks are used to call action creators that return functions instead of
-action objects:
+Create a thunk that adds the listing ID to the user extended data.
 
-```jsx
-export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
-  dispatch(updateLikesRequest());
+```jsx filename="ListingPage.duck.js"
+const updateLikesPayloadCreator = ({ listingId }, thunkAPI) => {
+  const { dispatch, rejectWithValue, getState, extra: sdk } = thunkAPI;
 
   return dispatch(fetchCurrentUser()).then(() => {
     const currentUser = getState().user.currentUser;
     const currentLikes =
       currentUser?.attributes?.profile?.privateData?.likedListings;
-
     const queryParams = {
       expand: true,
       include: ['profileImage'],
@@ -342,10 +308,10 @@ export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
         'variants.square-small2x',
       ],
     };
-
     // if listingId already exists in currentLikes, it should be removed from currentLikes
     // if user has current likes, merge listingId into current likes
     const ifDislike = !!currentLikes?.includes(listingId);
+
     const likedListings = ifDislike
       ? currentLikes.filter((id) => id !== listingId)
       : currentLikes
@@ -355,8 +321,6 @@ export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
     return sdk.currentUser
       .updateProfile({ privateData: { likedListings } }, queryParams)
       .then((response) => {
-        dispatch(updateLikesSuccess(response));
-
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {
           throw new Error(
@@ -366,60 +330,125 @@ export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
         const currentUser = entities[0];
 
         // Update current user in state.user.currentUser through user.duck.js
-        dispatch(currentUserShowSuccess(currentUser));
+        dispatch(setCurrentUser(currentUser));
       })
       .catch((e) => {
-        dispatch(updateLikesError(storableError(e)));
+        return rejectWithValue(storableError(e));
       });
   });
 };
+
+export const updateLikesThunk = createAsyncThunk(
+  'ListingPage/updateLikes',
+  updateLikesPayloadCreator
+);
+
+export const updateLikes = (listingId) => (dispatch, getState, sdk) => {
+  return dispatch(updateLikesThunk({ listingId })).unwrap();
+};
 ```
 
-### Import updateLikes to ListingPage.js
+### Update the reducer:
+
+```jsx filename="ListingPage.duck.js"
+.addCase(updateLikesThunk.pending, (state, action) => {
+  state.updateLikesInProgress = true;
+})
+.addCase(updateLikesThunk.fulfilled, (state, action) => {
+  state.updateLikesInProgress = false;
+})
+.addCase(updateLikesThunk.rejected, (state, action) => {
+  state.updateLikesError = action.payload;
+  state.updateLikesInProgress = false;
+})
+```
+
+### Import updateLikes on the Listing Page
 
 We need to import the new thunk we defined in the _ListingPage.duck.js_
 file into _ListingPageCarousel.js_ in order to connect to the Redux
 store through _mapDispatchToProps_:
 
-```jsx
+```jsx filename="ListingPageCarousel.js" {6}
 import {
-  sendEnquiry,
-  fetchTransactionLineItems,
+  sendInquiry,
   setInitialValues,
+  fetchTimeSlots,
+  fetchTransactionLineItems,
   updateLikes,
 } from './ListingPage.duck';
 ```
 
-### Initialise new props in ListingPage component
+### Expose state values on the Listing Page
 
-We need to initialise the props that are connected to the Redux store:
+We need to expose the props that are connected to the Redux store in
+`ListingPageCarousel.js`:
 
-```diff
-  render() {
-    const {
-      unitType,
-      isAuthenticated,
-      currentUser,
-      getListing,
-      getOwnListing,
-      intl,
-      onManageDisableScrolling,
-+     onUpdateLikes,
-+     updateLikesInProgress,
-      params: rawParams,
-      location,
+```jsx filename="ListingPageCarousel.js" {18-19}
+  return {
+    isAuthenticated,
+    currentUser,
+    getListing,
+    getOwnListing,
+    scrollingDisabled: isScrollingDisabled(state),
+    inquiryModalOpenForListingId,
+    showListingError,
+    reviews,
+    fetchReviewsError,
+    monthlyTimeSlots, // for OrderPanel
+    timeSlotsForDate, // for OrderPanel
+    lineItems, // for OrderPanel
+    fetchLineItemsInProgress, // for OrderPanel
+    fetchLineItemsError, // for OrderPanel
+    sendInquiryInProgress,
+    sendInquiryError,
+    updateLikesInProgress,
+    updateLikesError,
+  };
+};
 ```
 
-### Connect updateLikes to mapDispatchToProps function on ListingPage.js
+```jsx filename="ListingPageCarousel.js" {15-16}
+const mapStateToProps = state => {
+  const { isAuthenticated } = state.auth;
+  const {
+    showListingError,
+    reviews,
+    fetchReviewsError,
+    monthlyTimeSlots,
+    timeSlotsForDate,
+    sendInquiryInProgress,
+    sendInquiryError,
+    lineItems,
+    fetchLineItemsInProgress,
+    fetchLineItemsError,
+    inquiryModalOpenForListingId,
+    updateLikesInProgress,
+    updateLikesError,
+  } = state.ListingPage;
+```
 
-```diff
-const mapDispatchToProps = dispatch => ({
+### Connect updateLikes to mapDispatchToProps function
+
+```jsx filename="ListingPageCarousel.js" {7}
+const mapDispatchToProps = (dispatch) => ({
   onManageDisableScrolling: (componentId, disableScrolling) =>
     dispatch(manageDisableScrolling(componentId, disableScrolling)),
-+  onUpdateLikes: (listingId) => dispatch(updateLikes(listingId)),
-  callSetInitialValues: (setInitialValues, values, saveToSessionStorage) =>
-    dispatch(setInitialValues(values, saveToSessionStorage)),
-  onFetchTransactionLineItems: (bookingData, listingId, isOwnListing) =>
+  callSetInitialValues: (
+    setInitialValues,
+    values,
+    saveToSessionStorage
+  ) => dispatch(setInitialValues(values, saveToSessionStorage)),
+  onFetchTransactionLineItems: (params) =>
+    dispatch(fetchTransactionLineItems(params)),
+  onUpdateLikes: (listingId) => dispatch(updateLikes(listingId)),
+  onSendInquiry: (listing, message) =>
+    dispatch(sendInquiry(listing, message)),
+  onInitializeCardPaymentData: () =>
+    dispatch(initializeCardPaymentData()),
+  onFetchTimeSlots: (listingId, start, end, timeZone, options) =>
+    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)),
+});
 ```
 
 </Steps>
@@ -434,49 +463,49 @@ _SectionLikes_ React component.
 
 <Steps>
 
-### Pass _SectionHeading_ the correct props in _ListingPage.js_
+### Pass SectionLikes the new props
 
-```diff
-  const sectionLikes = (
-    <SectionLikes
-      publicData={currentListing?.attributes?.publicData}
-+     listingId={currentListing.id.uuid}
-+     onUpdateLikes={onUpdateLikes}
-+     currentUser={currentUser}
-+     updateLikesInProgress={updateLikesInProgress}
-    />
-  )
+```jsx filename="ListingPageCarousel.js" {3-7}
+const sectionLikes = (
+  <SectionLikes
+    publicData={currentListing?.attributes?.publicData}
+    listingId={currentListing.id.uuid}
+    onUpdateLikes={onUpdateLikes}
+    currentUser={currentUser}
+    updateLikesInProgress={updateLikesInProgress}
+  />
+);
 ```
 
-### Define props in _SectionLikes.js_
+### Define props in SectionLikes.js
 
-```diff
+```jsx filename="SectionLikes.js" {4-7}
 const SectionLikes = props => {
   const {
     publicData,
-+   onUpdateLikes,
-+   listingId,
-+   currentUser,
-+   updateLikesInProgress,
+    onUpdateLikes,
+    listingId,
+    currentUser,
+    updateLikesInProgress,
   } = props;
 ```
 
-### Define currentLikes in _SectionLikes.js_
+### Define currentLikes in SectionLikes.js
 
-```jsx
+```jsx filename="SectionLikes.js"
 const currentLikes =
   currentUser?.attributes?.profile?.privateData?.likedListings;
 ```
 
 ### Add an onClick event handler
 
-```diff
+```jsx filename="SectionLikes.js" {2-5}
 <span className={css.heartIcon}
-+ onClick={() => {
-+   if (!updateLikesInProgress && currentUser) {
-+     onUpdateLikes(listingId);
-+    }
-+  }}>
+  onClick={() => {
+    if (!updateLikesInProgress && currentUser) {
+      onUpdateLikes(listingId);
+     }
+   }}>
 ```
 
 </Steps>
@@ -504,17 +533,13 @@ our case, it's _user/updated_.
 
 <Steps>
 
-### Filter events by _user/updated_
+### Filter events by user/updated
 
-```diff
+```js {2} showLineNumbers{55}
 const queryEvents = (args) => {
--  var filter = {eventTypes: "listing/created,listing/updated"};
-+  var filter = {eventTypes: "user/updated"};
-  return integrationSdk.events.query(
-    {...args, ...filter}
-  );
+  var filter = { eventTypes: 'user/updated' };
+  return integrationSdk.events.query({ ...args, ...filter });
 };
-
 ```
 
 ### Add a function that updates the 'likes' value:
@@ -613,7 +638,7 @@ const groupEvents = (events) => {
 ```
 
 Finally, to call the right functions, let's make a few changes to the
-_pollLoop_ function:
+`pollLoop` function:
 
 ```diff
 const pollLoop = (sequenceId) => {
@@ -671,19 +696,18 @@ actual like count.
 
 ### Add new state to ListingPageCarousel.js
 
-```diff
+```jsx filename="ListingPageCarousel.js" {6}
 export const ListingPageComponent = props => {
   const [inquiryModalOpen, setEnquiryModalOpen] = useState(
     props.inquiryModalOpenForListingId === props.params.id
   );
 
-+ const [likesOffset, updateLikesOffset] = useState(0);
-
+  const [likesOffset, updateLikesOffset] = useState(0);
 ```
 
 ### Pass new functions as props to SectionLikes
 
-```diff
+```jsx filename="ListingPageCarousel.js" {8-10}
 const sectionLikes = (
   <SectionLikes
     publicData={currentListing?.attributes?.publicData}
@@ -691,16 +715,16 @@ const sectionLikes = (
     onUpdateLikes={onUpdateLikes}
     currentUser={currentUser}
     updateLikesInProgress={updateLikesInProgress}
-+   likesOffset={likesOffset}
-+   onSubtractLike={() => updateLikesOffset(likesOffset - 1)}
-+   onAddLike={() => updateLikesOffset(likesOffset + 1)}
+    likesOffset={likesOffset}
+    onSubtractLike={() => updateLikesOffset(likesOffset - 1)}
+    onAddLike={() => updateLikesOffset(likesOffset + 1)}
   />
-  )
+);
 ```
 
 ### Define new props in SectionLikes.js
 
-```diff
+```jsx filename="SectionLikes.js" {8-10}
 const SectionLikes = props => {
   const {
     publicData,
@@ -708,37 +732,35 @@ const SectionLikes = props => {
     listingId,
     currentUser,
     updateLikesInProgress,
-+   likesOffset,
-+   onAddLike,
-+   onSubtractLike,
+    likesOffset,
+    onAddLike,
+    onSubtractLike,
   } = props;
 ```
 
 ### Include logic to increment likes and conditional styling
 
-```diff
+```jsx filename="SectionLikes.js" {2, 4, 7, 11-16, 20}
   const currentLikes = currentUser?.attributes?.profile?.privateData?.likedListings;
-+ const alreadyLiked = currentLikes?.includes(listingId);
+  const alreadyLiked = currentLikes?.includes(listingId);
   const likes = publicData?.likes ? publicData.likes : 0;
-+  const classes = classNames(currentUser ? css.heartIcon : css.heartDisabled, alreadyLiked ? css.iconLiked : null)
+  const classes = classNames(currentUser ? css.heartIcon : css.heartDisabled, alreadyLiked ? css.iconLiked : null)
 
   return (
--   <span className={css.heartIcon}
-+   <span className={classes}
+    <span className={classes}
       onClick={() => {
         if (!updateLikesInProgress && currentUser) {
           onUpdateLikes(listingId);
-+         if (alreadyLiked) {
-+           onSubtractLike();
-+         }
-+         else {
-+           onAddLike();
-+         }
+          if (alreadyLiked) {
+            onSubtractLike();
+          }
+          else {
+            onAddLike();
+          }
         }
       }}>
 
--     <IconHeart /> { likes }
-+     <IconHeart /> { likes + likesOffset }
+      <IconHeart /> { likes + likesOffset }
 ```
 
 </Steps>

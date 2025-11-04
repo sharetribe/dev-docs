@@ -40,7 +40,7 @@ be set to `time-full` or `time-partial`. Queries using this
 By default, the template will display the first 24 results when using
 the date filter (and as pagination is not supported, the results will be
 limited to 24). This value can be modified in
-[SearchPage.duck.js file](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L21),
+[SearchPage.duck.js file](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L22),
 so you can allow displaying up to a 100 results.
 
 ![Marketplace payment flow](./dates-query.png)
@@ -99,7 +99,7 @@ availability on certain dates. The date search cannot be restricted to
 specific time zones. This means that to cover listings from all possible
 time zones, the template prolongs the start and end times before sending
 them to the Sharetribe API. See the relevant code
-[in SearchPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L185-L186).
+[in SearchPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L180-L181).
 
 To be exact, the start time is moved 14 hours earlier, and the end time
 is moved 12 hours later. This means that the availability search results
@@ -123,7 +123,7 @@ slots of a month might only cover a few weeks worth of availability. The
 date picker component needs to know whether there is availability on a
 certain day, so the template makes a query that matches the first
 available timeslot within the defined interval. See the full query in
-[ListingPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/ListingPage/ListingPage.duck.js#L495)
+[ListingPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/ListingPage/ListingPage.duck.js#L344)
 This information is used to display the availability of a listing in the
 monthly calendar view when booking:
 
@@ -138,7 +138,7 @@ availability on the last day of the month at 23:55 for a 2 hour fixed
 booking slot, the template needs to check if there is availability 2
 hours onwards from 23:55, therefore extending the query into the next
 month. See the
-[relevant code in ListingPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/ListingPage/ListingPage.duck.js#L488-L493).
+[relevant code in ListingPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/ListingPage/ListingPage.duck.js#L337-L342).
 
 Once the user selects a date from the calendar picker, the template
 makes a subsequent timeslot query to retrieve all available timeslots
