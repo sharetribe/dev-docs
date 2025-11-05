@@ -49,7 +49,8 @@ the previous active process definitions (if you only want to use the new
 process) or leave them as they are (if you want to allow using multiple
 processes in the same application).
 
-```jsx filename="src/config/configListing.js"
+```js filename="src/config/configListing.js"
+export const listingTypes = [
   {
     listingType: 'nightly-booking',
     label: 'Nightly booking',
@@ -58,7 +59,22 @@ processes in the same application).
       alias: 'negotiated-booking/release-1',
       unitType: 'night',
     },
-  }
+  },
+  // {
+  //   listingType: 'daily-booking',
+  //   label: 'Daily booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'day',
+  //   },
+  //   availabilityType: 'oneSeat',
+  //   defaultListingFields: {
+  //     location: true,
+  //     payoutDetails: true,
+  //   },
+  // },
+];
 ```
 
 <Callout type="info">
