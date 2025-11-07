@@ -2,22 +2,31 @@
 title: Applications
 sidebarTitle: Applications
 description:
-  Sharetribe Applications are the entities that authenticate to and
-  access the Sharetribe APIs.
+  Applications are used to manage the credentials you use to access the
+  Sharetribe APIs.
 ---
 
 import { Callout } from 'nextra/components';
 
 # Applications
 
+Applications are used to manage the credentials you use to access the
+Sharetribe APIs.
+
+## Add a new application
+
 In Sharetribe, accessing the
 [Marketplace API or the Integration API](/concepts/api-sdk/marketplace-api-integration-api/)
 starts with creating an
 [_application_](https://console.sharetribe.com/advanced/applications).
-Each application has the necessary credentials (client ID and optional
-client secret) that are used to
-[authenticate](/concepts/api-sdk/authentication-api/) your application
-to the Sharetribe APIs.
+
+Creating an application will provide you with the Client ID and a Client
+Secret. These credentials are used to
+[authenticate](/concepts/api-sdk/authentication-api/) via the
+Authentication API. Using an Access Token returned by the Authentication
+API, you can make calls to the Marketplace API and the Integration API.
+
+![Screenshot of the "Add a new application" modal](./add-a-new-application.png)
 
 Applications come in two types: Marketplace API applications and
 Integration API applications. Both types of applications have both a
@@ -33,6 +42,8 @@ kept secure.
 - Name your applications so that it is easier for you to recognize how
   each one is used. For instance, use names like "Web UI", "iOS mobile
   app", "reporting", "mailing list integration", etc.
+- When an application is deleted, all API clients using the associated
+  Client ID and Secret will stop working.
 
 <Callout type="warning">
 
