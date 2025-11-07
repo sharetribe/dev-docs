@@ -60,8 +60,8 @@ Once you have the marketplace text file in place:
 import messagesInLocale from './translations/fr.json';`
 ```
 
-3. If you are using a non-english locale with moment library, you can
-   either:
+3. If you are using a locale not currently supported in Console while
+   working with moment library, you can either:
    - Add you preferred locale to
      [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
    - Stop using the
@@ -74,19 +74,10 @@ import messagesInLocale from './translations/fr.json';`
      process.env.NODE_ENV === 'test' ? 'en' : 'fr';
    ```
 
-<Callout>
-
-If you are using a template that supports code-splitted locale imports
-(i.e. after this commit), you can technically skip this second step.
-
-However, for performance reasons, we recommend adding the rows below in
-_src/app.js_ before _const MomentLocaleLoader_:
-
-```
-   import 'moment/locale/it';
-   const hardCodedLocale = process.env.NODE_ENV === 'test' ? 'en' : 'it';
-```
-
+<Callout type="info">
+  Sharetribe supports a wide range of locales out of the box. Check
+  Console to see if your chosen locale is already supported by
+  navigating to Build > General > Localizations > Locale.
 </Callout>
 
 4.  Point `messagesInLocale` to correct .json file, for example:
