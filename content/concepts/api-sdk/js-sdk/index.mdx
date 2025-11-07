@@ -5,16 +5,9 @@ description:
   Information on our SDKs and where to find our SDK documentation
 ---
 
+import { Cards } from 'nextra/components';
+
 # JavaScript SDKs
-
-## Documentation
-
-Find our SDK documentation here:
-
-- [Sharetribe SDK for JavaScript Documentation](https://sharetribe.github.io/flex-sdk-js/)
-- [Sharetribe Integration SDK for JavaScript Documentation](https://sharetribe.github.io/flex-integration-sdk-js/)
-
-## Features
 
 The SDKs are the easiest way to interact with Sharetribe Marketplace API
 and the Sharetribe Integration API.
@@ -25,15 +18,12 @@ structures. Using the SDKs allows you to focus on building your
 marketplace front-end instead of implementing boilerplate to communicate
 with the API.
 
-The main SDK features are:
+## Documentation
 
-- Promise-based asynchronous API.
-- Universal: Runs in any JavaScript environment, including Node.js,
-  browser and React Native (experimental).
-- Predictable mapping from SDK methods to API endpoints.
-- Types to represent UUID, money, geolocation, etc. with automatic
-  serialization and deserialization.
-- Easy authentication.
+Find our SDK documentation here:
+
+- [Sharetribe SDK for JavaScript Documentation](https://sharetribe.github.io/flex-sdk-js/)
+- [Sharetribe Integration SDK for JavaScript Documentation](https://sharetribe.github.io/flex-integration-sdk-js/)
 
 ## Sharetribe SDK for JavaScript
 
@@ -51,6 +41,31 @@ to configure custom API calls.
 You can access all the JS SDK documentation at:
 
 https://sharetribe.github.io/flex-sdk-js/
+
+### SDK Playground
+
+The SDK ships with a command-line based API Playground. You can use the
+Playground to try out the SDK with real API access to learn and test
+things. It also supports executing scripts against the API.
+
+To start the Playground, go to the directory where you cloned the SDK
+Git repository and type:
+
+```bash
+$ yarn run playground --clientid <CLIENT-ID>
+```
+
+This will start the playground using your Marketplace API Client ID to
+connect to your marketplace. You can create a new Client ID or find your
+existing ones in Console at
+https://console.sharetribe.com/advanced/applications.
+
+<br />
+<Cards.Card
+  title="See the full API Playground reference here"
+  href="https://sharetribe.github.io/flex-sdk-js/try-it-in-the-playground.html"
+  arrow
+/>
 
 ## Sharetribe Integration SDK for JavaScript
 
