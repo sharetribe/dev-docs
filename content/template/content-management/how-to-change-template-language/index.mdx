@@ -56,7 +56,7 @@ Once you have the marketplace text file in place:
 
 2. Point `messagesInLocale` to correct `.json` file, for example:
 
-```js
+```js filename="src/app.js"
 import messagesInLocale from './translations/fr.json';`
 ```
 
@@ -68,7 +68,7 @@ import messagesInLocale from './translations/fr.json';`
      [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
      and instead import the locale directly in `app.js, e.g.
 
-   ```js
+   ```js filename="src/app.js"
    import 'moment/locale/fr';
    const hardCodedLocale =
      process.env.NODE_ENV === 'test' ? 'en' : 'fr';
