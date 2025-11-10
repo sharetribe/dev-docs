@@ -1742,6 +1742,11 @@
       "source": "/docs/tutorial/introduction/",
       "destination": "/docs/tutorial/",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/users-and-authentication/implement-delete-user/",
+      "destination": "/docs/",
+      "permanent": true
     }
   ]
 }
