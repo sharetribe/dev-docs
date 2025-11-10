@@ -11,21 +11,30 @@ import { Callout } from 'nextra/components';
 # How to change marketplace language
 
 If you want the template to use a language that is not supported by
-default, a new language-specific marketplace text file needs to be added
-and the messages in it need to be translated. This article walks you
-through the steps required to to that.
+default, the easiest way to do this is through Console. See our
+[Help Center article](https://www.sharetribe.com/help/en/articles/8418391-supported-languages-and-locales#h_4d99ff50aa)
+on how to do this.
+
+However, if you would still like to do this programmatically, there are
+some steps you need to follow. This article will walk you through those.
+
+## Remove marketplace texts in Console
+
+In Console, navigate to Console > Build > Content > Marketplace texts.
+From here, you'll need to remove everything between the brackets in the
+editor, so that it just contains `{}`. Remember to save your progress!
 
 ## Creating a new marketplace text file
 
 1. Copy the default `src/translations/en.json` English marketplace text
    file into some other file, for example `it.json` for Italian.
 
-2. Change the messages in the new marketplace text file to the desired
-   language.
+2. Change the messages in the new marketplace text file to the
+   translations of the desired language.
 
 <Callout>
 
-We will add a few other language files available in
+We have a few other language files available in
 [src/translations/](https://github.com/sharetribe/web-template/tree/master/src/translations)
 directory for you to start customizing marketplace texts.
 
@@ -42,37 +51,33 @@ missing from the Sharetribe Console marketplace text asset.
 
 Once you have the marketplace text file in place:
 
-1. In `config/configDefault.js`, change the `locale` variable value to
-   match the new locale (the name of the new marketplace text file,
-   without the extension), for example:
+1. Comment out, or remove, the `messagesInLocale` definition in the
+   [Template file src/app.js](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L71).
 
-```js
-localization: {
- locale: 'it',
- ...
-}
+2. Point `messagesInLocale` to correct `.json` file, for example:
+
+```js filename="src/app.js"
+import messagesInLocale from './translations/fr.json';`
 ```
 
-2. If you are using a non-english locale with moment library, you should
-   import time specific formatting rules for that locale:
+3. If you are using a locale not currently supported in Console while
+   working with moment library, you can either:
+   - Add you preferred locale to
+     [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
+   - Stop using the
+     [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
+     and instead import the locale directly in `app.js, e.g.
 
-```js
-import 'moment/locale/it';
-```
+   ```js filename="src/app.js"
+   import 'moment/locale/fr';
+   const hardCodedLocale =
+     process.env.NODE_ENV === 'test' ? 'en' : 'fr';
+   ```
 
-<Callout>
-
-If you are using a template that supports code-splitted locale imports
-(i.e. after this commit), you can technically skip this second step.
-
-However, for performance reasons, we recommend adding the rows below in
-_src/app.js_ before _const MomentLocaleLoader_:
-
-```
-   import 'moment/locale/it';
-   const hardCodedLocale = process.env.NODE_ENV === 'test' ? 'en' : 'it';
-```
-
+<Callout type="info">
+  Sharetribe supports a wide range of locales out of the box. Check
+  Console to see if your chosen locale is already supported by
+  navigating to Build > General > Localizations > Locale.
 </Callout>
 
 4.  Point `messagesInLocale` to correct .json file, for example:

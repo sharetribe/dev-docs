@@ -740,7 +740,7 @@ When updated, the booking remains in the same state it was before the
 update.
 
 <Callout>
-  Only the given attributes are updated and ones that are left our
+  Only the given attributes are updated and ones that are left out
   remain unchanged. In particular, the booking display times are NOT
   updated automatically when the booking start/end time is updated.
 </Callout>
@@ -1188,17 +1188,32 @@ Action for creating a Stripe Payment Intent for use with synchronous
 push payment methods. The following payment methods are supported:
 
 - Alipay
+- Affirm
 - Bancontact
 - EPS
 - giropay
 - iDEAL
+- Klarna
+- PayPal
 - Przelewy24
+
+Note that this is not an exhaustive list of payment methods supported by
+Stripe. Sharetribe supports payment methods that have immediate payment
+confirmation and that are supported by
+[Stripe's PaymentIntents API](https://stripe.com/en-fi/guides/payment-methods-guide#2-choosing-the-right-payment-methods-for-your-business).
+These tend to fall into the following categories: cards, bank transfers,
+digital wallets, and BNPL (buy now, pay later).
+
+See
+[Stripe's payment method support documentation](https://docs.stripe.com/payments/payment-methods/payment-method-support)
+for more extensive list of payment methods, keeping the above criteria
+in mind.
 
 Only one PaymentIntent per transaction is supported.
 
 After the PaymentIntent is created, it's ID and client secret are
-temporarily accessible in the Sharetribe transaction protected data
-under the `stripePaymentIntents` key in the following form:
+temporarily accessible in the transaction protected data under the
+`stripePaymentIntents` key in the following form:
 
 ```json
 {

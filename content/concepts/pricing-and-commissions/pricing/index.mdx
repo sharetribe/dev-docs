@@ -55,6 +55,21 @@ works in Sharetribe and how pricing schemes can be designed.
   transaction. The value is the sum of line items that apply to the
   provider.
 
+## Money type format
+
+Following the Sharetribe SDK documentation, you will see that the
+[Money type](https://sharetribe.github.io/flex-sdk-js/types.html)
+requires both an amount and a currency, with the amount expressed as
+cents. See our documentation on
+[currency subunits](https://www.sharetribe.com/docs/template/configuration/how-to-set-up-currency-in-template/#currency-subunits)
+for more information.
+
+`new Money(amount: Number, currency: String)`
+
+When working with the [APIs](https://www.sharetribe.com/api-reference/)
+and in the Template, it is important to ensure that the amount is an
+integer, as floating point numbers are not supported.
+
 ## Line items
 
 In Sharetribe, the total price of a transaction is defined by its _line
