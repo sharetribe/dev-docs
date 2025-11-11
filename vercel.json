@@ -1105,7 +1105,12 @@
     },
     {
       "source": "/docs/tutorial/add-favorite-saunas/",
-      "destination": "/docs/tutorial/add-favorite-bikes/",
+      "destination": "/docs/tutorial/favorite-bikes/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/tutorial/add-favorite-bikes/",
+      "destination": "/docs/tutorial/favorite-bikes/",
       "permanent": true
     },
     {
