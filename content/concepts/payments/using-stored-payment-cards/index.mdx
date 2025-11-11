@@ -14,15 +14,16 @@ purchases. Doing this provides multiple benefits: it streamlines the
 checkout process for existing customers and allows you to place
 additional charges to the payment card of the customer.
 
-Sharetribe Web Template includes a checkout workflow, which offers a box
-for the customer to check if they want to store their card for future
-purchases. Once they've stored it, they are offered the option to use
-the same card for subsequent purchases without entering the details
-again.
+## Overview
 
-In addition, each user has a page called "payment methods" in their
-account settings. From this page, the user can store a new credit card,
-delete a stored card, or replace a stored card with a new one.
+The Sharetribe Web Template provides an interface via which users can
+store their payment card for future use. Once they've stored it, they
+are offered the option to use the same card for subsequent purchases
+without entering the details again.
+
+Users can access their saved payment methods through their account
+settings. From this page, the user can store a new credit card, delete a
+stored card, or replace a stored card with a new one.
 
 [Learn how storing payment card works in Sharetribe Web Template](/how-to/payments/save-payment-card/)
 
@@ -30,24 +31,24 @@ delete a stored card, or replace a stored card with a new one.
 
 ## Frequently asked questions about storing payment cards
 
-**How many payment cards can I store per customer?**
+### How many payment cards can I store per customer?
 
 Right now you can only store one payment card per customer. If you store
 a new card, the old one is replaced.
 
-**How do I edit the details of a stored credit card?**
+### How do I edit the details of a stored credit card?
 
 You can't edit the details of a stored payment card. Instead, you need
 to delete the card and create a new card.
 
-**Can I create delayed charges?**
+### Can I create delayed charges?
 
 Sometimes you might want to store the payment card details of the
 customer when they make a booking, but initiate the actual charge only
 later. A typical example could be booking a venue for a wedding. The
 initial booking might be done a year in advance, but the charge might
-happen only a bit before the event, or even after it. \
- \
+happen only a bit before the event, or even after it.
+
 It's possible for you to adjust your
 [transaction process](/concepts/transactions/transaction-process/) to
 add a transition that attempts to automatically charge the card of the
@@ -55,7 +56,7 @@ customer at a specific point in time.
 [A separate article](/concepts/payments/off-session-payments-in-transaction-process/)
 describes how you can build such a process.
 
-**Can I create extra charges to the payment card of the customer?**
+### Can I create extra charges to the payment card of the customer?
 
 Sometimes you might want to create extra charges for a stored card after
 an initial purchase. For example, if a rented item is stolen or damaged
@@ -77,7 +78,7 @@ which it is moved to your bank account. If a payout to the provider (in
 this case the owner of the item) is needed, you will need to handle it
 manually from your own bank account.
 
-**Can I enable recurring / subscription payments?**
+### Can I enable recurring / subscription payments?
 
 Stripe supports
 [subscriptions](https://stripe.com/docs/connect/subscriptions), which
