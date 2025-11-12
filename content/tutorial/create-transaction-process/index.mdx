@@ -142,7 +142,7 @@ The push payment related transitions in the process are
 transitions from the process, since we are sure we will not be using
 push payments on our marketplace.
 
-```clojure
+```clojure filename="biketribe-instant-booking/process.edn"
   {:name :transition/request-push-payment,
    :actor :actor.role/customer,
    :actions
@@ -214,7 +214,7 @@ a unique transaction type. The transaction type defines the transaction
 process and alias being used, as well as the unit type, such as _day_ or
 _night_.
 
-```js
+```jsx filename="src/config/configListing.js"
 export const listingTypes = [
   {
     listingType: 'daily-booking',
@@ -230,7 +230,7 @@ export const listingTypes = [
 Let's use the new _biketribe-instant-booking_ process as the daily
 booking process:
 
-```diff
+```diff filename="src/config/configListing.js"
   {
 -   listingType: 'daily-booking',
 -   label: 'Daily booking',
@@ -259,7 +259,7 @@ alongside the hosted ones next.
         └── configHelpers.js
 ```
 
-```diff
+```diff filename="src/util/configHelpers.js"
 const mergeListingConfig = (hostedConfig, defaultConfigs) => {
 ...
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
@@ -308,7 +308,7 @@ in the default process.
 **Step 1**: Update transitions in the **transitions** object, and states
 in the **states** object:
 
-```js
+```jsx filename="src/transactions/transactionProcessInstantBooking.js"
 export const transitions = {
   // When a customer makes a booking to a listing, a transaction is
   // created with the initial request-payment transition.
@@ -352,7 +352,7 @@ export const transitions = {
 };
 ```
 
-```js
+```jsx filename="src/transactions/transactionProcessInstantBooking.js"
 export const states = {
   INITIAL: 'initial',
   INQUIRY: 'inquiry',
@@ -374,7 +374,7 @@ you could also update the id of the graph.
 The mandatory change is that we need to add the new state and transition
 into that process description:
 
-```diff
+```diff filename="src/transactions/transactionProcessInstantBooking.js"
 export const graph = {
   // id is defined only to support Xstate format.
   // However if you have multiple transaction processes defined,
@@ -434,7 +434,7 @@ export const graph = {
 
 - _isRelevantPastTransition_ needs to be updated
 
-```js
+```jsx filename="src/transactions/transactionProcessInstantBooking.js"
 // Check if a transition is the kind that should be rendered
 // when showing transition history (e.g. ActivityFeed)
 // The first transition and most of the expiration transitions made by system are not relevant
@@ -465,7 +465,7 @@ supported in the application.
 
 Let's first import the new process and export its name as a constant.
 
-```diff
+```diff filename="src/transactions/transaction.js"
   import * as log from '../util/log';
   import * as purchaseProcess from './transactionProcessPurchase';
   import * as bookingProcess from './transactionProcessBooking';
@@ -495,7 +495,7 @@ Let's first import the new process and export its name as a constant.
 Then, we will add it to the array of supported processes, and allow it
 to handle all time based unit types.
 
-```jsx
+```jsx filename="src/transactions/transaction.js"
 const PROCESSES = [
   {
     name: PURCHASE_PROCESS_NAME,
@@ -534,14 +534,12 @@ Finally, we need to update the _isBookingProcess_ helper – we need to
 add the new process name to the list used to determine booking
 processes.
 
-```diff
-
+```diff filename="src/transactions/transaction.js"
 export const isBookingProcess = processName => {
   const latestProcessName = resolveLatestProcessName(processName);
   const processInfo = PROCESSES.find(process => process.name === latestProcessName);
 + return [BOOKING_PROCESS_NAME, INSTANT_PROCESS_NAME].includes(processInfo?.name);
 };
-
 ```
 
 Now if you start creating a new listing, you will see a dropdown of
@@ -624,7 +622,7 @@ In this case, you can locate the marketplace text keys and values that
 reference **default-booking** and duplicate them for the new process,
 for example:
 
-```json
+```json filename="src/translations/en.json"
 {
   "EditListingWizard.default-booking.new.saveAvailability": "Next: Photos",
   "EditListingWizard.default-booking.new.saveDetails": "Next: Location",
@@ -644,6 +642,44 @@ keys.
 
 ![Updated marketplace text strings for the new process](./new-process-microcopy-strings.png)
 
+## Add error handling on user deletion
+
+Because the Template offers support for users to delete their accounts,
+you will also need to ensure that the newly created transaction process
+is properly checked at the time of deletion for states that contain
+Stripe-related payment processing. This is handled in
+[delete-account.js](https://github.com/sharetribe/web-template/blob/main/server/api/delete-account.js).
+
+```diff filename="server/api/delete-account.js"
++ stripeRelatedStatesForBiketribeInstantBookings = [
++     stripeRelatedStatesForBiketribeInstantBookings = [
++       'state/pending-payment',
++       'state/booked',
++       'state/delivered',
++     ];
++ ];
+
++ const ongoinBiketribeInstantBookingsWithIncompletePaymentProcessing = () =>
++     sdk.transactions.query({
++       processNames: 'negotiated-booking',
++       states: stripeRelatedStatesForBiketribeInstantBookings.join(','),
++     });
+
+ Promise.all([
+    ...
++     ongoinBiketribeInstantBookingsWithIncompletePaymentProcessing(),
+  ])
+  ...
+};
+```
+
+This handles throwing an error if the user attempts to delete their
+account while any of their involved transactions have ongoing Stripe
+payment processing. This also ensures that no expensive, unneccessary
+user deletion API calls are made, and that the user is prompted to
+contact the marketplace rather than receiving an unclear or confusing
+error.
+
 ## Summary
 
 We created a new process based on an existing example process, and
@@ -657,6 +693,9 @@ updating
 - transaction process graph file,
 - state data helper files, and
 - marketplace text strings.
+
+Finally, we added error handling to reduce API calls and clearly
+communicate the issue to the user.
 
 The next tutorial guide will focus on modifying transaction process
 email notifications.

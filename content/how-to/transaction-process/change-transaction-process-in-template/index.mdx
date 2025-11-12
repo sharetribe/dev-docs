@@ -49,7 +49,7 @@ the previous active process definitions (if you only want to use the new
 process) or leave them as they are (if you want to allow using multiple
 processes in the same application).
 
-```js
+```jsx filename="src/config/configListing.js"
   {
     listingType: 'nightly-booking',
     label: 'Nightly booking',
@@ -58,6 +58,7 @@ processes in the same application).
       alias: 'negotiated-booking/release-1',
       unitType: 'night',
     },
+  }
 ```
 
 <Callout type="info">
@@ -103,7 +104,7 @@ Supported transaction processes are also defined in the files found in
   </FileTree.Folder>
 </FileTree>
 
-```js
+```jsx filename="src/transactions/transaction.js"
 // Then names of supported processes
 export const PURCHASE_PROCESS_NAME = 'default-purchase';
 export const BOOKING_PROCESS_NAME = 'default-booking';
@@ -152,7 +153,7 @@ reached a specific state. The description format follows
 (FSM) library. However, the library is not used since transitions in the
 actual state machine are handled by Marketplace API.
 
-```js
+```jsx filename="src/transactions/transactionProcessBooking.js"
 export const graph = {
   // id is defined only to support Xstate format.
   // However if you have multiple transaction processes defined,
@@ -172,7 +173,8 @@ export const graph = {
     },
     [states.INQUIRY]: {
       on: {
-        [transitions.REQUEST_PAYMENT_AFTER_INQUIRY]: states.PENDING_PAYMENT,
+        [transitions.REQUEST_PAYMENT_AFTER_INQUIRY]:
+          states.PENDING_PAYMENT,
       },
     },
 
@@ -183,6 +185,8 @@ export const graph = {
       },
     },
     // etc.
+  },
+};
 ```
 
 When adding a new state, it needs to be added to the `states` property
@@ -200,7 +204,7 @@ For example, if you have different privileged transitions in your
 process than the ones in the default process, you will need to update
 the helper function to feature the correct transitions.
 
-```js
+```jsx filename="src/transactions/transactionProcessBooking.js"
 export const isPrivileged = (transition) => {
   return [
     transitions.REQUEST_PAYMENT,
@@ -260,7 +264,7 @@ The `...stateData.js` file in turn imports functions from
 `...stateDataBooking.js` and `...stateDataPurchase.js` to retrieve the
 state data corresponding to the correct process.
 
-```js
+```jsx
 export const getStateData = params => {
   ...
   if (processName === PURCHASE_PROCESS_NAME) {
@@ -299,7 +303,7 @@ uniquely named _getStateDataFor..._ function from that file.
 A lot of marketplace text strings in Sharetribe Web Template are
 transaction process and state specific.
 
-```js
+```jsx filename="src/translations/en.json"
 ...
   "InboxPage.default-booking.accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
@@ -316,6 +320,58 @@ or through the
 [Sharetribe Console Content tab](/concepts/content-management/marketplace-texts/).
 
 After making the necessary changes in these contexts, your new
-transaction process should work as expected in the template! Be sure to
+transaction process should work as expected in the Template! Be sure to
 test all the steps in your transaction process carefully to make sure
 that all cases show up as you would expect.
+
+## Add error handling on user deletion
+
+Because the Template offers support for users to delete their accounts,
+you will also need to ensure that newly created transaction processes
+(or modified ones) are properly checked at the time of deletion for
+states that contain Stripe-related payment processing. This is handled
+in
+[delete-account.js](https://github.com/sharetribe/web-template/blob/main/server/api/delete-account.js).
+
+If you have modified an existing transaction process, ensure that all
+states containing Stripe-related actions have been included in the
+appropriate array. See the default booking configuration for example:
+
+```jsx filename="server/api/delete-account.js"
+const stripeRelatedStatesForBookings = [
+  'state/pending-payment',
+  'state/preauthorized',
+  'state/accepted',
+  'state/delivered',
+];
+```
+
+Alternatively, if you have added an entirely new transaction process
+then you will need to create a new array and add it to the queue to be
+checked before submitting the user deletion request.
+
+```diff filename="server/api/delete-account.js"
++ stripeRelatedStatesForNegotiatedBookings = [
++   ...
++ ];
+
++ const ongoingNegotiatedBookingsWithIncompletePaymentProcessing = () =>
++     sdk.transactions.query({
++       processNames: 'negotiated-booking',
++       states: stripeRelatedStatesForNegotiatedBookings.join(','),
++     });
+
+ Promise.all([
+    ...
++     ongoingNegotiatedBookingsWithIncompletePaymentProcessing(),
+  ])
+  ...
+};
+```
+
+This handles throwing an error if the user attempts to delete their
+account while any of their involved transactions have ongoing Stripe
+payment processing. This also ensures that no expensive, unneccessary
+user deletion API calls are made, and that the user is prompted to
+contact the marketplace rather than receiving an unclear or confusing
+error.
