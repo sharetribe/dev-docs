@@ -96,7 +96,7 @@ npm install sharetribe-flex-sdk
   API, run `yarn add sharetribe-flex-integration-sdk`
 </Callout>
 
-## Initialization and instantiating the SDK
+## SDK Initialization Overview
 
 ### API applications
 
@@ -115,10 +115,11 @@ server to Sharetribe API.
 
 ![Sharetribe Console: Applications tab](./console-build-application.png)
 
-### Initialization
+### Initializing a basic SDK instance
 
 You can initialize a basic SDK instance using only the application's
-Client ID.
+Client ID. Ensure the client ID is from a **Marketplace API
+application** created in Console.
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
@@ -128,8 +129,14 @@ const sdk = sharetribeSdk.createInstance({
 });
 ```
 
+This will allow you to make requests that don't require authentication
+or a trusted SDK instance, e.g. querying listings.
+
+### Initializing an Integration SDK instance
+
 If you are accessing Integration API, you'll need to also provide the
-client secret.
+client secret. Ensure the client ID is from an **Integration API
+application** created in Console.
 
 ```jsx
 const sharetribeIntegrationSdk = require('sharetribe-flex-integration-sdk');
@@ -140,11 +147,7 @@ const integrationSdk = sharetribeIntegrationSdk.createInstance({
 });
 ```
 
-This will allow you to make requests that don't require authentication
-or a trusted SDK instance, e.g. querying listings. We'll cover how to
-create a trusted SDK in the next step.
-
-## Creating a trusted SDK instance
+### Initializing a trusted SDK instance
 
 To make certain requests, you will need to access the APIs from a
 trusted context. In order to do this, you'll need to log in using the
@@ -154,6 +157,7 @@ SDK and perform a token exchange to retrieve a trusted token.
    store
 
 ```jsx
+// use 'sharetribe-flex-integration-sdk' here to create and integration SDK instance
 const sharetribeSdk = require('sharetribe-flex-sdk');
 
 var sdk = sharetribeSdk.createInstance({
@@ -162,12 +166,6 @@ var sdk = sharetribeSdk.createInstance({
   tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
 ```
-
-<Callout type="info">
-  You can follow the same process above when working with Integration
-  API, just remember to import the correct SDK with the `require`
-  keyword.
-</Callout>
 
 2. Log in using valid credentials
 
