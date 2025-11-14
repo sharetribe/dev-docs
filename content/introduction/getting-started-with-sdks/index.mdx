@@ -7,6 +7,7 @@ description:
 
 import { Callout } from 'nextra/components';
 import { Table } from 'nextra/components';
+import { Steps } from 'nextra/components';
 
 # Getting started with the JavaScript SDK
 
@@ -153,8 +154,9 @@ To make certain requests, you will need to access the APIs from a
 trusted context. In order to do this, you'll need to log in using the
 SDK and perform a token exchange to retrieve a trusted token.
 
-1. Create an instance of the SDK with the client ID, secret, and token
-   store
+<Steps>
+
+## Create an instance of the SDK with the client ID, secret, and token store
 
 ```jsx
 // use 'sharetribe-flex-integration-sdk' here to create and integration SDK instance
@@ -167,13 +169,13 @@ var sdk = sharetribeSdk.createInstance({
 });
 ```
 
-2. Log in using valid credentials
+## Log in using valid credentials
 
 ```jsx
 sdk.login({ username: '<User email>', password: '<User password>' });
 ```
 
-3. Exchange the access token for a trusted token
+## Exchange the access token for a trusted token
 
 ```jsx
 sdk.exchangeToken().then((res) => {
@@ -182,7 +184,7 @@ sdk.exchangeToken().then((res) => {
 });
 ```
 
-4. Create an instance of the SDK using the trusted token
+## Create an instance of the SDK using the trusted token
 
 ```jsx
 var sdkTrusted = sharetribeSdk.createInstance({
@@ -190,6 +192,8 @@ var sdkTrusted = sharetribeSdk.createInstance({
   tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
 ```
+
+</Steps>
 
 Now you can use `sdkTrusted` to make requests that rely on a secure
 context, e.g. deleting a user with
