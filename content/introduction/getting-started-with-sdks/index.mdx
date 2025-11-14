@@ -96,13 +96,26 @@ npm install sharetribe-flex-sdk
   API, run `yarn add sharetribe-flex-integration-sdk`
 </Callout>
 
-Ensure you have created an application in Console. If you have not
-already done this when setting up the Sharetribe Web Template, you can
-follow the instructions in
-[this tutorial](https://www.sharetribe.com/docs/introduction/getting-started-with-web-template/#sharetribe-client-id-and-client-secret)
-to do so.
-
 ## Initialization and instantiating the SDK
+
+### API applications
+
+To use the Marketplace API or Integration API, you will need a **client
+ID**.
+
+When you get access, you will be able to log into Sharetribe Console and
+check the client ID.<br /> Sharetribe Console: _Build > Advanced >
+Applications_
+
+In addition, Sharetribe Web Template uses transaction processes that
+include privileged transitions. This makes it possible to customize
+pricing on the Node server that's included in the template. The **client
+secret** is needed to make this secure call from the template's own
+server to Sharetribe API.
+
+![Sharetribe Console: Applications tab](./console-build-application.png)
+
+### Initialization
 
 You can initialize a basic SDK instance using only the application's
 Client ID.
