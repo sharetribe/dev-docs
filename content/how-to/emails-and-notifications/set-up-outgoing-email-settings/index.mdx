@@ -6,7 +6,7 @@ description:
   your Live marketplace.
 ---
 
-import { Steps } from 'nextra/components';
+import { Steps, Cards } from 'nextra/components';
 
 # Set up outgoing email settings
 
@@ -31,6 +31,13 @@ subscription.
 
 You can find instructions for configuring your outgoing email address
 [in the Sharetribe help center](https://www.sharetribe.com/help/en/articles/8704439-how-to-configure-your-outgoing-email-address).
+
+<br />
+<Cards.Card
+  title="Learn how to configure your outgoing email address"
+  href="https://www.sharetribe.com/help/en/articles/8704439-how-to-configure-your-outgoing-email-address"
+  arrow
+/>
 
 ### Configure a DMARC policy
 
@@ -117,43 +124,26 @@ SendGrid by following their instructions on
 
 ### Enable using own SendGrid key in Sharetribe Console
 
-Log in to your Console, and select your live environment. There are two
+Log in to your Console, and select your Live environment. There are two
 options for integrating SendGrid. You can do it during the initial setup
 of the marketplace or later if you wish to change from managed setup to
 using your own SendGrid account.
 
-</Steps>
+**During initial setup**
 
-#### During initial setup
-
-Head on to the General > Outgoing email address page in the Build
-section. You should see a wizard prompting you to select between managed
-setup or advanced setup:
-
-Toggle the advanced setup visible:
+Go to the
+[General > Outgoing email address](https://console.sharetribe.com/general/outgoing-email-address)
+page in the Build section. You will see a choice between managed email
+sending or Advanced Setup:
 
 ![Initial setup](./initial-setup.png)
 
-Click the button and paste in your SendGrid API key.
+Choose "Update email sender settings" and you will be able to add your
+SendGrid API key. Submit the form and the setup is complete.
 
-#### Changing from managed to own account
+**Changing from managed to own account**
 
-Head on to the General settings page in the Build section. Click `Edit`
-under `Outgoing email settings` and toggle the `Advanced setup` visible:
+Please contact our [support](mailto:hello@sharetribe.com) to switch from
+managed email sending to using your own SendGrid key.
 
-![Switching setup](./switching-setup.png)
-
-Click the button and paste in your SendGrid API key.
-
-That's it! If you have configured your key and SendGrid account
-correctly, you are good to go!
-
-## Summary
-
-In this article, we went through the setup to configure a custom email
-address for your Live marketplace. It is important to get all the steps
-done and validated to ensure that emails are working reliably.
-
-If you have any questions or need a more advanced setup, you can
-[contact Sharetribe support](mailto:hello@sharetribe.com) and we are
-happy to help you.
+</Steps>

@@ -7,7 +7,7 @@ description:
   customizing listing pricing and commission.
 ---
 
-import { Callout, FileTree } from 'nextra/components';
+import { Callout, FileTree, Steps } from 'nextra/components';
 
 # How to customize pricing
 
@@ -16,12 +16,22 @@ using two examples: adding an insurance fee to a bookable listing, and
 changing provider commission so that it's based on booking length. The
 changes we are about to make are as follows:
 
-1. Update rental listing data model by storing insurance fee price in
-   listing public data
-2. Update pricing logic to add a insurance fee line item if a listing
-   has insurance fee stored in public data
-3. Update provider commission calculation to be dependent on booking
-   length
+<Steps>
+{<h3></h3>}
+
+Update rental listing data model by storing insurance fee price in
+listing public data
+
+{<h3></h3>}
+
+Update pricing logic to add a insurance fee line item if a listing has
+insurance fee stored in public data
+
+{<h3></h3>}
+
+Update provider commission calculation to be dependent on booking length
+
+</Steps>
 
 For more information about pricing in Sharetribe, see the
 [Pricing background article](/concepts/pricing-and-commissions/pricing/).
@@ -62,7 +72,7 @@ listings and daily or nightly listings.
 
 On submit, save price and `insuranceFee`:
 
-```diff
+```diff filename="src/containers/EditListingPricingPanel/EditListingPricingPanel.js"
 + import { HOUR } from '../../../../transactions/transaction';
 ...
 <EditListingPricingForm
@@ -111,9 +121,11 @@ fee price is stored in listing public data in an object with two keys:
 subunits whereas `currency` holds the currency code. For example, with a
 cleaning fee of $20 the subunit amount is 2000 cents.
 
-```js
+```js filename="src/containers/EditListingPricingPanel/EditListingPricingPanel.js"
 const insuranceFeeAmount = unitType === HOUR ? 500 : 2000;
-...
+
+/* ... */
+
 publicData: {
     insuranceFee: { amount: insuranceFeeAmount, currency: marketplaceCurrency },
 }
@@ -137,7 +149,7 @@ pricing logic in the `/server/api-util/lineItems.js` file:
 In the helper function section of the file, add a function that resolves
 the insurance fee of a listing:
 
-```js
+```jsx filename="server/api-util/lineItems.js"
 const resolveInsuranceFeePrice = (listing) => {
   const { amount, currency } =
     listing.attributes.publicData?.insuranceFee || {};
@@ -154,7 +166,7 @@ Now the `transactionLineItems` function can be updated to also provide
 the insurance fee line item in case the listing has an insurance fee
 configured:
 
-```js
+```jsx filename="server/api-util/lineItems.js"
 const insuranceFeePrice = resolveInsuranceFeePrice(listing);
 const insuranceFeeLineItem = insuranceFeePrice
   ? [
@@ -218,7 +230,7 @@ Update `lineItemHelpers.js` to add the new
 `calculateProviderCommissionPercentage` function and to update the
 `getProviderCommissionMaybe`:
 
-```diff
+```diff filename="server/api-util/lineItemHelpers.js"
   // Base provider and customer commissions are fetched from assets
 + const PROVIDER_COMMISSION_PERCENTAGE_REDUCTION = 3;
 
@@ -256,7 +268,7 @@ exports.getProviderCommissionMaybe = (providerCommission, order, priceAttribute)
 Then update the `transactionLineItems` function in `lineItemHelpers.js`
 as follows:
 
-```jsx
+```jsx filename="server/api-util/lineItemHelpers.js"
 const lineItems = [
   order,
   ...extraLineItems,
