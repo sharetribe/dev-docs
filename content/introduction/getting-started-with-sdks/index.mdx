@@ -1,0 +1,323 @@
+---
+title: Getting started with the JavaScript SDKs
+description:
+  This article serves as a guide on how to get started using
+  Sharetribe's JavaScript SDKs.
+---
+
+import { Callout } from 'nextra/components';
+import { Table } from 'nextra/components';
+import { Steps } from 'nextra/components';
+
+# Getting started with the JavaScript SDK
+
+Sharetribe's JavaScript Software Development Kit (SDK) and Integration
+SDK simplify interactions with our APIs. You can read more about
+features and functionalities in our
+[SDK GitHub Documentation](https://sharetribe.GitHub.io/flex-sdk-js/index.html).
+This guide covers
+
+- Installation
+- Initialization and instantiating the SDK
+- Creating a trusted SDK instance
+- Example use cases
+
+## Overview
+
+Our SDKs simplify making requests to the backend by handling
+authentication and providing convenient access to Sharetribe's APIs.
+They allow you to interact easily with
+
+- Marketplace API, for general interactions with marketplace data
+- Asset Delivery API, for delivering assets configured in Console
+- Integration API, for advanced operational use
+
+You can find more information on API usage and guidelines for choosing
+which to work with in
+[this article](https://www.sharetribe.com/docs/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-marketplace-api).
+
+There are two SDK variants in which to access the APIs
+
+<br />
+<Table>
+  <thead>
+    <Table.Tr>
+      <Table.Th />
+      <Table.Th>Sharetribe SDK</Table.Th>
+      <Table.Th>Sharetribe Integration SDK</Table.Th>
+    </Table.Tr>
+  </thead>
+  <tbody>
+    <Table.Tr>
+      <Table.Td>Intended Use</Table.Td>
+      <Table.Td>
+        Most common API requests with Marketplace API or Asset Delivery
+        API
+      </Table.Td>
+      <Table.Td>Full data access with Integration API</Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>Required Parameters</Table.Td>
+      <Table.Td>Client ID</Table.Td>
+      <Table.Td>Client ID, Client secret</Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>Secure context needed</Table.Td>
+      <Table.Td>No</Table.Td>
+      <Table.Td>**Yes**</Table.Td>
+    </Table.Tr>
+  </tbody>
+</Table>
+
+To try out the Sharetribe SDK, visit our
+[Github documentation](https://sharetribe.GitHub.io/flex-sdk-js/index.html)
+for instructions on testing it directly in your browser or via the
+[API Playground](https://sharetribe.GitHub.io/flex-sdk-js/try-it-in-the-playground.html).
+For a more detailed guide on using the SDK with code, keep following
+this tutorial.
+
+## Installation
+
+To get started with the SDK, you'll first need to install it with either
+[Yarn](https://yarnpkg.com/)
+
+```jsx
+yarn add sharetribe-flex-sdk
+```
+
+or [npm](https://www.npmjs.com/)
+
+```jsx
+npm install sharetribe-flex-sdk
+```
+
+<Callout type="info">
+  The above example will create an instance that allows you to access
+  Marketplace API and Asset Delivery API. In order to access Integration
+  API, run `yarn add sharetribe-flex-integration-sdk`
+</Callout>
+
+## SDK Initialization Overview
+
+### API applications
+
+To use the Marketplace API or Integration API, you will need a **client
+ID**.
+
+When you get access, you will be able to log into Sharetribe Console and
+check the client ID.<br /> Sharetribe Console: _Build > Advanced >
+Applications_
+
+In addition, Sharetribe Web Template uses transaction processes that
+include privileged transitions. This makes it possible to customize
+pricing on the Node server that's included in the template. The **client
+secret** is needed to make this secure call from the template's own
+server to Sharetribe API.
+
+![Sharetribe Console: Applications tab](./console-build-application.png)
+
+### Initializing a basic SDK instance
+
+You can initialize a basic SDK instance using only the application's
+Client ID. Ensure the client ID is from a **Marketplace API
+application** created in Console.
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+const sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+});
+```
+
+This will allow you to make requests that don't require authentication
+or a trusted SDK instance, e.g. querying listings.
+
+### Initializing an Integration SDK instance
+
+If you are accessing Integration API, you'll need to also provide the
+client secret. Ensure the client ID is from an **Integration API
+application** created in Console.
+
+```jsx
+const sharetribeIntegrationSdk = require('sharetribe-flex-integration-sdk');
+
+const integrationSdk = sharetribeIntegrationSdk.createInstance({
+  clientId: '<Client ID>',
+  clientSecret: '<Client secret>',
+});
+```
+
+### Initializing a trusted SDK instance
+
+To make certain requests, you will need to access the APIs from a
+trusted context. In order to do this, you'll need to log in using the
+SDK and perform a token exchange to retrieve a trusted token.
+
+<Steps>
+
+## Create an instance of the SDK with the client ID, secret, and token store
+
+```jsx
+// use 'sharetribe-flex-integration-sdk' here to create and integration SDK instance
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+  clientSecret: '<Client secret>',
+  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
+});
+```
+
+## Log in using valid credentials
+
+```jsx
+sdk.login({ username: '<User email>', password: '<User password>' });
+```
+
+## Exchange the access token for a trusted token
+
+```jsx
+sdk.exchangeToken().then((res) => {
+  var store = sharetribeSdk.tokenStore.memoryStore();
+  store.setToken(res.data);
+});
+```
+
+## Create an instance of the SDK using the trusted token
+
+```jsx
+var sdkTrusted = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
+});
+```
+
+</Steps>
+
+Now you can use `sdkTrusted` to make requests that rely on a secure
+context, e.g. deleting a user with
+[Marketplace API](https://www.sharetribe.com/api-reference/marketplace.html#delete-user).
+
+<Callout type="info">
+  Requests that require a trusted SDK rely on valid login credentials
+  appropriate for the request. For example, to delete a user you must
+  log in with that user's credentials.
+</Callout>
+
+## Example usage
+
+Here are a few examples demonstrating common uses and capabilities of
+the SDKs.
+
+### Logging in
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+});
+
+sdk
+  .login({ username: '<User email>', password: '<User password>' })
+  .then((_) => {
+    // Request dependent on an authenticated user access token
+  });
+```
+
+### Initializing a trusted SDK
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+  clientSecret: '<Client secret>',
+  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
+});
+
+sdk
+  .login({ username: '<User email>', password: '<User password>' })
+  .then((_) => {
+    sdk.exchangeToken().then((res) => {
+      var store = sharetribeSdk.tokenStore.memoryStore();
+      store.setToken(res.data);
+
+      var sdkTrusted = sharetribeSdk.createInstance({
+        clientId: '<Client ID>',
+        tokenStore: store,
+      });
+
+      // Place the request requiring trusted access here
+    });
+  });
+```
+
+### Updating a listing
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+});
+
+sdk
+  .login({ username: '<User email>', password: '<User password>' })
+  .then((_) => {
+    sdk.ownListings
+      .update({
+        id: '<Listing ID>',
+      })
+      .then((res) => {
+        // res.data
+      });
+  });
+```
+
+<Callout>
+  Updating a listing requires that the listing author's credentials are
+  provided in the log in step
+</Callout>
+
+### Updating metadata in a transaction
+
+```jsx
+const IntegrationSdk = require('sharetribe-flex-integration-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+  clientSecret: '<Client secret>',
+});
+
+sdk.transactions
+  .updateMetadata({
+    id: '<Transaction ID>',
+    metadata: {
+      '<Key>': '<Value>',
+    },
+  })
+  .then((res) => {
+    // res.data
+  });
+```
+
+## Additional resources
+
+For the complete documentation on Sharetribe’s SDKs, visit our
+[GitHub documentation](https://sharetribe.github.io/flex-sdk-js/index.html).
+There, you'll find
+
+- Features
+- Configuration options
+- Additional examples
+- How to use the browser or the
+  [API Playground](https://sharetribe.GitHub.io/flex-sdk-js/try-it-in-the-playground.html)
+  for easy testing
+
+<Callout type="info">
+  If you want to get experience testing the Integration SDK, you will
+  need to access it from a secure context. An easy way to do this is to
+  run a small server from which to make the requests.
+</Callout>
