@@ -212,6 +212,12 @@ the SDKs.
 
 ### Logging in
 
+**API**: Marketplace API
+
+Some endpoints require that a user is logged in first, e.g. creating
+listings, viewing their own listings, or initiating inquiry
+transactions.
+
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
 
@@ -226,7 +232,126 @@ sdk
   });
 ```
 
-### Initializing a trusted SDK
+### Initiating a transaction
+
+**API**: Marketplace API
+
+The process of initiating a transaction is highly variable because it
+depends entirely on transaction flow customizations and the required
+paramters of the transition.
+
+For this example, we'll use the default-booking process, and choose
+`transition/request-payment` as the first step. This requires that:
+
+- The customer is logged in
+- A token exchange is made to get a trusted user access token
+- The request includes the following parameters
+  - `transition`
+  - `processAlias`
+  - `params`
+    - `listingID`
+    - `bookingStart`
+    - `bookingEnd`
+    - `lineItems`
+
+<Callout type="info">
+  This example uses the **minimum** required parameters per the
+  transition defined in the transaction process. You'll likely want to
+  include more information during this step, e.g. updating the
+  transaction's extended data. See the [Marketplace API reference
+  documentation](https://www.sharetribe.com/api-reference/marketplace.html#initiate-transaction)
+  for more information.
+</Callout>
+
+```jsx
+const transition = 'transition/request-payment';
+const processAlias = 'default-booking/release-1';
+
+const params = {
+  listingId: '<Listing ID>',
+  bookingStart: '2025-12-20T22:00:00.000Z',
+  bookingEnd: '2025-12-21T22:00:00.000Z',
+  lineItems: [
+    {
+      code: 'line-item/night',
+      unitPrice: {
+        _sdkType: 'Money',
+        amount: 5000,
+        currency: 'EUR',
+      },
+      quantity: 1,
+      includeFor: ['customer', 'provider'],
+    },
+    {
+      code: 'line-item/provider-commission',
+      unitPrice: {
+        _sdkType: 'Money',
+        amount: 5000,
+        currency: 'EUR',
+      },
+      percentage: -13,
+      includeFor: ['provider'],
+    },
+  ],
+};
+
+const sdk = sharetribeSdk.createInstance({
+  clientID: '<Client ID>',
+  clientSecret: '<Client secret>',
+  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
+});
+
+sdk
+  .login({ username: '<User email>', password: '<User password>' })
+  .then((_) => {
+    sdk.exchangeToken().then((res) => {
+      var store = sharetribeSdk.tokenStore.memoryStore();
+      store.setToken(res.data);
+
+      var sdkTrusted = sharetribeSdk.createInstance({
+        clientId: '<Client ID>',
+        tokenStore: store,
+      });
+
+      // It's useful to first call initiateSpeculative to validate the data and to ensure
+      // the real request will complete as expected
+      sdkTrusted.transactions
+        .initiateSpeculative(
+          {
+            transition,
+            processAlias,
+            params,
+          },
+          {
+            expand: true,
+          }
+        )
+        .then((speculatedResult) => {
+          if (speculatedResult.status == 200) {
+            sdkTrusted.transactions
+              .initiate({
+                transition,
+                processAlias,
+                params,
+              })
+              .then((initiateResult) => {
+                // initiateResult.data
+              });
+          }
+        });
+    });
+  });
+```
+
+### Transitioning a transaction
+
+**API**: Marketplace API
+
+This example shows how you can transition a transaction that has already
+been initiated. The logged-in user must be a party that is allowed to
+perform the transition - either operator, customer, or provider. This
+can be checked in the transaction process visualizer in Console, or from
+the transaction's `process.edn` file.
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
@@ -245,43 +370,29 @@ sdk
       store.setToken(res.data);
 
       var sdkTrusted = sharetribeSdk.createInstance({
-        clientId: '<Client ID>',
+        clientId: '<Client secret>',
         tokenStore: store,
       });
 
-      // Place the request requiring trusted access here
+      sdkTrusted.transactions
+        .transition({
+          id: '<Transaction ID>',
+          transition: '<Transition name>',
+          params: {},
+        })
+        .then((res) => {
+          // res.data
+        });
     });
   });
 ```
 
-### Updating a listing
-
-```jsx
-const sharetribeSdk = require('sharetribe-flex-sdk');
-
-var sdk = sharetribeSdk.createInstance({
-  clientId: '<Client ID>',
-});
-
-sdk
-  .login({ username: '<User email>', password: '<User password>' })
-  .then((_) => {
-    sdk.ownListings
-      .update({
-        id: '<Listing ID>',
-      })
-      .then((res) => {
-        // res.data
-      });
-  });
-```
-
-<Callout>
-  Updating a listing requires that the listing author's credentials are
-  provided in the log in step
-</Callout>
-
 ### Updating metadata in a transaction
+
+**API**: Integration API
+
+Updating metadata for a transaction requires that you use the
+Integration API.
 
 ```jsx
 const IntegrationSdk = require('sharetribe-flex-integration-sdk');
@@ -303,9 +414,43 @@ sdk.transactions
   });
 ```
 
+### Updating a listing
+
+**API**: Marketplace API
+
+Updating a listing requires that the listing author's credentials are
+used.
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+});
+
+sdk
+  .login({ username: '<User email>', password: '<User password>' })
+  .then((_) => {
+    sdk.ownListings
+      .update({
+        id: '<Listing ID>',
+        description: '<Updated description',
+        privateData: {
+          '<Key>': '<Value>',
+        },
+        publicData: {
+          '<Key>': '<Value>',
+        },
+      })
+      .then((res) => {
+        // res.data
+      });
+  });
+```
+
 ## Additional resources
 
-For the complete documentation on Sharetribe’s SDKs, visit our
+For the complete documentation on Sharetrib's SDKs, visit our
 [GitHub documentation](https://sharetribe.github.io/flex-sdk-js/index.html).
 There, you'll find
 
