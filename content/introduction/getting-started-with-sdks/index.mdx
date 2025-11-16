@@ -52,22 +52,28 @@ There are two SDK variants in which to access the APIs
   </thead>
   <tbody>
     <Table.Tr>
-      <Table.Td>Intended Use</Table.Td>
+      <Table.Td>**Access level**</Table.Td>
+      <Table.Td>Limited to user-scope and public data</Table.Td>
+      <Table.Td>Full marketplace (operator-level) access</Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>**API access**</Table.Td>
+      <Table.Td>Marketplace API and Asset Delivery API</Table.Td>
+      <Table.Td>Integration API</Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>**Required Parameters**</Table.Td>
       <Table.Td>
-        Most common API requests with Marketplace API or Asset Delivery
-        API
+        Client ID (Client secret for trusted contexts)
       </Table.Td>
-      <Table.Td>Full data access with Integration API</Table.Td>
+      <Table.Td>
+        Client ID (Client secret for trusted contexts)
+      </Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td>Required Parameters</Table.Td>
-      <Table.Td>Client ID</Table.Td>
-      <Table.Td>Client ID, Client secret</Table.Td>
-    </Table.Tr>
-    <Table.Tr>
-      <Table.Td>Secure context needed</Table.Td>
-      <Table.Td>No</Table.Td>
-      <Table.Td>**Yes**</Table.Td>
+      <Table.Td>**Secure context needed**</Table.Td>
+      <Table.Td>When trusted SDK is used</Table.Td>
+      <Table.Td>When trusted SDK is used</Table.Td>
     </Table.Tr>
   </tbody>
 </Table>
