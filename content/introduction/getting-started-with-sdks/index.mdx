@@ -5,9 +5,7 @@ description:
   Sharetribe's JavaScript SDKs.
 ---
 
-import { Callout } from 'nextra/components';
-import { Table } from 'nextra/components';
-import { Steps } from 'nextra/components';
+import { Callout, Table, Steps, Tabs } from 'nextra/components';
 
 # Getting started with the JavaScript SDKs
 
@@ -87,24 +85,23 @@ this tutorial.
 
 ## Installation
 
-To get started with the SDK, you'll first need to install it with either
-[Yarn](https://yarnpkg.com/)
+To get started with the SDKs, you'll first need to install them with
+either [Yarn](https://yarnpkg.com/)
 
-```jsx
-yarn add sharetribe-flex-sdk
-```
+<Tabs items={['yarn', 'npm']}>
+  <Tabs.Tab>
+  `yarn add sharetribe-flex-sdk`
 
-or [npm](https://www.npmjs.com/)
+`yarn add sharetribe-flex-integration sdk`
 
-```jsx
-npm install sharetribe-flex-sdk
-```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  `npm install sharetribe-flex-sdk`
 
-<Callout type="info">
-  The above example will create an instance that allows you to access
-  Marketplace API and Asset Delivery API. In order to access Integration
-  API, run `yarn add sharetribe-flex-integration-sdk`
-</Callout>
+`npm install sharetribe-flex-integration sdk`
+
+  </Tabs.Tab>
+</Tabs>
 
 ## SDK Initialization Overview
 
