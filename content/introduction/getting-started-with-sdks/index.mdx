@@ -108,22 +108,30 @@ npm install sharetribe-flex-sdk
 
 ## SDK Initialization Overview
 
-### API applications
+### Obtaining the Client ID and secret
 
 To use the Marketplace API or Integration API, you will need a **client
-ID**.
-
-When you get access, you will be able to log into Sharetribe Console and
-check the client ID.<br /> Sharetribe Console: _Build > Advanced >
-Applications_
-
-In addition, Sharetribe Web Template uses transaction processes that
-include privileged transitions. This makes it possible to customize
-pricing on the Node server that's included in the template. The **client
-secret** is needed to make this secure call from the template's own
-server to Sharetribe API.
+ID** from an application. You can create an application in Sharetribe
+Console: _Build > Advanced > Applications_
 
 ![Sharetribe Console: Applications tab](./console-build-application.png)
+
+You should also make note of the **client secret**, as some requests
+require a secure context and this can only be done when initializing the
+SDK with both the client ID and secret.
+
+An example of this type of request is making a privileged transition in
+a transaction. This requires that the:
+
+- Client ID and secret are used when creating an instance of the SDK
+- A token exchange happens to obtain a trused user access token
+- The request is made from a secure context.
+
+<Callout type="info">
+  In the [Sharetribe Web
+  Template](https://github.com/sharetribe/web-template), these types of
+  requests are made on an small Node server included in the Template.
+</Callout>
 
 ### Initializing a basic SDK instance
 
