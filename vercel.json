@@ -1734,6 +1734,11 @@
       "permanent": true
     },
     {
+      "source": "/docs/design-toolkit/",
+      "destination": "/docs/introduction/design-files/",
+      "permanent": true
+    },
+    {
       "source": "/docs/design-toolkit/what-are-user-journeys/",
       "destination": "/docs/introduction/design-files/",
       "permanent": true
