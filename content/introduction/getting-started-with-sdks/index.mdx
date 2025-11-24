@@ -37,7 +37,7 @@ You can find more information on API usage and guidelines for choosing
 which to work with in
 [this article](https://www.sharetribe.com/docs/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-marketplace-api).
 
-There are two SDK variants in which to access the APIs
+There are two JavaScript SDKs you can use to access the APIs
 
 <br />
 <Table>
@@ -76,12 +76,12 @@ There are two SDK variants in which to access the APIs
   </tbody>
 </Table>
 
-To try out the Sharetribe SDK, visit our
-[Github documentation](https://sharetribe.GitHub.io/flex-sdk-js/index.html)
-for instructions on testing it directly in your browser or via the
-[API Playground](https://sharetribe.GitHub.io/flex-sdk-js/try-it-in-the-playground.html).
-For a more detailed guide on using the SDK with code, keep following
-this tutorial.
+To try out the SDKs, visit our
+[Github documentation for the Sharetribe SDK](https://sharetribe.GitHub.io/flex-sdk-js/index.html)
+and the
+[Integration SDK](https://sharetribe.github.io/flex-integration-sdk-js/)
+for instructions on how to get started. For a more detailed guide on
+using the SDKs with code, keep following this tutorial.
 
 ## Installation
 
@@ -92,13 +92,13 @@ either [Yarn](https://yarnpkg.com/)
   <Tabs.Tab>
   `yarn add sharetribe-flex-sdk`
 
-`yarn add sharetribe-flex-integration sdk`
+`yarn add sharetribe-flex-integration-sdk`
 
   </Tabs.Tab>
   <Tabs.Tab>
   `npm install sharetribe-flex-sdk`
 
-`npm install sharetribe-flex-integration sdk`
+`npm install sharetribe-flex-integration-sdk`
 
   </Tabs.Tab>
 </Tabs>
@@ -121,20 +121,20 @@ An example of this type of request is making a privileged transition in
 a transaction. This requires that the:
 
 - Client ID and secret are used when creating an instance of the SDK
-- A token exchange happens to obtain a trused user access token
+- A token exchange happens to obtain a trusted user access token
 - The request is made from a secure context.
 
 <Callout type="info">
   In the [Sharetribe Web
   Template](https://github.com/sharetribe/web-template), these types of
-  requests are made on an small Node server included in the Template.
+  requests are made on a small Node server included in the Template.
 </Callout>
 
-### Initializing a basic SDK instance
+### Initializing a Sharetribe SDK instance
 
-You can initialize a basic SDK instance using only the application's
-Client ID. Ensure the client ID is from a **Marketplace API
-application** created in Console.
+You can initialize a Sharetribe SDK instance using only the
+application's Client ID. Ensure the client ID is from a **Marketplace
+API application** created in Console.
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
@@ -164,9 +164,9 @@ const integrationSdk = sharetribeIntegrationSdk.createInstance({
 
 ### Initializing a trusted SDK instance
 
-To make certain requests, you will need to access the APIs from a
-trusted context. In order to do this, you'll need to log in using the
-SDK and perform a token exchange to retrieve a trusted token.
+To make certain requests, you will need to access the Marketplace API
+from a trusted context. In order to do this, you'll need to log in using
+the SDK and perform a token exchange to retrieve a trusted token.
 
 <Steps>
 
@@ -252,7 +252,7 @@ sdk
 
 The process of initiating a transaction is highly variable because it
 depends entirely on transaction flow customizations and the required
-paramters of the transition.
+parameters of the transition.
 
 For this example, we'll use the default-booking process, and choose
 `transition/request-payment` as the first step. This requires that:
@@ -278,6 +278,8 @@ For this example, we'll use the default-booking process, and choose
 </Callout>
 
 ```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
 const transition = 'transition/request-payment';
 const processAlias = 'default-booking/release-1';
 
@@ -310,7 +312,7 @@ const params = {
 };
 
 const sdk = sharetribeSdk.createInstance({
-  clientID: '<Client ID>',
+  clientId: '<Client ID>',
   clientSecret: '<Client secret>',
   tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
@@ -363,9 +365,9 @@ sdk
 
 This example shows how you can transition a transaction that has already
 been initiated. The logged-in user must be a party that is allowed to
-perform the transition - either operator, customer, or provider. This
-can be checked in the transaction process visualizer in Console, or from
-the transaction's `process.edn` file.
+perform the transition - either the customer or provider. This can be
+checked in the transaction process visualizer in Console, or from the
+transaction's `process.edn` file.
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
@@ -384,7 +386,7 @@ sdk
       store.setToken(res.data);
 
       var sdkTrusted = sharetribeSdk.createInstance({
-        clientId: '<Client secret>',
+        clientId: '<Client ID>',
         tokenStore: store,
       });
 
@@ -409,9 +411,9 @@ Updating metadata for a transaction requires that you use the
 Integration API.
 
 ```jsx
-const IntegrationSdk = require('sharetribe-flex-integration-sdk');
+const integrationSdk = require('sharetribe-flex-integration-sdk');
 
-var sdk = sharetribeSdk.createInstance({
+var sdk = integrationSdk.createInstance({
   clientId: '<Client ID>',
   clientSecret: '<Client secret>',
 });
@@ -448,7 +450,7 @@ sdk
     sdk.ownListings
       .update({
         id: '<Listing ID>',
-        description: '<Updated description',
+        description: '<Updated description>',
         privateData: {
           '<Key>': '<Value>',
         },
@@ -464,10 +466,10 @@ sdk
 
 ## Additional resources
 
-For the complete documentation on Sharetribe's SDKs, visit our Github
+For the complete documentation on the JavaScript SDKs, visit our Github
 documentation for the
-[Standard SDK](https://sharetribe.github.io/flex-sdk-js/index.html) and
-the
+[Sharetribe SDK](https://sharetribe.github.io/flex-sdk-js/index.html)
+and the
 [Integration SDK](https://sharetribe.github.io/flex-integration-sdk-js/).
 There, you'll find
 
@@ -476,7 +478,7 @@ There, you'll find
 - Additional examples
 - How to use the browser or the
   [API Playground](https://sharetribe.GitHub.io/flex-sdk-js/try-it-in-the-playground.html)
-  (only available for the standard SDK) for easy testing
+  (only available for the Sharetribe SDK) for easy testing
 
 <Callout type="info">
   Certain requests will require a secure environment setup. An easy way
