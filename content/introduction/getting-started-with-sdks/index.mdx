@@ -29,9 +29,12 @@ Our SDKs simplify making requests to the backend by handling
 authentication and providing convenient access to Sharetribe's APIs.
 They allow you to interact easily with
 
-- Marketplace API, for general interactions with marketplace data
-- Asset Delivery API, for delivering assets configured in Console
-- Integration API, for advanced operational use
+- [Marketplace API](https://www.sharetribe.com/api-reference/marketplace.html),
+  for general interactions with marketplace data
+- [Integration API](https://www.sharetribe.com/api-reference/integration.html),
+  for advanced operational use
+- [Asset Delivery API](https://www.sharetribe.com/api-reference/asset-delivery-api.html),
+  for delivering assets configured in Console
 
 You can find more information on API usage and guidelines for choosing
 which to work with in
@@ -464,6 +467,40 @@ sdk
       .then((res) => {
         // res.data
       });
+  });
+```
+
+### Retrieving listing assets defined in Console
+
+**API**: Asset delivery API
+
+This example will show how to retrieve all listing-related
+configurations as defined in Console.
+
+- Types
+- Categories
+- Fields
+- Search
+
+```jsx
+const sharetribeSdk = require('sharetribe-flex-sdk');
+
+var sdk = sharetribeSdk.createInstance({
+  clientId: '<Client ID>',
+});
+
+sdk
+  .assetsByAlias({
+    paths: [
+      '/listings/listing-types.json',
+      '/listings/listing-categories.json',
+      '/listings/listing-fields.json',
+      '/listings/listing-search.json',
+    ],
+    alias: 'latest',
+  })
+  .then((res) => {
+    // res.data
   });
 ```
 
