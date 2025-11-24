@@ -64,14 +64,12 @@ There are two JavaScript SDKs you can use to access the APIs
       <Table.Td>
         Client ID (Client secret for trusted contexts)
       </Table.Td>
-      <Table.Td>
-        Client ID (Client secret for trusted contexts)
-      </Table.Td>
+      <Table.Td>Client ID, client secret</Table.Td>
     </Table.Tr>
     <Table.Tr>
       <Table.Td>**Secure context needed**</Table.Td>
-      <Table.Td>When trusted SDK is used</Table.Td>
-      <Table.Td>When trusted SDK is used</Table.Td>
+      <Table.Td>When initialised with a trusted access token</Table.Td>
+      <Table.Td>Yes</Table.Td>
     </Table.Tr>
   </tbody>
 </Table>
@@ -82,6 +80,11 @@ and the
 [Integration SDK](https://sharetribe.github.io/flex-integration-sdk-js/)
 for instructions on how to get started. For a more detailed guide on
 using the SDKs with code, keep following this tutorial.
+
+<Callout type="info">
+  Certain requests will require a secure context. An easy way to do this
+  is to run a small server from which to make these types of requests.
+</Callout>
 
 ## Installation
 
@@ -162,7 +165,7 @@ const integrationSdk = sharetribeIntegrationSdk.createInstance({
 });
 ```
 
-### Initializing a trusted SDK instance
+### Initializing the SDK with a trusted user access token
 
 To make certain requests, you will need to access the Marketplace API
 from a trusted context. In order to do this, you'll need to log in using
@@ -214,9 +217,9 @@ context, e.g. deleting a user with
 [Marketplace API](https://www.sharetribe.com/api-reference/marketplace.html#delete-user).
 
 <Callout type="info">
-  Requests that require a trusted SDK rely on valid login credentials
-  appropriate for the request. For example, to delete a user you must
-  log in with that user's credentials.
+  Requests that require a trusted SDK instance rely on valid login
+  credentials appropriate for the request. For example, to delete a user
+  you must log in with that user's credentials.
 </Callout>
 
 ## Example usage
@@ -479,9 +482,3 @@ There, you'll find
 - How to use the browser or the
   [API Playground](https://sharetribe.GitHub.io/flex-sdk-js/try-it-in-the-playground.html)
   (only available for the Sharetribe SDK) for easy testing
-
-<Callout type="info">
-  Certain requests will require a secure environment setup. An easy way
-  to do this is to run a small server from which to make these types of
-  requests.
-</Callout>
