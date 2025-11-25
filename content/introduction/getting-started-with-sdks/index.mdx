@@ -94,20 +94,20 @@ using the SDKs with code, keep following this tutorial.
 To get started with the SDKs, you'll first need to install them with
 either [Yarn](https://yarnpkg.com/)
 
+{/* prettier-ignore */}
 <Tabs items={['yarn', 'npm']}>
   <Tabs.Tab>
-  `yarn add sharetribe-flex-sdk`
-
-`yarn add sharetribe-flex-integration-sdk`
-
+  ```shell 
+  yarn add sharetribe-flex-sdk
+  ```
   </Tabs.Tab>
   <Tabs.Tab>
-  `npm install sharetribe-flex-sdk`
-
-`npm install sharetribe-flex-integration-sdk`
-
+  ```shell 
+npm install sharetribe-flex-sdk
+  ```
   </Tabs.Tab>
 </Tabs>
+{/* // prettier-ignore */}
 
 ## SDK Initialization Overview
 
@@ -168,6 +168,12 @@ const integrationSdk = sharetribeIntegrationSdk.createInstance({
 });
 ```
 
+<Callout type="warning">
+  Keep your application's client secret secure. Never expose it to
+  untrusted devices or applications such as end user browsers or mobile
+  apps.
+</Callout>
+
 ### Initializing the SDK with a trusted user access token
 
 To make certain requests, you will need to access the Marketplace API
@@ -176,7 +182,8 @@ the SDK and perform a token exchange to retrieve a trusted token.
 
 <Steps>
 
-## Create an instance of the SDK with the client ID, secret, and token store
+{<h3>Create an instance of the SDK with the client ID, secret, and token
+store</h3>}
 
 ```jsx
 // use 'sharetribe-flex-integration-sdk' here to create and integration SDK instance
@@ -189,27 +196,27 @@ var sdk = sharetribeSdk.createInstance({
 });
 ```
 
-## Log in using valid credentials
+<Callout type="warning">
+  Keep your application's client secret secure. Never expose it to
+  untrusted devices or applications such as end user browsers or mobile
+  apps.
+</Callout>
+
+{<h3>Log in using valid credentials</h3>}
 
 ```jsx
 sdk.login({ username: '<User email>', password: '<User password>' });
 ```
 
-## Exchange the access token for a trusted token
+{<h3>Exchange the access token for a trusted token and create a new
+instance of the SDK</h3>}
 
 ```jsx
 sdk.exchangeToken().then((res) => {
-  var store = sharetribeSdk.tokenStore.memoryStore();
-  store.setToken(res.data);
-});
-```
-
-## Create an instance of the SDK using the trusted token
-
-```jsx
-var sdkTrusted = sharetribeSdk.createInstance({
-  clientId: '<Client ID>',
-  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
+  const sdkTrusted = sharetribeSdk.createInstance({
+    clientId: '<Client ID>',
+    tokenStore: sharetribeSdk.tokenStore.memoryStore(res.data),
+  });
 });
 ```
 
@@ -320,7 +327,6 @@ const params = {
 const sdk = sharetribeSdk.createInstance({
   clientId: '<Client ID>',
   clientSecret: '<Client secret>',
-  tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
 
 sdk
@@ -365,6 +371,12 @@ sdk
   });
 ```
 
+<Callout type="warning">
+  Keep your application's client secret secure. Never expose it to
+  untrusted devices or applications such as end user browsers or mobile
+  apps.
+</Callout>
+
 ### Transitioning a transaction
 
 **API**: Marketplace API
@@ -374,6 +386,15 @@ been initiated. The logged-in user must be a party that is allowed to
 perform the transition - either the customer or provider. This can be
 checked in the transaction process visualizer in Console, or from the
 transaction's `process.edn` file.
+
+<Callout type="info">
+  Not all transitions require a trusted context. For non-privileged
+  transitions, simply [logging
+  in](https://www.sharetribe.com/docs/introduction/getting-started-with-sdks/#logging-in)
+  is sufficient. For privileged transitions however, you'll need to use
+  a trusted SDK instance. You can read more about privileged transitions
+  [here](https://www.sharetribe.com/docs/concepts/transactions/privileged-transitions/).
+</Callout>
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
