@@ -509,7 +509,35 @@ be encoded.
 
 For both built-in emails and transaction process emails, you can edit
 content with the email text editor under **Build** > **Content** >
-**Email texts**.
+**Email texts**. These texts are stored in the backend at the path
+`content/email-texts.json`.
+
+In the email templates, these texts are accessed using
+[helper functions](#custom-helpers) which use the text keys to retrieve
+the corresponding values and insert or replace the content in the
+templates.
+
+As an example, let's look at the default booking transaction process
+[booking-accepted-request email](https://github.com/sharetribe/web-template/blob/main/ext/transaction-processes/default-booking/templates/booking-accepted-request/booking-accepted-request-html.html)
+
+Here is a header snippet from that template:
+
+```handlebars
+<h1>{{t
+    'BookingAcceptedRequest.Title'
+    'Your booking request was accepted'
+  }}</h1>
+```
+
+This header uses the [`t helper`](#t) to look up the key
+`BookingAcceptedRequest.Title`. If a value is defined for that key in
+the email texts, it will be used. If not, the fallback text "Your
+booking request was accepted" will be displayed instead.
+
+You can update the email templates in whatever way works best for your
+use case. Keep in mind when making changes using helper functions, that
+you include fallback texts as needed cover cases where a key may be
+missing from `email-texts.json`.
 
 ## Editing built-in emails
 
