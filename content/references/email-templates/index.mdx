@@ -102,73 +102,34 @@ In addition to those, we also support
 This paragraph lists all the custom helpers we provide, including the
 parameters they take and example how to use them:
 
-#### `t`
+#### `asset`
 
 **Parameters**:
 
-- message key
-- fallback message
+- asset path
+- (optional) JSON key or dot-separated nested keys
+- (optional) default value
 
-**Hash parameters:**
-
-- list of hash parameters and their respective values used with the
-  messages
-
-Example usage:
+The helper is used to retrieve data from assets. It can locate values
+within nested fields by providing a sequence of keys, separated by dots,
+to traverse the JSON structure. For example, the colour of a button in
+the email template can be assigned dynamically by accessing the
+`design/branding.json` asset. The use of this helper is not limited to
+the branding asset – any asset data can be used in the templates.
 
 ```handlebars
-{{t
-  'BookingNewRequest.Description'
-  '{customerDisplayName} requested to book {listingTitle}
-in {marketplaceName}.'
-  customerDisplayName=customer.display-name
-  listingTitle=listing.title
-  marketplaceName=marketplace.name
+{{asset
+  'design/branding.json'
+  'marketplaceColors.notificationPrimaryButton'
+  '#007DF2'
 }}
 ```
 
-Inline helper that makes it possible to modify the email template texts
-without making changes in the template code. This helper uses the
-[ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/)
-to render messages and parameters into a string.
-
-The helper renders the message corresponding to the key, if the key
-exists in the [email text asset](/references/assets/). If the key does
-not exist, the helper renders the fallback message.
-
-Any hash parameters used inside either message must be wrapped in single
-curly brackets, and the values for those hash parameters need to be
-defined after the message key and the fallback message.
-
-#### `format-text`
-
-**Parameters**:
-
-- message
-
-**Hash parameters:**
-
-- list of hash parameters and their respective values used with the
-  messages
-
-Example usage:
-
-```handlebars
-{{format-text
-  '{amount,number,::.00} {currency}'
-  amount=money.amount
-  currency=money.currency
-}}
-```
-
-Inline helper that formats a text string using the
-[ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
-This helper works similarly to the `t` helper, but instead of accepting
-a message key and a fallback message, it accepts a single string.
-
-Any hash parameters used inside either message must be wrapped in single
-curly brackets, and the values for those hash parameters need to be
-defined after the message.
+In addition, in the email templates, this helper is used to define the
+correct localization settings in the email templates without modifying
+the template structure itself using the
+[`set-translations`](#set-translations) and [`set-locale`](#set-locale)
+helpers.
 
 #### `contains`
 
@@ -185,39 +146,6 @@ Example usage:
 
 Block helper that renders the block if `collection` has the given
 `value`, otherwise the else block is rendered (if specified).
-
-#### `eq`
-
-**Parameters**:
-
-- value
-- test
-
-Example usage:
-
-```handlebars
-{{#eq value 1}}true{{else}}false{{/eq}}
-```
-
-Block helper that renders a block if `value` is **equal to** `test`. If
-an else block is specified it will be rendered when falsy.
-
-#### `inflect`
-
-**Parameters**:
-
-- count
-- singular
-- plural
-
-Example usage:
-
-```handlebars
-{{inflect quantity 'day' 'days'}}
-```
-
-Returns either the `singular` or `plural` inflection of a word based on
-the given `count`.
 
 #### `date`
 
@@ -311,6 +239,84 @@ parameter:
 - negative values for transforming to the past of the date
 - positive values for transforming to the future of the date
 
+#### `eq`
+
+**Parameters**:
+
+- value
+- test
+
+Example usage:
+
+```handlebars
+{{#eq value 1}}true{{else}}false{{/eq}}
+```
+
+Block helper that renders a block if `value` is **equal to** `test`. If
+an else block is specified it will be rendered when falsy.
+
+#### `form-encode`
+
+**Parameters**:
+
+- str
+
+Example usage:
+
+```handlebars
+{{form-encode 'Share & Tribe'}}
+```
+
+Encode the given string as `application/x-www-form-urlencoded`. Should
+be used for query string components.
+
+#### `format-text`
+
+**Parameters**:
+
+- message
+
+**Hash parameters:**
+
+- list of hash parameters and their respective values used with the
+  messages
+
+Example usage:
+
+```handlebars
+{{format-text
+  '{amount,number,::.00} {currency}'
+  amount=money.amount
+  currency=money.currency
+}}
+```
+
+Inline helper that formats a text string using the
+[ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
+This helper works similarly to the `t` helper, but instead of accepting
+a message key and a fallback message, it accepts a single string.
+
+Any hash parameters used inside either message must be wrapped in single
+curly brackets, and the values for those hash parameters need to be
+defined after the message.
+
+#### `inflect`
+
+**Parameters**:
+
+- count
+- singular
+- plural
+
+Example usage:
+
+```handlebars
+{{inflect quantity 'day' 'days'}}
+```
+
+Returns either the `singular` or `plural` inflection of a word based on
+the given `count`.
+
 #### `money-amount`
 
 **Parameters**:
@@ -367,83 +373,27 @@ language tag strings. More info about language tags can be found
 [W3C Internationalization article for language tags](https://www.w3.org/International/articles/language-tags/#region).
 E.g. `"en-US"` is a valid string.
 
-#### `url-encode`
+#### `set-locale`
 
 **Parameters**:
 
-- str
+- locale
+  - either provided as a string or derived from an asset
 
 Example usage:
 
 ```handlebars
-{{url-encode 'Share & Tribe'}}
+{{set-locale 'en_US'}}
+{{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
 ```
 
-URL encodes the given string. Should be used for encoding all user
-input. E.g. a link to user profile with the user name in the link should
-be encoded.
+This helper specifies how numbers, dates and currencies are formatted
+within the email.
 
-#### `form-encode`
-
-**Parameters**:
-
-- str
-
-Example usage:
-
-```handlebars
-{{form-encode 'Share & Tribe'}}
-```
-
-Encode the given string as `application/x-www-form-urlencoded`. Should
-be used for query string components.
-
-#### `asset`
-
-**Parameters**:
-
-- asset path
-- (optional) JSON key or dot-separated nested keys
-- (optional) default value
-
-The helper is used to retrieve data from assets. It can locate values
-within nested fields by providing a sequence of keys, separated by dots,
-to traverse the JSON structure. For example, the colour of a button in
-the email template can be assigned dynamically by accessing the
-`design/branding.json` asset. The use of this helper is not limited to
-the branding asset – any asset data can be used in the templates.
-
-```handlebars
-{{asset
-  'design/branding.json'
-  'marketplaceColors.notificationPrimaryButton'
-  '#6938EF'
-}}
-```
-
-In addition, in the email templates, this helper is used to define the
-correct localization settings in the email templates without modifying
-the template structure itself using the
-[`set-translations`](#set-translations) and [`set-locale`](#set-locale)
-helpers.
-
-#### `set-translations`
-
-- [asset](#asset)
-- (optional) fallback asset
-
-Example usage:
-
-```handlebars
-{{set-translations (asset 'content/email-texts.json')}}
-```
-
-This helper searches the (first) `asset` at the given path for the text
-keys defined in the email. If matching keys are found, their
-corresponding text is replaced with the translated versions. An optional
-fallback `asset` can be provided as a second parameter. If a key is not
-found in the primary `asset`, the helper will search the fallback
-`asset` and replace the text if the key is found there.
+When providing an asset, the helper works so that it first checks the
+asset at the provided path for the 'locale' key. If a locale is found,
+the helper will extract the value and apply it to the email. Otherwise,
+the helper will rely on the fallback - 'en_US' in the above example.
 
 #### `set-timezone`
 
@@ -468,30 +418,92 @@ timezone exists as a parameter of the listing's availability plan, for
 example:
 
 ```handlebars
-{{set-timezone transaction.listing.availability-plan.timezone}}
+{{asset
+  'design/branding.json'
+  'marketplaceColors.notificationPrimaryButton'
+  '#6938EF'
+}}
 ```
 
-#### `set-locale`
+In addition, in the email templates, this helper is used to define the
+correct localization settings in the email templates without modifying
+the template structure itself using the
+[`set-translations`](#set-translations) and [`set-locale`](#set-locale)
+helpers.
+
+#### `set-translations`
 
 **Parameters**:
 
-- locale
-  - either provided as a string or derived from an asset
+- [asset](#asset)
+- (optional) fallback asset
 
 Example usage:
 
 ```handlebars
-{{set-locale 'en_US'}}
-{{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
+{{set-translations (asset 'content/email-texts.json')}}
 ```
 
-This helper specifies how numbers, dates and currencies are formatted
-within the email.
+This helper searches the (first) `asset` at the given path for the text
+keys defined in the email. If matching keys are found, their
+corresponding text is replaced with the translated versions. An optional
+fallback `asset` can be provided as a second parameter. If a key is not
+found in the primary `asset`, the helper will search the fallback
+`asset` and replace the text if the key is found there.
 
-When providing an asset, the helper works so that it first checks the
-asset at the provided path for the 'locale' key. If a locale is found,
-the helper will extract the value and apply it to the email. Otherwise,
-the helper will rely on the fallback - 'en_US' in the above example.
+#### `t`
+
+**Parameters**:
+
+- message key
+- fallback message
+
+**Hash parameters:**
+
+- list of hash parameters and their respective values used with the
+  messages
+
+Example usage:
+
+```handlebars
+{{t
+  'BookingNewRequest.Description'
+  '{customerDisplayName} requested to book {listingTitle}
+in {marketplaceName}.'
+  customerDisplayName=customer.display-name
+  listingTitle=listing.title
+  marketplaceName=marketplace.name
+}}
+```
+
+Inline helper that makes it possible to modify the email template texts
+without making changes in the template code. This helper uses the
+[ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/)
+to render messages and parameters into a string.
+
+The helper renders the message corresponding to the key, if the key
+exists in the [email text asset](/references/assets/). If the key does
+not exist, the helper renders the fallback message.
+
+Any hash parameters used inside either message must be wrapped in single
+curly brackets, and the values for those hash parameters need to be
+defined after the message key and the fallback message.
+
+#### `url-encode`
+
+**Parameters**:
+
+- str
+
+Example usage:
+
+```handlebars
+{{url-encode 'Share & Tribe'}}
+```
+
+URL encodes the given string. Should be used for encoding all user
+input. E.g. a link to user profile with the user name in the link should
+be encoded.
 
 ## Editing email content
 
