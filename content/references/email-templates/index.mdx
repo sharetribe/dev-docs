@@ -399,7 +399,7 @@ the helper will rely on the fallback - 'en_US' in the above example.
 
 **Parameters**:
 
-- timezone code
+- time zone code
 
 Example usage:
 
@@ -407,14 +407,14 @@ Example usage:
 {{set-timezone 'Helsinki/Europe'}}
 ```
 
-This helper applies a timezone to date/time text strings in the emails.
+This helper applies a time zone to date/time text strings in the emails.
 It is used by the `format-text` function - wrapped in `format-day-time`
 in this case. It needs to be provided in
-[TZ timezone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+[TZ time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 format.
 
 This is consistently used transaction process email templates, where the
-timezone exists as a parameter of the listing's availability plan, for
+time zone exists as a parameter of the listing's availability plan, for
 example:
 
 ```handlebars
@@ -1145,7 +1145,7 @@ available for each email template.
 - Properties of type `"extended-data"` define an extended data object.
   Properties in such an object can have any valid JSON values, including
   JSON data structures.
-- The listing `availability-plan` property `timezone` is in TZ timezone
+- The listing `availability-plan` property `timezone` is in TZ time zone
   database format, for example `"Europe/Berlin"`. It is only available
   for plans with type `availability-plan/time`.
 - Remember to traverse the context properly. For example, in
