@@ -423,12 +423,75 @@ the branding asset – any asset data can be used in the templates.
 
 In addition, in the email templates, this helper is used to define the
 correct localization settings in the email templates without modifying
-the template structure itself:
+the template structure itself using the
+[`set-translations`](#set-translations) and [`set-locale`](#set-locale)
+helpers.
+
+#### `set-translations`
+
+- [asset](#asset)
+- (optional) fallback asset
+
+Example usage:
 
 ```handlebars
 {{set-translations (asset 'content/email-texts.json')}}
+```
+
+This helper searches the (first) `asset` at the given path for the text
+keys defined in the email. If matching keys are found, their
+corresponding text is replaced with the translated versions. An optional
+fallback `asset` can be provided as a second parameter. If a key is not
+found in the primary `asset`, the helper will search the fallback
+`asset` and replace the text if the key is found there.
+
+#### `set-timezone`
+
+**Parameters**:
+
+- timezone code
+
+Example usage:
+
+```handlebars
+{{set-timezone 'Helsinki/Europe'}}
+```
+
+This helper applies a timezone to date/time text strings in the emails.
+It is used by the `format-text` function - wrapped in `format-day-time`
+in this case. It needs to be provided in
+[TZ time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+format.
+
+This is consistently used transaction process email templates, where the
+timezone exists as a parameter of the listing's availability plan, for
+example:
+
+```handlebars
+{{set-timezone transaction.listing.availability-plan.timezone}}
+```
+
+#### `set-locale`
+
+**Parameters**:
+
+- locale
+  - either provided as a string or derived from an asset
+
+Example usage:
+
+```handlebars
+{{set-locale 'en_US'}}
 {{set-locale (asset 'general/localization.json' 'locale' 'en_US')}}
 ```
+
+This helper specifies how numbers, dates and currencies are formatted
+within the email.
+
+When providing an asset, the helper works so that it first checks the
+asset at the provided path for the 'locale' key. If a locale is found,
+the helper will extract the value and apply it to the email. Otherwise,
+the helper will rely on the fallback - 'en_US' in the above example.
 
 ## Editing email content
 
