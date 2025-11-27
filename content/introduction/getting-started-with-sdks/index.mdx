@@ -348,12 +348,9 @@ sdk
   .login({ username: '<User email>', password: '<User password>' })
   .then((_) => {
     sdk.exchangeToken().then((res) => {
-      var store = sharetribeSdk.tokenStore.memoryStore();
-      store.setToken(res.data);
-
       var sdkTrusted = sharetribeSdk.createInstance({
         clientId: '<Client ID>',
-        tokenStore: store,
+        tokenStore: sharetribeSdk.tokenStore.memoryStore(res.data),
       });
 
       // It's useful to first call initiateSpeculative to validate the data and to ensure
@@ -423,12 +420,9 @@ sdk
   .login({ username: '<User email>', password: '<User password>' })
   .then((_) => {
     sdk.exchangeToken().then((res) => {
-      var store = sharetribeSdk.tokenStore.memoryStore();
-      store.setToken(res.data);
-
       var sdkTrusted = sharetribeSdk.createInstance({
         clientId: '<Client ID>',
-        tokenStore: store,
+        tokenStore: sharetribeSdk.tokenStore.memoryStore(res.data),
       });
 
       sdkTrusted.transactions
