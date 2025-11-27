@@ -65,9 +65,9 @@ There are two JavaScript SDKs you can use to access the APIs
     <Table.Tr>
       <Table.Td>Client credentials</Table.Td>
       <Table.Td>
-        Client ID (Client secret for trusted contexts)
+        Client ID (Client Secret for trusted contexts)
       </Table.Td>
-      <Table.Td>Client ID, client secret</Table.Td>
+      <Table.Td>Client ID, Client Secret</Table.Td>
     </Table.Tr>
     <Table.Tr>
       <Table.Td>**Secure context needed**</Table.Td>
@@ -79,7 +79,7 @@ There are two JavaScript SDKs you can use to access the APIs
 
 You'll notice we mention secure and trusted contexts in the above
 comparison. Some requests must be made from a _trusted context_, meaning
-the SDK must be initialized with both the client ID and client secret.
+the SDK must be initialized with both the Client ID and Client Secret.
 As a result, all Integration SDK requests are performed within a trusted
 context.
 
@@ -125,7 +125,7 @@ either [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/).
 
 ## SDK Initialization Overview
 
-### Obtaining the Client ID and secret
+### Obtaining the Client ID and Client Secret
 
 To use the Marketplace API or Integration API, you will need a **client
 ID** from an application. You can create an application in Sharetribe
@@ -133,14 +133,15 @@ Console: _Build > Advanced > Applications_
 
 ![Sharetribe Console: Applications tab](./console-build-application.png)
 
-You should also make note of the **client secret**, as some requests
+You should also make note of the **Client Secret**, as some requests
 require a secure context and this can only be done when initializing the
-SDK with both the client ID and secret.
+SDK with both the Client ID and Client Secret.
 
 An example of this type of request is making a privileged transition in
 a transaction. This requires that the:
 
-- Client ID and secret are used when creating an instance of the SDK
+- Client ID and Client Secret are used when creating an instance of the
+  SDK
 - A token exchange happens to obtain a trusted user access token
 - The request is made from a secure context.
 
@@ -153,7 +154,7 @@ a transaction. This requires that the:
 ### Initializing a Sharetribe SDK instance
 
 You can initialize a Sharetribe SDK instance using only the
-application's Client ID. Ensure the client ID is from a **Marketplace
+application's Client ID. Ensure the Client ID is from a **Marketplace
 API application** created in Console.
 
 ```jsx
@@ -170,7 +171,7 @@ or a trusted SDK instance, e.g. querying listings.
 ### Initializing an Integration SDK instance
 
 If you are accessing Integration API, you'll need to also provide the
-client secret. Ensure the client ID is from an **Integration API
+Client Secret. Ensure the Client ID is from an **Integration API
 application** created in Console.
 
 ```jsx
@@ -178,12 +179,12 @@ const sharetribeIntegrationSdk = require('sharetribe-flex-integration-sdk');
 
 const integrationSdk = sharetribeIntegrationSdk.createInstance({
   clientId: '<Client ID>',
-  clientSecret: '<Client secret>',
+  clientSecret: '<Client Secret>',
 });
 ```
 
 <Callout type="warning">
-  Keep your application's client secret secure. Never expose it to
+  Keep your application's Client Secret secure. Never expose it to
   untrusted devices or applications such as end user browsers or mobile
   apps.
 </Callout>
@@ -197,21 +198,21 @@ trusted token.
 
 <Steps>
 
-{<h3>Create an instance of the SDK with the client ID, secret, and token
-store</h3>}
+{<h3>Create an instance of the SDK with the Client ID, Client Secret,
+and Token Store</h3>}
 
 ```jsx
 const sharetribeSdk = require('sharetribe-flex-sdk');
 
 var sdk = sharetribeSdk.createInstance({
   clientId: '<Client ID>',
-  clientSecret: '<Client secret>',
+  clientSecret: '<Client Secret>',
   tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
 ```
 
 <Callout type="warning">
-  Keep your application's client secret secure. Never expose it to
+  Keep your application's Client Secret secure. Never expose it to
   untrusted devices or applications such as end user browsers or mobile
   apps.
 </Callout>
@@ -340,7 +341,7 @@ const params = {
 
 const sdk = sharetribeSdk.createInstance({
   clientId: '<Client ID>',
-  clientSecret: '<Client secret>',
+  clientSecret: '<Client Secret>',
 });
 
 sdk
@@ -386,7 +387,7 @@ sdk
 ```
 
 <Callout type="warning">
-  Keep your application's client secret secure. Never expose it to
+  Keep your application's Client Secret secure. Never expose it to
   untrusted devices or applications such as end user browsers or mobile
   apps.
 </Callout>
@@ -415,7 +416,7 @@ const sharetribeSdk = require('sharetribe-flex-sdk');
 
 var sdk = sharetribeSdk.createInstance({
   clientId: '<Client ID>',
-  clientSecret: '<Client secret>',
+  clientSecret: '<Client Secret>',
   tokenStore: sharetribeSdk.tokenStore.memoryStore(),
 });
 
@@ -456,7 +457,7 @@ const integrationSdk = require('sharetribe-flex-integration-sdk');
 
 var sdk = integrationSdk.createInstance({
   clientId: '<Client ID>',
-  clientSecret: '<Client secret>',
+  clientSecret: '<Client Secret>',
 });
 
 sdk.transactions
