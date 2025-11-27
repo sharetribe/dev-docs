@@ -1395,7 +1395,7 @@
     },
     {
       "source": "/docs/how-to/update-email-texts/",
-      "destination": "/docs/how-to/content-management/update-email-texts/",
+      "destination": "/docs/references/email-templates/",
       "permanent": true
     },
     {
@@ -1761,6 +1761,11 @@
     {
       "source": "/docs/how-to/users-and-authentication/implement-delete-user/",
       "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/content-management/update-email-texts/",
+      "destination": "/docs/references/email-templates/",
       "permanent": true
     }
   ]
