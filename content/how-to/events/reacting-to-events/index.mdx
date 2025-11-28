@@ -10,7 +10,7 @@ published: true
 # Reacting to events
 
 One of the main purposes of [events](/references/events/) in Sharetribe
-is to allow building integrations that programatically react to changes
+is to allow building integrations that programmatically react to changes
 and actions in a marketplace. In this guide, we will show how to use the
 Sharetribe Integration API to continuously query events efficiently. We
 will also demonstrate how to interpret the event data to detect actions,
@@ -76,7 +76,7 @@ integrationSdk.events.query({
 
 This would still give us all events with the given types that Sharetribe
 keeps in history. In practice, often we are interested in _new_ events
-only. In the absense of another point of reference, it is possible to
+only. In the absence of another point of reference, it is possible to
 query events starting from a given timestamp:
 
 ```javascript
@@ -226,7 +226,7 @@ infrastructure, but some options include:
 
 With the sequence ID persisted, subsequent executions of the application
 can resume polling events from the exactly correct point of reference
-and will therefore not miss any events that may have happend in the
+and will therefore not miss any events that may have happened in the
 meantime.
 
 ### Recommended polling interval
@@ -257,7 +257,7 @@ last processed event's sequence ID:
 ```javascript
 const fs = require('fs');
 
-// Start polloing from current time on, when there's no stored state
+// Start polling from current time on, when there's no stored state
 const startTime = new Date();
 
 // Polling interval (in ms) when all events have been fetched.
@@ -368,7 +368,7 @@ in any of the following situations:
 
 - when the event processing is idempotent, meaning that processing and
   event more than once does not produce undesired side-effects
-- when it is tolerrable that some events may be processed multiple times
+- when it is tolerable that some events may be processed multiple times
   (e.g. when a user may receive an occasional duplicate notification)
 
 On the other hand, at-most-once processing is preferable if processing

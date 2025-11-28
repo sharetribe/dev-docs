@@ -769,7 +769,7 @@ the Sharetribe Web Template.
   can use to stop loading indication and display an error message.
 
 ```jsx
-export const queryFavoriteListingsPayloadCreater = (
+export const queryFavoriteListingsPayloadCreator = (
   queryParams,
   { extra: sdk, dispatch, rejectWithValue, getState }
 ) => {
@@ -794,7 +794,7 @@ export const queryFavoriteListingsPayloadCreater = (
 
 export const queryFavoriteListingsThunk = createAsyncThunk(
   'app/FavoriteListingsPage/queryFavoriteListings',
-  queryFavoriteListingsPayloadCreater
+  queryFavoriteListingsPayloadCreator
 );
 ```
 

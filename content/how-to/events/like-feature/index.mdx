@@ -48,7 +48,7 @@ can listen to events using a script that polls the
 As events are handled sequentially, the script can update the listing's
 extended data while avoiding race conditions. A downside to using events
 is that the like count may take a moment to update. We can mask this
-delay by temporarily incrementintg the like value in the UI.
+delay by temporarily incrementing the like value in the UI.
 
 ## Create a UI component the user can interact with
 
@@ -511,7 +511,7 @@ const currentLikes =
 </Steps>
 
 Now, clicking on the icon will either add or remove the listing to the
-user exteneded data with the key _likedListings_. However, as liked
+user extended data with the key _likedListings_. However, as liked
 listings are only saved into user extended data at the moment, the
 number of likes still remains at zero.
 
