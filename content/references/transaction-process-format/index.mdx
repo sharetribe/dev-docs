@@ -244,7 +244,7 @@ This means that the first action to execute is `:action/cancel-booking`
 which, like you might have guessed, marks the booking associated with
 the transaction as cancelled. Next we calculate a full refund and add
 the information to the transaction as line items. Finally, we invoke a
-payment refund via Stripe. When all of the abovementioned steps are
+payment refund via Stripe. When all of the above mentioned steps are
 taken and complete successfully, the transition is completed and the
 process moves to state `:state/cancelled`.
 
@@ -478,7 +478,7 @@ requires and accepts.
 | `:name`     | Keyword         | Unique name for the notification.                                                                                                                                                                                           | `:notification/new-booking-request`                                                                  |
 | `:on`       | Keyword         | Reference to a transition name that when completed triggers this notification.                                                                                                                                              | `:transition/confirm-payment`                                                                        |
 | `:to`       | Keyword         | Recipient of the notification email. One of: `:actor.role/customer`, `:actor.role/provider`                                                                                                                                 | `:actor.role/provider`                                                                               |
-| `:template` | Keyword         | Refrence to an email template to render the email body for this notification.                                                                                                                                               | `:new-booking-request`                                                                               |
+| `:template` | Keyword         | Reference to an email template to render the email body for this notification.                                                                                                                                              | `:new-booking-request`                                                                               |
 | `:at`       | Time expression | Optional time expression that when given turns the notification to a delayed notification. Any scheduled delayed notification is cancelled if the transaction transitions to another state before the notification is sent. | `{:fn/plus [{:fn/timepoint [:time/first-entered-state :state/preauthorized]} {:fn/period ["P5D"]}]}` |
 
 **Example**:

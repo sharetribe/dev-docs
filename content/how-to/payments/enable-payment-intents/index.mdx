@@ -129,7 +129,7 @@ address) and then 4 thunk-calls/Promises need to be made in sequence:
   - API returns `stripePaymentIntentClientSecret` inside transaction's
     protectedData
 - This combines both transitions:
-  - `sdk.transitions.initate` aka `request-payment`
+  - `sdk.transitions.initiate` aka `request-payment`
   - `sdk.transitions.transition` aka continue inquiry with
     `request-payment-after-inquiry`
 - Automatic expiration happens in 15 minutes, if process is not
