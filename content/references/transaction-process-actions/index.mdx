@@ -102,7 +102,7 @@ action should only ever be used before creating the payment intent.
 
 - `lineItems`: Collection of line items (max 50). Each line items has
   following fields:
-  - `code`: string, mandatory, indentifies line item type (e.g.
+  - `code`: string, mandatory, identifies line item type (e.g.
     `"line-item/cleaning-fee"`), maximum length 64 characters.
   - `unitPrice`: money, mandatory
   - `lineTotal`: money
@@ -149,7 +149,7 @@ other non-commission line totals. Must be zero or positive.
 `payoutTotal` equals to the sum of provider commission line totals and
 other non-commission line totals. Must be zero or positive.
 
-Only one currency is allowed accross all fields defining money.
+Only one currency is allowed across all fields defining money.
 
 **Configuration options**: -
 
@@ -164,7 +164,7 @@ and adds a `:line-item/customer-commission` line-item.
 Subsequent executions will create new line items instead of modifying
 the existing one. Commission calculations are based on
 transaction/totalPrice and will accumulate the payinTotal. For example,
-a total price of 100 EUR and two consequtive 10 % customer commissions
+a total price of 100 EUR and two consecutive 10 % customer commissions
 will result in an 120 EUR payin.
 
 **Preconditions**:
@@ -205,7 +205,7 @@ and adds a `:line-item/provider-commission` line-item.
 Subsequent executions will create new line items instead of modifying
 the existing one. Commission calculations are based on
 transaction/totalPrice and will accumulate the payoutTotal. For example,
-a total price of 100 EUR and two consequtive 10 % provider commissions
+a total price of 100 EUR and two consecutive 10 % provider commissions
 will result in an 80 EUR payout.
 
 Too large commission (i.e. a negative payout) will cause an error.
@@ -247,7 +247,7 @@ amount and adds a `:line-item/customer-fixed-commission` line-item.
 
 Subsequent executions will create new line items instead of modifying
 the existing one and will accumulate the `payinTotal`. For example, a
-total price of 100 EUR and two consequtive 10 EUR customer fixed
+total price of 100 EUR and two consecutive 10 EUR customer fixed
 commissions will result in an 120 EUR payin.
 
 **Preconditions**:
@@ -280,7 +280,7 @@ amount and adds a `:line-item/provider-fixed-commission` line-item.
 
 Subsequent executions will create new line items instead of modifying
 the existing one and will accumulate the `payoutTotal`. For example, a
-total price of 100 EUR and two consequtive 10 EUR provider fixed
+total price of 100 EUR and two consecutive 10 EUR provider fixed
 commissions will result in an 80 EUR payout.
 
 Too large commission (i.e. a negative payout) will cause an error.
@@ -467,7 +467,7 @@ Existing line items will be removed.
 
 - `lineItems`: Collection of line items (max 50). Each line items has
   following fields:
-  - `code`: string, mandatory, indentifies line item type (e.g.
+  - `code`: string, mandatory, identifies line item type (e.g.
     `"cleaning-fee"`)
   - `unitPrice`: money, mandatory
   - `quantity`: number
@@ -1225,7 +1225,7 @@ temporarily accessible in the transaction protected data under the
 ```
 
 Client applications can use the PaymentIntent client secret in order to
-handle payment client-side. Typically that involes using Stripe.js SDK
+handle payment client-side. Typically that involves using Stripe.js SDK
 to attach a payment method and handle the bank redirect where the
 customer confirms the payment. The `stripePaymentIntents` is removed
 from the protected data once the `:action/stripe-confirm-payment-intent`

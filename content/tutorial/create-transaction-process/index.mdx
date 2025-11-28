@@ -659,7 +659,7 @@ Stripe-related payment processing. This is handled in
 +     ];
 + ];
 
-+ const ongoinBiketribeInstantBookingsWithIncompletePaymentProcessing = () =>
++ const ongoingBiketribeInstantBookingsWithIncompletePaymentProcessing = () =>
 +     sdk.transactions.query({
 +       processNames: 'negotiated-booking',
 +       states: stripeRelatedStatesForBiketribeInstantBookings.join(','),
@@ -667,7 +667,7 @@ Stripe-related payment processing. This is handled in
 
  Promise.all([
     ...
-+     ongoinBiketribeInstantBookingsWithIncompletePaymentProcessing(),
++     ongoingBiketribeInstantBookingsWithIncompletePaymentProcessing(),
   ])
   ...
 };
@@ -675,7 +675,7 @@ Stripe-related payment processing. This is handled in
 
 This handles throwing an error if the user attempts to delete their
 account while any of their involved transactions have ongoing Stripe
-payment processing. This also ensures that no expensive, unneccessary
+payment processing. This also ensures that no expensive, unnecessary
 user deletion API calls are made, and that the user is prompted to
 contact the marketplace rather than receiving an unclear or confusing
 error.
