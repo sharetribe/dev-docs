@@ -39,6 +39,11 @@
       "permanent": true
     },
     {
+      "source": "/docs/introduction/introducing-sharetribe-developer-platform/",
+      "destination": "/docs/introduction/",
+      "permanent": true
+    },
+    {
       "source": "/docs/background/how-to-build-and-launch-with-flex/",
       "destination": "/docs/introduction/how-to-build-and-launch-with-flex/",
       "permanent": true
