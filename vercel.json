@@ -1767,6 +1767,11 @@
       "source": "/docs/how-to/content-management/update-email-texts/",
       "destination": "/docs/references/email-templates/",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/listings/multiple-seats/",
+      "destination": "/docs/",
+      "permanent": true
     }
   ]
 }
