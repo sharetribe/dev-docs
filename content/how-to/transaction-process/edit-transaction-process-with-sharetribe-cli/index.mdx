@@ -89,45 +89,7 @@ You can see that there are two items in the directory:
 - `templates` directory, which contains all the transaction email
   templates for this process
 
-Next, we're going to edit the process description, but before that...
-
-## A word about edn format
-
-The process description uses a format called **edn**. At first glance it
-may seem a bit odd if you haven't seen edn before, but fear not! On
-closer look you'll recognize many similarities with JSON format.
-
-Here's a small example of edn:
-
-```clojure
-;; This is a comment. Comments in edn start with ";;"
-;;
-
-{:number 1 ;; a number, for example `1`, `2.2`, `-500`, `1.23456M`
-           ;; (where `M` denotes that exact precision is desired)
- :string "This is a string"
- :boolean true ;; or false
- :keyword :this-is-a-keyword
- :namespaced-keyword :namespaced/keyword
- :vector [1, "abc", false] ;; same as "array" in JSON
- :map {:first-name "John",
-       :last-name "Doe",
-       :age 55} ;; same as "object" in JSON
-}
-```
-
-Keywords are used heavily in the process description syntax as keys in
-maps as well as enum values. Keywords start with a `:` but are otherwise
-similar to strings. Keywords can have a namespace, in which case they
-are called qualified keywords, or be plain (unqualified). The part
-before `/` is the namespace. So for example, `:actor.role/customer` is a
-keyword in the namespace `actor.role`.
-
-Commas (`,`) in edn are optional and often omitted, but can be used for
-clarity.
-
-Now that you know the basics of the edn format, let's edit the
-`process.edn` file!
+Next, we're going to edit the process description.
 
 ## Extend the review period
 
