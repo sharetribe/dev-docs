@@ -1777,6 +1777,11 @@
       "source": "/docs/concepts/transactions/change-transaction-process/",
       "destination": "/docs/",
       "permanent": true
+    },
+    {
+      "source": "/docs/concepts/development/console-overview/",
+      "destination": "/docs/",
+      "permanent": true
     }
   ]
 }

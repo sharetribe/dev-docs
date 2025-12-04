@@ -42,10 +42,15 @@ kept secure.
 - Name your applications so that it is easier for you to recognize how
   each one is used. For instance, use names like "Web UI", "iOS mobile
   app", "reporting", "mailing list integration", etc.
+- Store your application credentials in a secure place, such as a
+  password manager. The client ID of each application is visible in
+  Console, but you can only view the client secret when the application
+  is first created. This means that if you haven't stored your client
+  secret, you will not be able to view it later.
 - When an application is deleted, all API clients using the associated
   Client ID and Secret will stop working.
 
-<Callout type="warning">
+<Callout type="error">
 
 Always keep your applications' client secret secure. Never expose it in
 a untrusted device or application, such as end users' browsers or mobile
