@@ -1,0 +1,199 @@
+---
+title: The edn format
+sidebarTitle: The edn format
+description:
+  Sharetribe transaction processes and migration content uses Clojure
+  edn format. This article describes the basics of reading and writing
+  edn for the purposes of working with the Sharetribe Developer
+  Platform.
+---
+
+# The edn format
+
+Sharetribe transaction processes and migration content uses Clojure
+**edn** format. This article describes the basics of reading and writing
+edn for the purposes of working with the Sharetribe Developer Platform.
+
+## Sharetribe's transaction process
+
+Sharetribe's transaction process description uses a format called
+**edn**. At first glance it may seem a bit odd if you have not seen edn
+before. However, there are many similarities with the JSON format.
+
+Here's a small example of edn:
+
+```clojure
+;; This is a comment. Comments in edn start with ";;"
+;;
+
+{:number 1 ;; a number, for example `1`, `2.2`, `-500`, `1.23456M`
+           ;; (where `M` denotes that exact precision is desired)
+ :string "This is a string"
+ :boolean true ;; or false
+ :keyword :this-is-a-keyword
+ :namespaced-keyword :namespaced/keyword
+ :vector [1, "abc", false] ;; same as "array" in JSON
+ :map {:first-name "John",
+       :last-name "Doe",
+       :age 55} ;; same as "object" in JSON
+}
+```
+
+Keywords are used heavily in the process description syntax as keys in
+maps as well as enum values. Keywords start with a `:` but are otherwise
+similar to strings. Keywords can have a namespace, in which case they
+are called qualified keywords, or be plain (unqualified). The part
+before `/` is the namespace. So for example, `:actor.role/customer` is a
+keyword in the namespace `actor.role`.
+
+Commas (`,`) in edn are optional and often omitted, but can be used for
+clarity.
+
+For a longer example, this is an edn representation of the transition
+**expire-review-period**. It illustrates some of the structures
+mentioned in the earlier example.
+
+```clojure
+  ;; The transition itself is defined as a map with the following plain keywords as keys:
+  ;; - name
+  ;; - at
+  ;; - actions
+  ;; - from
+  ;; - to
+  ;; The values have different formats
+  ;; - the value of :name is a qualified keyword in the namespace 'transition'
+  {:name :transition/expire-review-period,
+   ;; - the value of :at is a map that represents a time expression function
+   :at
+   ;; - the function name here is :fn/plus, a qualified keyword in the namespace 'fn'
+   ;; - the function parameters are a vector
+   {:fn/plus
+    ;; this function has two parameters in the vector:
+    ;; - a map of a timepoint function for booking end time {:namespace/keyword, [:namespace/keyword]}
+    ;; - the timespan to be added with :fn/plus to the timepoint {:namespace/keyword, ["string"]}
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   ;; the value of :actions is an empty array
+   :actions [],
+   ;; the value of :from is a qualified keyword in namespace 'state'
+   :from :state/delivered,
+   ;; the value of :to is a qualified keyword in namespace 'state'
+   :to :state/reviewed}
+```
+
+## Creating your edn file for a data migration
+
+When you are creating new documents with edn, such as migration imports,
+we recommend that you use an edn library to generate the data and
+validate the .edn syntax to ensure that the file is up to standard.
+
+edn libraries exist for multiple languages, for example
+[JavaSript](https://www.npmjs.com/search?q=edn),
+[Python](https://pypi.org/search/?q=edn), and
+[Ruby](https://rubygems.org/search?query=edn). Clojure has built-in
+support for edn. Usually these libraries support encoding data
+structures to edn and creating custom tagged elements.
+
+Here's an example of how to write Intermediary data – a Sharetribe
+proprietary data migration format – in edn format using JavaScript
+libraries [jsedn](https://www.npmjs.com/package/jsedn) and
+[uuid](https://www.npmjs.com/package/uuid) to represent a user and a
+listing:
+
+```javascript
+const edn = require('jsedn');
+const { v4: uuidv4 } = require('uuid');
+
+const tagged = (tag, value) => new edn.Tagged(new edn.Tag(tag), value);
+const uuid = () => tagged('uuid', uuidv4());
+const price = (amount, currency) =>
+  tagged('im/money', [amount, currency]);
+
+const email = (data) => {
+  const { emailAddress } = data;
+  return new edn.Map([
+    edn.kw(':im.email/address'),
+    emailAddress,
+    edn.kw(':im.email/verified'),
+    true,
+  ]);
+};
+
+const profile = (data) => {
+  const { firstName, lastName } = data;
+  return new edn.Map([
+    edn.kw(':im.userProfile/firstName'),
+    firstName,
+    edn.kw(':im.userProfile/lastName'),
+    lastName,
+  ]);
+};
+
+const user = (data) => {
+  const { alias, emailAddress, firstName, lastName } = data;
+  const role = new edn.Vector([
+    edn.kw(':user.role/customer'),
+    edn.kw(':user.role/provider'),
+  ]);
+
+  return new edn.Vector([
+    new edn.Vector([edn.kw(':im.user/id'), uuid(), alias]),
+    new edn.Map([
+      edn.kw(':im.user/primaryEmail'),
+      email(data),
+      edn.kw(':im.user/createdAt'),
+      tagged('inst', new Date().toISOString()),
+      edn.kw(':im.user/role'),
+      role,
+      edn.kw(':im.user/profile'),
+      profile(data),
+    ]),
+  ]);
+};
+
+const listing = (data) => {
+  const { alias, title, priceAmount, author } = data;
+  return new edn.Vector([
+    new edn.Vector([edn.kw(':im.listing/id'), uuid(), alias]),
+    new edn.Map([
+      edn.kw(':im.listing/title'),
+      title,
+      edn.kw(':im.listing/createdAt'),
+      tagged('inst', new Date().toISOString()),
+      edn.kw(':im.listing/state'),
+      edn.kw(':listing.state/published'),
+      edn.kw(':im.listing/price'),
+      price(priceAmount, 'EUR'),
+      edn.kw(':im.listing/author'),
+      tagged('im/ref', author),
+    ]),
+  ]);
+};
+
+const userAlias = edn.kw(':user/john');
+const e = new edn.Map([
+  edn.kw(':ident'),
+  edn.kw(':mymarketplace'),
+  edn.kw(':data'),
+  new edn.Vector([
+    listing({
+      alias: edn.kw(':listing/rock-sauna'),
+      title: 'A solid rock sauna',
+      priceAmount: 12.2,
+      author: userAlias,
+    }),
+    user({
+      alias: userAlias,
+      emailAddress: 'foo@sharetribe.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    }),
+  ]),
+]);
+
+console.log(edn.encode(e)); // or save to file
+```
+
+Read more about the Intermediary format and migrating existing data to
+Sharetribe in this article:
+
+- [Migrating from outside Sharetribe](/how-to/migrations/migrating-from-outside-sharetribe/)

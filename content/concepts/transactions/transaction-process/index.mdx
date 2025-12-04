@@ -11,9 +11,10 @@ import { Callout } from 'nextra/components';
 
 # Introduction to transaction processes
 
-Your marketplace exists to connect supply and demand. You have a unique
-vision of how this connection should happen. Sharetribe makes this
-custom vision possible using its composable transaction process.
+Your marketplace exists to connect supply and demand. There are
+countless ways of making this connection happen, so Sharetribe allows
+you to customize your transaction process to make different types of
+transaction configurations possible.
 
 ## Users interact through transactions
 
@@ -24,7 +25,7 @@ beginning to end. A single transaction might include events such as
 messages between users, the payment sent from the customer to the
 provider, and the reviews users leave about their experience.
 
-You likely want users on your marketplace to transact a certain way. For
+On different marketplaces, users transact in different ways. For
 instance, you may want your providers to accept requests before
 confirming bookings to ensure that there is no conflict. Or, you might
 prefer requests to confirm automatically because you want to prioritize
@@ -34,9 +35,9 @@ offered service.
 The guidelines for how you’d like users to transact are established in
 Sharetribe using a transaction process. Your marketplace’s transaction
 process determines how your customers and providers move through their
-transaction. You can have different transaction processes for different
-ways of transacting, like renting and buying products, in the same
-marketplace too.
+transaction. You can also have different transaction processes for
+different ways of transacting, like renting and buying products, in the
+same marketplace.
 
 A transaction follows the trail established by your transaction process.
 The transaction process maps the steps your users will complete and the
@@ -103,23 +104,67 @@ After an accepted booking is completed, the customer and provider have a
 certain period of time to review each other. After this, the reviews are
 published and the transaction is concluded.
 
-The default process is built in to Sharetribe Web Template. Usually, the
-easiest way to start defining your own transaction process is by editing
-the default process.
+The default processes are built in to Sharetribe Web Template. Usually,
+the easiest way to start defining your own transaction process is by
+editing the default process.
+
+<Callout type="info">
+
+In Sharetribe, transaction processes are written in Clojure's edn
+format, and there are a handful of examples written in edn in this
+article. If you are not familiar with edn, you can learn more in this
+article:
+
+- [The edn format](/concepts/development/edn/)
+
+</Callout>
 
 ### States
 
-The status at any given point in a transaction is called its state. The
-state describes where the users are in their transaction.
+The status at any given point in a transaction is called its **state**.
+The state describes where the users are in their transaction.
 
 The Sharetribe default booking process, for example, has a state called
 _preauthorized_. It signifies that a customer has requested to book a
 time from the provider’s calendar, and a charge on their credit card has
 been preauthorized.
 
+![Transaction process states](./transaction-process-states.png)
+
+Transaction processes are defined in a **process.edn** file of the
+process directory. In the process.edn file, states are not defined
+directly. Instead, they are defined as the _:from_ and _:to_ states of
+transitions:
+
+```clojure filename="process.edn"
+    {:name :transition/confirm-payment,
+    :actor :actor.role/customer
+    :actions [{:name :action/stripe-confirm-payment-intent}],
+    :from :state/pending-payment ;; :from state describes the initial state of the transition
+    :to :state/preauthorized} ;; to state describes the final state of the transition
+
+```
+
 From the _preauthorized_ state the provider can reject or accept the
 request, in which case the transaction will transition to the _declined_
 or _accepted_ state respectively.
+
+```clojure filename="process.edn"
+    {:name :transition/accept
+    :actor :actor.role/provider
+    :actions [{:name :action/accept-booking}
+              {:name :action/stripe-capture-payment-intent}]
+    :from :state/preauthorized
+    :to :state/accepted}
+
+    {:name :transition/decline
+    :actor :actor.role/provider
+    :actions [{:name :action/decline-booking}
+              {:name :action/calculate-full-refund}
+              {:name :action/stripe-refund-payment}]
+    :from :state/preauthorized
+    :to :state/declined}
+```
 
 ### Transitions
 
@@ -145,6 +190,30 @@ more detail in this article, but you can find more information
 
 ![Transaction transitions](./transaction-transitions-v2.png)
 
+```clojure filename="process.edn"
+  ;; These two transitions go from state/preauthorized to state/declined,
+  ;; but one is allowed for the provider, and one is scheduled to run at a specified time
+  {:name :transition/decline
+  :actor :actor.role/provider
+  :actions [{:name :action/decline-booking}
+            {:name :action/calculate-full-refund}
+            {:name :action/stripe-refund-payment}]
+  :from :state/preauthorized
+  :to :state/declined}
+
+  {:name :transition/expire
+  ;; the :at parameter replaces the :actor parameter in scheduled transitions
+  :at {:fn/min [{:fn/plus [{:fn/timepoint [:time/first-entered-state :state/preauthorized]}
+                            {:fn/period ["P6D"]}]}
+                {:fn/plus [{:fn/timepoint [:time/booking-end]}
+                            {:fn/period ["P1D"]}]}]}
+  :actions [{:name :action/decline-booking}
+            {:name :action/calculate-full-refund}
+            {:name :action/stripe-refund-payment}]
+  :from :state/preauthorized
+  :to :state/declined}
+```
+
 ### Actions
 
 Actions describe what happens as part of a transition. For example, the
@@ -164,6 +233,28 @@ list of all transaction process actions can be found
 </Callout>
 
 ![Transaction actions](./transaction-actions-v2.png)
+
+```clojure filename="process.edn"
+  {:name :transition/complete
+  :at {:fn/timepoint [:time/booking-end]}
+  ;; actions:
+  ;; - create Stripe payout to provider
+  :actions [{:name :action/stripe-create-payout}]
+  :from :state/accepted
+  :to :state/delivered}
+
+  {:name :transition/cancel
+  :actor :actor.role/operator
+  ;; actions:
+  ;; - mark booking as cancelled
+  ;; - calculate refund
+  ;; - issue refund
+  :actions [{:name :action/cancel-booking}
+            {:name :action/calculate-full-refund}
+            {:name :action/stripe-refund-payment}]
+  :from :state/accepted
+  :to :state/cancelled}
+```
 
 ### Notifications
 
@@ -192,31 +283,20 @@ Content > Email texts.
 
 ![Transaction notifications](./transaction-notifications-v2.png)
 
-## How users interact with your transaction process?
-
-You may be wondering what a graph has to do with your marketplace – a
-very good question. The graph is simply a visualization of the
-transaction process information (the states, the transitions, and the
-actions) stored in your marketplace database in Sharetribe. The
-transaction process is, in reality, a short set of instructions written
-in a text file. You can see an example of these instructions
-[here](https://github.com/sharetribe/example-processes/blob/master/default-booking/process.edn)
-if you are curious.
-
-These instructions ultimately play out during transactions in your web
-or mobile marketplace app.
-
-Whenever your users transact, at whichever state they are in that
-interaction, the transaction process determines **what** they can do
-next and **how** it happens.
-
-Let’s revisit our Sharetribe default booking transaction process, this
-time in conjunction with Sharetribe Web Template, to illustrate this.
-You’ll see how a transaction process state looks for providers and
-customers in Biketribe, an example marketplace built with Sharetribe Web
-Template. If you’re not sure what is meant by the “Sharetribe Web
-Template”, you can read more about it
-[here](/introduction/introducing-template/).
+```clojure filename="process.edn"
+  {:name :notification/booking-money-paid,
+   :on :transition/complete,
+   :to :actor.role/provider,
+   :template :booking-money-paid}
+  {:name :notification/review-period-start-provider,
+   :on :transition/complete,
+   :to :actor.role/provider,
+   :template :booking-review-by-provider-wanted}
+  {:name :notification/review-period-start-customer,
+   :on :transition/complete,
+   :to :actor.role/customer,
+   :template :booking-review-by-customer-wanted}
+```
 
 ## What kind of transaction process customizations are possible?
 
@@ -260,10 +340,8 @@ it’s time to create your own. Sharetribe provides a few default
 processes, but you’ll likely want to modify these to capture the unique
 way your users will transact.
 
-If you’re a developer building with Sharetribe, you can build your
-transaction process using the Sharetribe CLI. Here are guides for
-[creating your own transaction process](/tutorial/create-transaction-process/)
-and for
+You can build your transaction process using the Sharetribe CLI. Here
+are guides for [creating your own transaction process](TODO) and for
 [getting started with Sharetribe CLI](/introduction/getting-started-with-sharetribe-cli/).
 For more details of the transaction process format, see the
 [Transaction process format](/references/transaction-process-format/)
@@ -271,11 +349,3 @@ reference. To customise the UI of your marketplace to match your process
 changes, see the
 [Change transaction process setup in Sharetribe Web Template](/how-to/transaction-process/change-transaction-process-in-template/)
 how-to guide.
-
-If you’re working with a developer, then you need to communicate how you
-would like transactions to work so your developer can implement the
-necessary steps, transitions, and actions to build your transaction
-process.
-[Our guide for changing your transaction process](/concepts/transactions/change-transaction-process/)
-shares a few principles to keep in mind when making changes as a
-non-developer.
