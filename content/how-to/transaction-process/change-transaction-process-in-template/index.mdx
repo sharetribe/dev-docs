@@ -38,16 +38,22 @@ from a background info article about the
 The following guide will help you to customise the process flow in the
 template to match the process in our backend.
 
+This guide assumes that you have already followed these instructions to
+add a new process:
+
+- [Create a new transaction process with the Sharetribe CLI](/how-to/transaction-process/create-new-transaction-process-with-cli/).
+
 ## Add the new transaction process configuration
 
 The
 [src/config/configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
 file lists the listing types actively used by the template, as well as
 the transaction processes related to those types. You need to add a
-configuration for a new transaction process. You can either comment out
-the previous active process definitions (if you only want to use the new
-process) or leave them as they are (if you want to allow using multiple
-processes in the same application).
+configuration for a new transaction process to use it in the template.
+
+You can either comment out any previously active process definitions (if
+you only want to use the new process) or leave them as they are (if you
+want to allow using multiple processes in the same application).
 
 ```js filename="src/config/configListing.js"
 export const listingTypes = [
@@ -55,8 +61,8 @@ export const listingTypes = [
     listingType: 'nightly-booking',
     label: 'Nightly booking',
     transactionType: {
-      process: 'negotiated-booking',
-      alias: 'negotiated-booking/release-1',
+      process: 'booking-with-negotiation',
+      alias: 'booking-with-negotiation/release-1',
       unitType: 'night',
     },
   },
@@ -87,22 +93,30 @@ to modify the way your template merges local and hosted configurations.
 </Callout>
 
 The `alias` variable should point to the correct alias. You need to
-check from Console which process and process version your client app
+check in Console which process and process version your client app
 should support. All available transaction process aliases can be found
 in the
 [Build section](https://console.sharetribe.com/advanced/transaction-processes)
 in Console.
 
+![Process alias in Console](./booking-with-negotiation-showing-alias.png)
+
 The `unitType` specifies what kind of units the web app is dealing with.
-The client template recognises and handles four unit types by default:
-**day**, **night**, **hour**, and **item**.
+The Sharetribe Web Template recognises and handles these unit types by
+default:
+
+- **day**, **night**, **hour**, and **fixed** for the
+  **default-booking** process
+- **item** for the **default-purchase** process
+- **inquiry** for the **default-inquiry** process
+- **request** and **offer** for the **default-negotiation** process.
 
 <Callout type="info">
 
-The Sharetribe engine can handle other unit types besides the four
-default ones. If you use a unit type outside the defaults, you need to
-add custom handling for it in e.g. line item calculation, order
-handling, and email templates.
+The Sharetribe engine can handle other unit types besides the default
+ones. If you use a unit type outside the defaults, you need to add
+custom handling for it in e.g. line item calculation, order handling,
+and email templates.
 
 </Callout>
 
@@ -127,7 +141,8 @@ export const BOOKING_PROCESS_NAME = 'default-booking';
 export const INQUIRY_PROCESS_NAME = 'default-inquiry';
 export const NEGOTIATION_PROCESS_NAME = 'default-negotiation';
 // Add new processes with a descriptive name
-export const NEGOTIATED_BOOKING_PROCESS_NAME = 'negotiated-booking';
+export const NEGOTIATED_BOOKING_PROCESS_NAME =
+  'booking-with-negotiation';
 ```
 
 In addition to updating the process name to your `transaction.js` file,
@@ -142,13 +157,14 @@ If you are replacing one of the default processes (for instance the
 default booking process with a new booking process with different
 transitions and states), you can modify the existing
 **transactionProcessBooking.js** file to correspond to the new process.
+
 If you are creating a parallel booking process and want to allow listing
 authors to choose between two processes for their listings, you will
 need to create a new transaction process file and import it in
 `transaction.js`.
 
 The following instructions specify the steps for modifying the existing
-`transactionProcessBooking.js` file, so if you do create a new one, we
+`transactionProcessBooking.js` file. If you do create a new one, we
 recommend you replicate the existing default process file and make the
 necessary changes instead of creating one from scratch.
 
@@ -159,7 +175,7 @@ should add (or remove) those. Transition names need to map exactly with
 transitions used in Marketplace API, since transitions are part of
 queried transaction entities.
 
-### Update state graph to match the new transaction process
+### Add or update state graph to match the new transaction process
 
 State graph description makes it easier to understand how the
 transaction process works - but even more importantly, it makes it
@@ -373,7 +389,7 @@ checked before submitting the user deletion request.
 
 + const ongoingNegotiatedBookingsWithIncompletePaymentProcessing = () =>
 +     sdk.transactions.query({
-+       processNames: 'negotiated-booking',
++       processNames: 'booking-with-negotiation',
 +       states: stripeRelatedStatesForNegotiatedBookings.join(','),
 +     });
 
