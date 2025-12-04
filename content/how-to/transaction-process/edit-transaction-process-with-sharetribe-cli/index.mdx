@@ -1,37 +1,46 @@
 ---
-title: Edit transaction process with Sharetribe CLI
-sidebarTitle: Edit the transaction process
+title: Edit an existing transaction process with Sharetribe CLI
+sidebarTitle: Edit a transaction process
 description:
-  This tutorial shows you how to edit transaction process with
-  Sharetribe CLI. You will learn how to pull process definition, make a
-  small change to it and push the change.
+  This guide shows you how to edit an existing transaction process with
+  Sharetribe CLI. You will learn how to pull the process definition,
+  make a small change to it, and push the change.
 ---
 
 import Asciinema from '../../../../app/components/Asciinema';
+import { Callout } from 'nextra/components';
 
-# Edit transaction process with Sharetribe CLI
+# Edit a transaction process with Sharetribe CLI
+
+In this guide, we will extend the marketplace review period with the
+Sharetribe CLI. After we've made the change, we'll push the updated
+transaction process version and update the existing alias.
+
+<Callout type="info">
 
 Sharetribe CLI (Command-line interface) is a tool for changing your
 marketplace's configurations such as transaction processes and email
 templates.
 
-This tutorial expects that you have already installed Sharetribe CLI and
+This guide expects that you have already installed Sharetribe CLI and
 are logged in with your API key. It's recommended to first read the
 tutorial
 [Getting started with Sharetribe CLI](/introduction/getting-started-with-sharetribe-cli/).
 If you haven't read
 [how transaction processes work in Sharetribe](/concepts/transactions/transaction-process/),
-it's a good idea to do that before starting this tutorial.
+it's a good idea to do that before starting this guide.
 
-In this tutorial we extend the marketplace review period. After we've
-made the change, we'll push the updated transaction process version and
-update the existing alias. If you want to create a new transaction
-process based on an existing one instead, you can follow these
-[instructions to create a new transaction process and alias](/tutorial/create-transaction-process/#create-a-new-process)
+</Callout>
+
+If you want to create a new transaction process based on an existing one
+instead, you can follow these instructions to create a new transaction
+process and alias:
+
+- [Create a new transaction process with the Sharetribe CLI](/how-to/transaction-process/create-new-transaction-process-with-cli/)
 
 Let's get started!
 
-## Pull existing process
+## Pull the existing process
 
 <Asciinema recordingId="271991" />
 
@@ -47,7 +56,7 @@ flex-cli process list -m my-marketplace-dev
 ```
 
 From the list of processes, pick the one that you want to edit. In this
-tutorial we'll use process `default-booking`, version 1. You might have
+guide, we'll use process `default-booking`, version 1. You might have
 different processes in your marketplace, so you can use those. However,
 you can check the content of this default booking example process online
 from
@@ -241,6 +250,14 @@ reference and the
 reference to read about all the possibilities that transaction process
 engine gives to you.
 
-As a next step, you may also to edit the transaction email templates.
-[Editing email templates with Sharetribe CLI](/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/)
-tutorial guides you through this process.
+When you modify the transitions or states in your transaction process
+when editing your process, you will need to update your client
+application accordingly. If you are using the Sharetribe Web Template,
+you can follow these instructions to reflect your changes in the client:
+
+- [Change transaction process in Sharetribe Web Template](/how-to/transaction-process/change-transaction-process-in-template/)
+
+You may also want to edit the transaction email templates. You can
+follow these instructions to modify your email templates:
+
+- [Editing email templates with Sharetribe CLI](/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/)
