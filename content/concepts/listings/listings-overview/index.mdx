@@ -49,13 +49,22 @@ endpoint.
 ### Pending approval
 
 If the marketplace
-[requires listing approval for new listings](/concepts/listings/requiring-approval/),
+[requires listing approval for new listings](https://www.sharetribe.com/help/en/articles/8413545-approve-listings-before-publishing),
 a draft listing does not get published directly when the
 [own_listings/publish_draft](https://www.sharetribe.com/api-reference/marketplace.html#publish-draft-listing)
 is called. Instead, it moves into **state: pendingApproval**. The
-operator can then approve the listing in Sharetribe Console or, if the
-approval is dependent on e.g. an extended data attribute, through the
-[listing approval Integration API endpoint](https://www.sharetribe.com/api-reference/integration.html#approve-listing).
+operator can then approve the listing in multiple ways:
+
+- in Sharetribe Console
+- through the
+  [listing approval Integration API endpoint](https://www.sharetribe.com/api-reference/integration.html#approve-listing)
+- or
+  [using our Zapier integration](https://www.sharetribe.com/help/en/articles/9914794-zapier-tutorial-approve-a-listing-after-the-listing-fee-is-paid).
+
+The latter two options are useful if the approval is dependent on e.g.
+an extended data attribute on the listing or author, or on the author
+paying a fee to the marketplace to publish the listing.
+
 A use case for this would be e.g. a marketplace where non-paid members
 can publish one listing and paid members can publish unlimited listings
 – an integration could check whether the user has a `premium: true` flag
