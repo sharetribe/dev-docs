@@ -1782,6 +1782,16 @@
       "source": "/docs/concepts/development/console-overview/",
       "destination": "/docs/",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/content-management/article-library/",
+      "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/listings/requiring-approval/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8413545-approve-listings-before-publishing",
+      "permanent": true
     }
   ]
 }
