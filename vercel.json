@@ -1792,6 +1792,11 @@
       "source": "/docs/concepts/listings/requiring-approval/",
       "destination": "https://www.sharetribe.com/help/en/articles/8413545-approve-listings-before-publishing",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/payments/enable-payment-intents/",
+      "destination": "/docs/concepts/payments/payment-intents/",
+      "permanent": true
     }
   ]
 }
