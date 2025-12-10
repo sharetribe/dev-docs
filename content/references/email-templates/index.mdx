@@ -107,8 +107,8 @@ parameters they take and example how to use them:
 **Parameters**:
 
 - asset path
-- (optional) JSON key or dot-separated nested keys
-- (optional) default value
+- optional, JSON key or dot-separated nested keys
+- optional, default value
 
 The helper is used to retrieve data from assets. It can locate values
 within nested fields by providing a sequence of keys, separated by dots,
@@ -253,7 +253,7 @@ Example usage:
 ```
 
 Block helper that renders a block if `value` is **equal to** `test`. If
-an else block is specified it will be rendered when falsy.
+an `else` block is specified it will be rendered when falsy.
 
 #### `form-encode`
 
@@ -378,7 +378,8 @@ E.g. `"en-US"` is a valid string.
 **Parameters**:
 
 - locale
-  - either provided as a string or derived from an asset
+  - either provided as a string or derived from an asset using the
+    [asset](#asset) helper
 
 Example usage:
 
@@ -404,7 +405,7 @@ the helper will rely on the fallback - 'en_US' in the above example.
 Example usage:
 
 ```handlebars
-{{set-timezone 'Helsinki/Europe'}}
+{{set-timezone 'Europe/Helsinki'}}
 ```
 
 This helper applies a time zone to date/time text strings in the emails.
@@ -436,7 +437,7 @@ helpers.
 **Parameters**:
 
 - [asset](#asset)
-- (optional) fallback asset
+- optional, fallback asset
 
 Example usage:
 
@@ -512,10 +513,11 @@ content with the email text editor under **Build** > **Content** >
 **Email texts**. This data is stored as JSON in the marketplace's public
 asset tree, under the "content/email-texts.json" asset/path.
 
-In the email templates, these texts are accessed using
-[helper functions](#custom-helpers) which use the text keys to retrieve
-the corresponding values and insert or replace the content in the
-templates.
+In the email templates, these texts are retrieved via use of the
+[asset](#asset) and [set-translations](#set-translations) helper
+functions. They can then be accessed with the [`t helper`](#t) function,
+which uses the text keys to insert or replace the content in the
+templates the corresponding values.
 
 As an example, let's look at the default booking transaction process
 [booking-accepted-request email](https://github.com/sharetribe/web-template/blob/main/ext/transaction-processes/default-booking/templates/booking-accepted-request/booking-accepted-request-html.html)
@@ -529,7 +531,7 @@ Here is a header snippet from that template:
   }}</h1>
 ```
 
-This header uses the [`t helper`](#t) to look up the key
+This header uses the [`t helper`](#t) function to look up the key
 `BookingAcceptedRequest.Title`. If a value is defined for that key in
 the email texts, it will be used. If not, the fallback text "Your
 booking request was accepted" will be displayed instead.
