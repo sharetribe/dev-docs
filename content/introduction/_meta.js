@@ -3,6 +3,7 @@ export default {
   'introducing-template': {},
   'getting-started-with-web-template': {},
   'development-skills': {},
+  'getting-started-with-sdks': {},
   'getting-started-with-sharetribe-cli': {},
   'getting-started-with-integration-api': {},
 };
