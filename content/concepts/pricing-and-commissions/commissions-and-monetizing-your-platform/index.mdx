@@ -59,15 +59,13 @@ of custom development.
 
 </Callout>
 
-### Example
-
 _This example illustrates how to use percentage-based commissions
 without Console-based hosted configurations._
 
 A marketplace that charges 10 % from the customer and 12 % from the
-provider would configure the commissions like this:
+provider would configure the commissions in code like this:
 
-```js
+```jsx filename="lineItems.js"
 const { calculateTotalFromLineItems } = require('./lineItemHelpers');
 
 const PROVIDER_COMMISSION_PERCENTAGE = -12; // Provider commission is negative
@@ -129,9 +127,7 @@ In the following example, both the provider and customer pay a fixed
 commission regardless of the listing price or quantity, and
 Console-based commissions are ignored.
 
-### Example
-
-```js
+```jsx filename="lineItems.js"
 const FIXED_PROVIDER_COMMISSION = -1500; // Provider commission is negative
 const FIXED_CUSTOMER_COMMISSION = 1050; // Customer commission is positive
 
@@ -183,11 +179,7 @@ three percentage points (e.g. from 10 per cent down to 7 per cent) when
 they buy 5 items or more. The provider's commission is percentage based,
 but always at least 10 dollars.
 
-### Example
-
-Add the following to _lineItemHelpers.js_:
-
-```js
+```jsx filename="lineItemHelpers.js"
 // Base provider and customer commissions are fetched from assets
 const MINIMUM_PROVIDER_COMMISSION = -1000; // Negative commission in minor units, i.e. in USD cents
 const CUSTOMER_COMMISSION_PERCENTAGE_REDUCTION = 3;
