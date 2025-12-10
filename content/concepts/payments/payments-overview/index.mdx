@@ -6,6 +6,8 @@ description:
 published: true
 ---
 
+import { Steps } from 'nextra/components';
+
 # Payments
 
 Payments in Sharetribe are powered by Stripe, using
@@ -48,6 +50,8 @@ can also save their payment method for future use.
 ### Default payment process with Stripe
 
 ![Default payment flow in Sharetribe](./automatic_confirmation_flow.png)
+
+<Steps>
 
 #### Provider onboarding
 
@@ -147,8 +151,14 @@ In other words, the payout must be triggered no more than 90 days after
 the PaymentIntent is created. This means that for booking or purchase
 times exceeding 90 days, the process needs to be modified.
 
+**Related Stripe actions:**
+
+- [:action/stripe-create-payout](/references/transaction-process-actions/#actionstripe-create-payout)
+
+</Steps>
+
 <details>
-  <summary>Manual or automatic payout?</summary>
+  <summary> Manual or automatic payout? </summary>
   In Stripe terms, the Sharetribe integration uses manual payouts. This
   means that Stripe does not automatically pay out the funds from the
   Connect accounts e.g. daily or weekly, and instead the platform
@@ -158,10 +168,6 @@ times exceeding 90 days, the process needs to be modified.
   out funds manually through the Stripe Dashboard if the marketplace
   transaction process is using the Stripe payout action.
 </details>
-
-**Related Stripe actions:**
-
-- [:action/stripe-create-payout](/references/transaction-process-actions/#actionstripe-create-payout)
 
 ### Modifications to the default processes
 
@@ -290,7 +296,7 @@ The Sharetribe Web Template comes with a working Stripe integration.
   making a payment on a transaction, or on a separate Payment Methods
   page.
 
-## Frequently asked questions
+## Frequently asked questions about payments
 
 ### Is Stripe supported in my country?
 
@@ -298,6 +304,48 @@ In order to use Stripe for your marketplace, your platform account needs
 to be in a Stripe-supported country. Refer to our
 [Help Center](https://www.sharetribe.com/help/en/articles/8418388-countries-and-currencies-supported-by-stripe)
 for more information.
+
+#### Can I add more Stripe countries to the Sharetribe Web Template?
+
+The Sharetribe Web Template by default includes all countries that
+support the Sharetribe Stripe integration. In addition to being
+Stripe-supported in general, the country needs to support the following
+Stripe features:
+
+- Custom account types
+- Destination charges with the `on_behalf_of` API parameter
+- Application fees
+- Manual payout setting
+- 90-day holding period
+
+We do regularly check whether support for new countries is added for
+Stripe Connect with Custom accounts and these specified requirements,
+and we add new supported countries when we become aware of them. If you
+notice that your country supports all of these attributes and is not
+included in the Stripe supported countries in Sharetribe Web Template,
+do reach out to us!
+
+#### Known exceptions related to Brazil, India, and Hungary Stripe support
+
+The Sharetribe Web Template does not support Brazil (BR), India (IN) and
+Hungary (HU), even though all three countries are mentioned as available
+Stripe countries in
+[Stripe's documentation](https://stripe.com/docs/connect/accounts#custom-accounts).
+If you want to support one of these three regions, you will need to do a
+fair amount of customization on top of the default Sharetribe setup.
+
+- The Sharetribe transaction engine uses manual payouts, which are{' '}
+  [not supported for Brazil and India](https://stripe.com/docs/payouts#manual-payouts).
+- India has restrictions on
+  [cross-border payments](https://support.stripe.com/questions/stripe-india-support-for-marketplaces).
+- Stripe treats the Hungarian currency HUF as a
+  [zero-decimal currency for payouts](https://stripe.com/docs/currencies#special-cases).
+  This means that even though the Sharetribe engine can create charges
+  in two-decimal amounts (e.g. HUF 20.38), payouts can only be created
+  in integer amounts evenly divisible by 100 (e.g. HUF 20.00).
+  Additionally, if Stripe needs to do currency conversions from another
+  currency to HUF, the resulting amount may have decimals which can
+  cause the payout to fail.
 
 ### I'm having problems with the Stripe integration
 
@@ -334,7 +382,7 @@ support through the chat widget in the
 [Sharetribe Console](https://console.sharetribe.com/) or
 [by email](mailto:hello@sharetribe.com) for further troubleshooting.
 
-### Partial refunds
+### How to implement partial refunds?
 
 The default Stripe integration in Sharetribe only supports full refunds.
 If you have a use case where you would need to implement partial
