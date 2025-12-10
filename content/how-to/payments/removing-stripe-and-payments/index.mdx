@@ -178,7 +178,10 @@ existing components:
   _src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js_
 
 ```jsx
-export const processCheckoutWithoutPayment = (orderParams, extraParams) => {
+export const processCheckoutWithoutPayment = (
+  orderParams,
+  extraParams
+) => {
   const {
     message,
     onInitiateOrder,
@@ -191,17 +194,19 @@ export const processCheckoutWithoutPayment = (orderParams, extraParams) => {
 
   const storedTx = ensureTransaction(pageData.transaction);
 
-  const processAlias = pageData?.listing?.attributes?.publicData?.transactionProcessAlias;
+  const processAlias =
+    pageData?.listing?.attributes?.publicData?.transactionProcessAlias;
 
   ////////////////////////////////////////////////
   // Step 1: initiate order                     //
   // by requesting booking from Marketplace API //
   ////////////////////////////////////////////////
-  const fnRequest = fnParams => {
+  const fnRequest = (fnParams) => {
     // fnParams should be { listingId, deliveryMethod, quantity?, bookingDates?, protectedData }
 
     const requestTransition =
-      storedTx?.attributes?.lastTransition === process.transitions.INQUIRE
+      storedTx?.attributes?.lastTransition ===
+      process.transitions.INQUIRE
         ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
         : process.transitions.REQUEST_PAYMENT;
     const isPrivileged = process.isPrivileged(requestTransition);
@@ -214,9 +219,15 @@ export const processCheckoutWithoutPayment = (orderParams, extraParams) => {
       isPrivileged
     );
 
-    orderPromise.then(order => {
+    orderPromise.then((order) => {
       // Store the returned transaction (order)
-      persistTransaction(order, pageData, storeData, setPageData, sessionStorageKey);
+      persistTransaction(
+        order,
+        pageData,
+        storeData,
+        setPageData,
+        sessionStorageKey
+      );
     });
 
     return orderPromise;
@@ -225,7 +236,7 @@ export const processCheckoutWithoutPayment = (orderParams, extraParams) => {
   //////////////////////////////////
   // Step 2: send initial message //
   //////////////////////////////////
-  const fnSendMessage = fnParams => {
+  const fnSendMessage = (fnParams) => {
     const orderId = fnParams?.id;
     return onSendMessage({ id: orderId, message });
   };
@@ -234,8 +245,9 @@ export const processCheckoutWithoutPayment = (orderParams, extraParams) => {
   // Call each step in sequence //
   ////////////////////////////////
 
-  return fnRequest(orderParams).then(res => fnSendMessage({...res}))
-};
+  return fnRequest(orderParams).then((res) =>
+    fnSendMessage({ ...res })
+  );
 };
 ```
 
@@ -347,7 +359,7 @@ listing price.
 Remove the actions related to payments, e.g.
 `:action/privileged-set-line-items` and `:action/calculate-full-refund`
 in the default processes. Read more about actions in the
-[transaction process actions refrence article.](/references/transaction-process-actions/)
+[transaction process actions reference article.](/references/transaction-process-actions/)
 Remember to also update email templates that contain pricing
 information.
 

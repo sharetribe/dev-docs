@@ -116,7 +116,7 @@ AND "lights" in the accessories whereas the query
 `pub_accessories=has_any:bell,lights` will match listings with either
 "bell" OR "lights" (or both). If you don't specify the match mode in the
 query (i.e. `pub_accessories=bell,lights`), by default we use the
-has_all mathing mode (AND) for multi enums.
+has_all matching mode (AND) for multi enums.
 
 With the `text` type, you provide a search query, so splitting values
 with a comma doesn't make sense. You will just provide a string of text
@@ -298,7 +298,7 @@ If you wish to remove a schema, you can use the `search unset` command.
 ## Adding a search schema with a default value
 
 Sometimes, you may want to query listings that do not have a certain
-attibute set. For instance, you may have promoted listings on your
+attribute set. For instance, you may have promoted listings on your
 marketplace, labelled with a metadata attribute `isPromoted: true`. If
 you only have a handful of promoted listings, you likely do not want to
 tag all other listings with `isPromoted: false`.
