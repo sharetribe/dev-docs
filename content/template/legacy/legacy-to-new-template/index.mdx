@@ -1,0 +1,119 @@
+---
+title: From legacy template to Sharetribe Web Template
+description:
+  This article describes what to consider if your marketplace is built
+  on one of our legacy templates and you are considering migrating to
+  the Sharetribe Web Template.
+---
+
+import { Callout, Steps } from 'nextra/components';
+
+# Moving your marketplace from a legacy template to Sharetribe Web Template
+
+The Sharetribe product is built on top of the same technology that
+powered our legacy product Flex. This means that if you want to update
+your existing marketplace to use the new Sharetribe Web Template, you
+can still keep using the same Console, and your marketplace data will
+still be available.
+
+However, you will need to make some changes to your data and environment
+configurations before you move to the Sharetribe Web Template. This
+article describes things you need to consider when planning this change.
+
+## Check that you have the correct transaction processes in your environment
+
+If you have created your marketplace environment prior to the 25th of
+April 2023, it is good to note that there are four new transaction
+processes the template uses, and those processes may not be in your
+Sharetribe marketplace by default. You can find the transaction
+processes in
+[/ext/transaction-processes/](https://github.com/sharetribe/web-template/tree/main/ext/transaction-processes)
+in the repository.
+
+To use the template, you will need to have the transaction processes in
+your Sharetribe environment.
+[Follow these steps](/how-to/transaction-process/create-new-transaction-process-with-cli/)
+to create both processes in your environment through Sharetribe CLI.
+
+## Update your listing data
+
+You can move from a legacy template based client app to a Sharetribe Web
+Template based client and keep managing your existing listings in the
+new application. To do so, you need to do the following things – first
+in your Test or Dev environment, and finally in your Live environment.
+
+<Callout type="warning">
+
+Do not make changes to your Live data before testing those changes
+thoroughly in either Test or Dev environments!
+
+</Callout>
+
+<Steps>
+
+### Create your listing types and test listings in Console
+
+In Console, create the listing types you want to have available on your
+marketplace. Create a listing for each of the listing types with the
+Sharetribe Web Template. You can connect a Sharetribe Web Template with
+your existing environment by following these instructions:
+
+- [Getting started with the Sharetribe Web Template](/introduction/getting-started-with-web-template/)
+
+Then, review those new listings in Console and make a note of the values
+for the three listed listing type related attributes:
+
+- listingType
+- transactionProcessAlias
+- unitType
+
+### Update your existing listings with the correct attributes
+
+For each of your existing listings, edit the listing to add the three
+attributes with the correct values according to the listing type you
+want to assign to the listing.
+
+You can create an Integration API script to update the attributes to
+your listings
+
+- if you only want to have a single listing type for all listings on
+  your marketplace
+- or if you have a way of programmatically determining which listing
+  belongs to which listing type – for example if there is an attribute
+  on your existing listings that always indicates the correct listing
+  type
+
+That way, you don't need to update all listings manually in Console.
+
+We have an example script that you can use as the basis for this
+development work.
+
+- [Integration API example script: bulk update listings](https://github.com/sharetribe/integration-api-examples/blob/master/scripts/bulk-update-listings.js)
+
+### Update other attributes on the marketplace
+
+Once you've added the three necessary attributes to your listings, your
+providers can then update other possible attributes (such as categories,
+availability, price variations etc.) in the listing editing flow.
+
+  </Steps>
+
+## Is it possible to combine a legacy custom code marketplace with the Sharetribe Web Template?
+
+The Sharetribe Web Template has a lot of development work on top of the
+legacy template versions. This means that even if it was technically
+possible to take an upstream update to your legacy codebase, combining
+your custom codebase and the Sharetribe Web Template codebase with a
+merge would be slow and expensive.
+
+If you do have custom developed features the Sharetribe Web Template
+does not have that you want to keep in your marketplace, you will need
+to implement those features on top of the Sharetribe Web Template
+codebase. Depending on the feature, the effort required might range from
+moderate to extensive.
+
+On the server side, the differences between the legacy templates and
+Sharetribe Web Template are not as extensive. This means that if your
+feature code is mostly on the server side, you may be able to reuse
+portions of your current code. Client-side changes will most likely
+require a full rewrite.

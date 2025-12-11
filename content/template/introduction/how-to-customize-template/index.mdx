@@ -1,24 +1,25 @@
 ---
 title: Customizing the template
 description:
-  This article helps you set up the development environment and outlines
-  the best practices you should follow while developing on the
-  Sharetribe Web Template.
+  This article outlines the best practices you should follow while
+  developing on the Sharetribe Web Template.
 ---
 
 import { Callout } from 'nextra/components';
 
 # Customizing the template
 
+There are some best practices we recommend that you follow when you are
+developing on top of the Sharetribe Web Template. This article outlines
+those best practices and links to articles with more details if you want
+to dive deeper.
+
 ## Prerequisites
 
-When you start a new project, you should create a new Git repository for
-your project and add the template repository as a remote repository.
-That allows you to update your code with the latest changes from the
-upstream repository. See how to set up a remote repository in the
-[tutorial](/tutorial/#prerequisites).
+Make sure you have followed these steps to get your development
+environment up and running.
 
-### Create a marketplace environment
+### Create your client ID and secret
 
 The Sharetribe Web Template is a React application built on top of the
 [Marketplace API](/concepts/api-sdk/marketplace-api-integration-api/).
@@ -27,25 +28,8 @@ just the API, it requires a lot of effort and we recommend that you use
 a template as a starting point for customizations.
 
 To use the Marketplace API, you will need a client ID. You can obtain
-one from your
+one in your
 [Sharetribe Console > Advanced > Applications](https://console.sharetribe.com/advanced/applications).
-If you do not have a Sharetribe marketplace yet, you can create one at
-[the Sharetribe website](https://console.sharetribe.com/new).
-
-### Check that you have the correct transaction processes in your environment
-
-If you have created your marketplace environment prior to the 25th of
-April 2023, and you are using the Sharetribe Web Template, it is good to
-note that there are two new transaction processes the template uses, and
-those processes may not be in your Sharetribe marketplace by default.
-You can find the transaction processes in
-[/ext/transaction-processes/](https://github.com/sharetribe/web-template/tree/main/ext/transaction-processes)
-in the repository.
-
-To use the template, you will need to have the transaction processes in
-your Sharetribe environment.
-[Follow these steps](https://github.com/sharetribe/web-template#take-the-new-beta-processes-into-use)
-to create both processes in your environment through Sharetribe CLI.
 
 ### Getting started with the template
 
@@ -57,7 +41,11 @@ recommend reading these articles before starting to work on development:
 - [Getting started](/introduction/getting-started-with-web-template/)
 
 The [tutorial introduction](/tutorial/#prerequisites) will also walk you
-through creating a GitHub repository.
+through creating a GitHub repository. When you start a new project, you
+should create a new Git repository for your project and add the template
+repository as a remote repository. That allows you to update your code
+with the latest changes from the upstream repository, as described later
+in this article.
 
 ## Pull in the latest upstream changes
 

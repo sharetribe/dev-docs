@@ -25,6 +25,9 @@ export default {
 
   payments: "Payments",
 
+  // Performance
+  performance: "Performance",
+
   // Security
   security: "Security",
 
