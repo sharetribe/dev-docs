@@ -1807,6 +1807,26 @@
       "source": "/docs/concepts/payments/strong-customer-authentication/",
       "destination": "/docs/template/payments/strong-customer-authentication/",
       "permanent": true
+    },
+    {
+      "source": "/docs/template/maps/how-to-set-up-mapbox-for-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
+      "permanent": true
+    },
+    {
+      "source": "/docs/template/maps/how-to-use-google-maps-in-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
+      "permanent": true
+    },
+    {
+      "source": "/template/styling/how-to-change-template-icons/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8413066-how-to-customize-your-branding",
+      "permanent": true
+    },
+    {
+      "source": "/docs/template/styling/how-to-improve-performance/",
+      "destination": "/docs/template/performance/how-to-improve-performance/",
+      "permanent": true
     }
   ]
 }
