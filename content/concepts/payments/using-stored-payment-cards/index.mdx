@@ -7,6 +7,8 @@ description:
   the different use cases for it.
 ---
 
+import { Callout, Steps, Table } from 'nextra/components';
+
 # Using stored payment cards
 
 Sharetribe allows you to store the payment card of a customer for future
@@ -22,12 +24,281 @@ are offered the option to use the same card for subsequent purchases
 without entering the details again.
 
 Users can access their saved payment methods through their account
-settings. From this page, the user can store a new credit card, delete a
+settings. On this page, the user can store a new credit card, delete a
 stored card, or replace a stored card with a new one.
 
-[Learn how storing payment card works in Sharetribe Web Template](/how-to/payments/save-payment-card/)
+<Callout type="info">
+
+Currently, it is only possible to save one card, which becomes the
+default payment method. I.e. if there is already one payment card saved,
+your only option is to replace the card with a new one.
+
+</Callout>
 
 [Read API documentation on storing credit cards](https://www.sharetribe.com/api-reference/marketplace.html#stripe-customer)
+
+## Saving a payment method outside a transaction
+
+You can save a payment method to a user profile without performing a
+payment at the same time. The user in question needs to be authenticated
+to perform these steps.
+
+<Steps>
+
+### Create Stripe Setup Intent
+
+Create Stripe
+[Setup Intent](https://www.sharetribe.com/api-reference/marketplace.html#stripe-setup-intents)
+through Sharetribe API. A Stripe Setup Intent enables you to save a
+payment method for future payments.
+
+Make a note of the client secret in the API response to use it in the
+next step.
+
+Read more about Stripe Setup Intents in Stripe's documentation:
+
+- [Setup Intents](https://docs.stripe.com/api/setup_intents)
+
+### Collect payment method information in your user interface
+
+Your payment methods page needs to have a Stripe card element or payment
+element to collect the payment method's details. Currently, only cards
+are supported in Sharetribe as saved payment methods.
+
+### Handle card setup with Stripe
+
+Call `stripe.confirmCardSetup` with the client secret from step 1. This
+endpoint will confirm the card setup, and handle user actions like 3D
+Secure authentication if required.
+
+Read more about `stripe.confirmCardSetup` in Stripe's documentation:
+
+- [stripe.confirmCardSetup](https://docs.stripe.com/js/setup_intents/confirm_card_setup)
+
+<Callout type="info">
+
+Sharetribe Web Template uses `stripe.handleCardSetup` to set up a
+payment method, and the parameters are different from
+`stripe.confirmCardSetup`.
+
+Read more about `stripe.handleCardSetup` in Stripe's documentation:
+
+- [stripe.handleCardSetup](https://docs.stripe.com/js/deprecated/handle_card_setup_element)
+
+</Callout>
+
+### Save the payment method to a Stripe Customer
+
+The response from `stripe.confirmCardSetup` (or
+`stripe.handleCardSetup`, if you are using the Sharetribe Web Template)
+contains the ID of the payment method created with the SetupIntent under
+`SetupIntent.payment_method`.
+
+To save that payment method to the current user, the user needs to have
+a Stripe Customer associated with their profile.
+
+First, fetch the `currentUser` resource and include the
+`stripeCustomer.defaultPaymentMethod` relationships to see if the user
+already has either an associated Stripe Customer or a saved default
+payment method.
+
+- If the user does not have a stripeCustomer attached, use the
+  Sharetribe API `stripeCustomer.create` endpoint and pass the payment
+  method id as the `stripePaymentMethodId` parameter.
+
+- If the user already has a `stripeCustomer`, but they don't have a
+  `defaultPaymentMethod`, you can use `stripeCustomer.addPaymentMethod`
+  to associate the payment method id with the user.
+
+- If the user has a `stripeCustomer.defaultPaymentMethod`, and you want
+  to replace it with the new payment method, you need to first remove
+  the previous card and then add the new one.
+
+<br />
+<Table>
+  <thead>
+    <Table.Tr>
+      <Table.Th />
+      <Table.Th>Endpoint(s)</Table.Th>
+    </Table.Tr>
+  </thead>
+  <tbody>
+    <Table.Tr>
+      <Table.Td>**No Stripe Customer**</Table.Td>
+      <Table.Td>
+        [stripeCustomer.create](https://www.sharetribe.com/api-reference/marketplace.html#create-stripe-customer)
+      </Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>
+        **Existing Stripe Customer, no `defaultPaymentMethod`**
+      </Table.Td>
+      <Table.Td>
+        [stripeCustomer.addPaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#add-payment-method)
+      </Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>
+        **Existing Stripe Customer and `defaultPaymentMethod`**
+      </Table.Td>
+      <Table.Td>
+        [stripeCustomer.deletePaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#delete-payment-method),
+        [stripeCustomer.addPaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#add-payment-method)
+      </Table.Td>
+    </Table.Tr>
+  </tbody>
+</Table>
+
+</Steps>
+
+## Saving a payment method when making a payment
+
+You can also save the payment method that the user uses to make a
+payment, if the user indicates they want to do so. This requires some
+specific steps when creating the PaymentIntent associated with the
+payment.
+
+<Steps>
+
+### Check currentUser for an existing saved payment method
+
+Before initiating the payment transition, fetch the `currentUser`
+resource and include the `stripeCustomer.defaultPaymentMethod`
+relationships to see if the user already has either an associated Stripe
+Customer or a saved default payment method. Doing this before starting
+the payment flow means that we can take the correct steps once the
+payment itself has been handled.
+
+### Pass `setupPaymentMethodForSaving` parameter to payment request
+
+When requesting payment i.e. creating the PaymentIntent, the
+`stripe-create-payment-intent` action requires a specific parameter –
+`setupPaymentMethodForSaving` – to be passed if the payment method needs
+to be saved at the same time.
+
+If you don't pass this parameter in the transition API call, then the
+payment method in question cannot be saved to the user in the later
+step.
+
+In the Sharetribe Web Template this is handled by default in the first
+step of the
+[_processCheckoutWithPayment_ function](https://github.com/sharetribe/web-template/blob/main/src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js#L205-L208).
+
+Read more about the stripe-create-payment-intent action and its
+parameters:
+
+- [stripe-create-payment-intent](https://www.sharetribe.com/docs/references/transaction-process-actions/#actionstripe-create-payment-intent)
+
+### Process the next steps of the transaction
+
+Storing a payment method does not affect the following steps of handling
+the payment, such as making the `stripe.confirmCardPayment` call,
+triggering the `confirm-payment` transition, and possible other actions
+you need to process. You can handle them as you would in a regular
+transaction.
+
+However, you will need to access the PaymentIntent resource of the
+transaction, either by fetching it from Stripe or retrieving it from an
+API response when confirming the payment with Stripe.
+
+You will use the `payment_method` attribute of the PaymentIntent when
+associating the payment method with a Stripe Customer in the next step.
+
+### Create a Stripe customer and attach the payment method
+
+In step 1, you fetched the `currentUser` resource to see if the user
+already has either an associated Stripe Customer or a saved default
+payment method.
+
+To save the payment method from the PaymentIntent to the current user,
+the user needs to have a Stripe Customer associated with their profile.
+
+The payment method ID of the PaymentIntent is in the attribute
+`PaymentIntent.payment_method`.
+
+- If the user does not have a stripeCustomer attached, use the
+  Sharetribe API `stripeCustomer.create` endpoint and pass the payment
+  method id as the `stripePaymentMethodId` parameter.
+
+- If the user already has a `stripeCustomer`, but they don't have a
+  `defaultPaymentMethod`, you can use `stripeCustomer.addPaymentMethod`
+  to associate the the payment intent's payment method id with the user.
+
+- If the user has a `stripeCustomer.defaultPaymentMethod`, and you want
+  to replace it with the new payment method, you need to first remove
+  the previous card and then add the new one.
+
+<br />
+<Table>
+  <thead>
+    <Table.Tr>
+      <Table.Th />
+      <Table.Th>Endpoint(s)</Table.Th>
+    </Table.Tr>
+  </thead>
+  <tbody>
+    <Table.Tr>
+      <Table.Td>**No Stripe Customer**</Table.Td>
+      <Table.Td>
+        [stripeCustomer.create](https://www.sharetribe.com/api-reference/marketplace.html#create-stripe-customer)
+      </Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>
+        **Existing Stripe Customer, no `defaultPaymentMethod`**
+      </Table.Td>
+      <Table.Td>
+        [stripeCustomer.addPaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#add-payment-method)
+      </Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>
+        **Existing Stripe Customer and `defaultPaymentMethod`**
+      </Table.Td>
+      <Table.Td>
+        [stripeCustomer.deletePaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#delete-payment-method),
+        [stripeCustomer.addPaymentMethod](https://www.sharetribe.com/api-reference/marketplace.html#add-payment-method)
+      </Table.Td>
+    </Table.Tr>
+  </tbody>
+</Table>
+
+</Steps>
+
+Once you set up your payment flow to properly save a card with the
+Payment Intents or Setup Intents API, Stripe will mark any subsequent
+off-session payment as a merchant-initiated transaction to reduce the
+need to authenticate. Merchant-initiated transactions require an
+agreement (also known as a "mandate") between you and your customer.
+Read more about merchant-initiated transactions in Stripe's
+documentation:
+
+- [Customer-Initiated Transactions (CIT) and Merchant-Initiated Transactions (MIT)](https://docs.stripe.com/payments/cits-and-mits).
+
+### Charging saved cards
+
+If the user has a default payment method and they choose to use it to
+make a payment, you need to make the following adjustments to the
+default payment initiation.
+
+First, when you call the transition that has
+`stripe-create-payment-intent` and want to use a customer's saved
+payment method, you need to pass the payment method id as an API call
+parameter to use the saved payment method.
+
+Read more about the stripe-create-payment-intent action and its
+parameters:
+
+- [stripe-create-payment-intent](https://www.sharetribe.com/docs/references/transaction-process-actions/#actionstripe-create-payment-intent)
+
+Second, when you are confirming the payment intent toward Stripe with
+`stripe.confirmCardPayment`, you do not need to pass the card element
+parameter since you are using the default payment method.
+
+Read more about `stripe.confirmCardPayment` in Stripe's own
+documentation:
+
+- [stripe.confirmCardPayment](https://docs.stripe.com/js/payment_intents/confirm_card_payment)
 
 ## Frequently asked questions about storing payment cards
 
@@ -52,9 +323,13 @@ happen only a bit before the event, or even after it.
 It's possible for you to adjust your
 [transaction process](/concepts/transactions/transaction-process/) to
 add a transition that attempts to automatically charge the card of the
-customer at a specific point in time.
-[A separate article](/concepts/payments/off-session-payments-in-transaction-process/)
-describes how you can build such a process.
+customer at a specific point in time. This is called an off-session
+payment, and we have a separate article describing how you can build
+such a process.
+
+Read more about automatic off-session payments:
+
+- [Automatic off-session payments in the transaction process](/concepts/payments/off-session-payments-in-transaction-process/)
 
 ### Can I create extra charges to the payment card of the customer?
 
