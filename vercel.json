@@ -1797,6 +1797,16 @@
       "source": "/docs/how-to/payments/enable-payment-intents/",
       "destination": "/docs/concepts/payments/payment-intents/",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/payments/save-payment-card/",
+      "destination": "/docs/template/payments/save-payment-card/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/payments/strong-customer-authentication/",
+      "destination": "/docs/template/payments/strong-customer-authentication/",
+      "permanent": true
     }
   ]
 }
