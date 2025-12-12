@@ -1827,6 +1827,11 @@
       "source": "/docs/template/styling/how-to-improve-performance/",
       "destination": "/docs/template/performance/how-to-improve-performance/",
       "permanent": true
+    },
+    {
+      "source": "/docs/introduction/introducing-template/",
+      "destination": "/docs/",
+      "permanent": true
     }
   ]
 }
