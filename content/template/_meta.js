@@ -23,6 +23,11 @@ export default {
   // Maps
   maps: "Maps",
 
+  payments: "Payments",
+
+  // Performance
+  performance: "Performance",
+
   // Security
   security: "Security",
 

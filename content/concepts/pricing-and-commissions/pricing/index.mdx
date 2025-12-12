@@ -17,30 +17,8 @@ but the pricing can also be extended to support more complicated
 business models or even be replaced with a completely different model
 altogether.
 
-Here are some examples of common pricing schemes you might want to add
-on top of the regular listing price.
-
-- **Add-ons.** Upsell additions on top of the regular price. Examples:
-  cleaning fee, insurance, delivery.
-- **Discount based on booking length.** An example: daily price is $20,
-  weekly price $70, and monthly price \$200. Another example: 20%
-  discount on daily rate for bookings of 5 or more days, 30% discount on
-  bookings of 10 or more days, and so on.
-- **Taxes.** Add any type of tax rate to the listing price and display
-  them as separate line items in the receipt.
-- **Offer multiple pricing packages in the same listing.** An example: a
-  hairdresser offers both haircuts and hair dying.
-- **Seasonal pricing.** Examples: weekends cost more than weekdays,
-  summers cost more than winters, and so on.
-- **Quantity discount.** An example: booking a room for two people costs
-  $100, and after that, each additional person costs $20 extra.
-- **Price variants.** With bookings, you can enable price variants. You
-  could add two variants of a single listing, e.g. standard and premium
-  versions, which have a price difference.
-
-All of these options can be achieved with the Sharetribe pricing
-functionality. In this article, we'll look a bit closer at how pricing
-works in Sharetribe and how pricing schemes can be designed.
+In this article, we'll look a bit closer at how pricing works in
+Sharetribe and how pricing schemes can be designed.
 
 ## Pricing terminology
 
@@ -181,3 +159,205 @@ Once both parties have accepted a quote, the negotiation completes with
 the customer making a payment. Your potential customer and provider
 commissions will be applied in addition to the negotiated quote to form
 the payin and payout totals of the transaction.
+
+## Example pricing options
+
+### Add-ons
+
+Upsell additions on top of the regular price. Examples: cleaning fee,
+insurance, delivery, longer checkout on a booking.
+
+```jsx
+const lineItems = [
+  {
+    code: 'line-item/night',
+    unitPrice: {
+      amount: 5000,
+      currency: 'EUR',
+    },
+    lineTotal: {
+      amount: 5000,
+      currency: 'EUR',
+    },
+    includeFor: ['customer', 'provider'],
+    quantity: 1,
+  },
+  // Upsell item: longer checkout on a booking for a 30% increase on the listing price
+  {
+    code: 'line-item/longer-checkout',
+    unitPrice: {
+      amount: 5000,
+      currency: 'EUR',
+    },
+    lineTotal: {
+      amount: 1500,
+      currency: 'EUR',
+    },
+    includeFor: ['customer', 'provider'],
+    quantity: 0.3,
+  },
+];
+```
+
+![Line items for longer checkout in Console](./longer-checkout-lineitems.png)
+
+### Discount based on booking length
+
+An example: daily price is $20, weekly price $70, and monthly price
+$200. Another example: 20% discount on daily rate for bookings of 5 or
+more days, 30% discount on bookings of 10 or more days, and so on.
+
+```jsx filename="lineItems.js"
+const quantityOrSeats =
+  !!units && !!seats ? { units, seats } : { quantity };
+
+// A user has saved a weekly price in the listing
+const { weeklyPrice } = listing.attributes.publicData;
+const weeklyUnitPrice = new Money(
+  weeklyPrice.amount,
+  weeklyPrice.currency
+);
+const useWeeklyUnitPrice = !!units
+  ? units >= 7
+  : quantity
+    ? quantity >= 7
+    : false;
+
+const order = {
+  code,
+  unitPrice: useWeeklyUnitPrice ? weeklyUnitPrice : unitPrice,
+  ...quantityOrSeats,
+  includeFor: ['customer', 'provider'],
+};
+```
+
+### Taxes
+
+Add any type of tax rate to the listing price and display them as
+separate line items in the receipt.
+
+```jsx
+const lineItems = [
+  {
+    code: 'line-item/day',
+    unitPrice: {
+      amount: 4500,
+      currency: 'EUR',
+    },
+    lineTotal: {
+      amount: 9000,
+      currency: 'EUR',
+    },
+    reversal: false,
+    includeFor: ['customer', 'provider'],
+    seats: 1,
+    units: 2,
+  },
+  // Value added tax at 24%
+  {
+    code: 'line-item/value-added-tax',
+    unitPrice: {
+      amount: 9000,
+      currency: 'EUR',
+    },
+    lineTotal: {
+      amount: 2160,
+      currency: 'EUR',
+    },
+    includeFor: ['customer', 'provider'],
+    quantity: 0.24,
+  },
+];
+```
+
+![Line items with tax](./tax-line-items.png)
+
+### Seasonal pricing
+
+Your users can, for example, define weekends to cost more than weekdays,
+or summers to cost more than winters. You can either allow your users to
+determine their own seasonal periods, or set them yourself.
+
+```jsx filename="lineItems.js"
+// User has set seasonal months to be June, July, and December,
+// and bookings in those months use an increased seasonal price
+const seasonalMonths = [5, 6, 11];
+const seasonalPrice = new Money(
+  unitPrice.amount * 1.2,
+  unitPrice.currency
+);
+
+const { bookingStart, bookingEnd } = orderData;
+const bookingStartMonth = new Date(bookingStart).getUTCMonth();
+const bookingEndMonth = new Date(bookingEnd).getUTCMonth();
+
+const useSeasonalPrice =
+  seasonalMonths.includes(bookingStartMonth) &&
+  seasonalMonths.includes(bookingEndMonth);
+
+const quantityOrSeats =
+  !!units && !!seats ? { units, seats } : { quantity };
+const order = {
+  code,
+  unitPrice: useSeasonalPrice ? seasonalPrice : unitPrice,
+  ...quantityOrSeats,
+  includeFor: ['customer', 'provider'],
+};
+```
+
+### Quantity discount
+
+An example: booking a room for two people costs $100, and after that,
+each additional person costs $20 extra.
+
+```jsx filename="lineItems.js"
+// User has defined the basic seat count for the facility as 2, and additional guests
+// are charged a lowered price.
+const basicSeatsCount = 2;
+const additionalSeatsPrice = new Money(
+  unitPrice.amount * 0.2,
+  unitPrice.currency
+);
+
+const hasAdditionalSeats = !!seats && seats > basicSeatsCount;
+const quantityOrSeats =
+  !!units && !!seats
+    ? { units, seats: hasAdditionalSeats ? basicSeatsCount : seats }
+    : { quantity };
+const additionalUnitsAndSeats = hasAdditionalSeats && {
+  units,
+  seats: seats - basicSeatsCount,
+};
+
+const order = {
+  code,
+  unitPrice,
+  ...quantityOrSeats,
+  includeFor: ['customer', 'provider'],
+};
+
+const additionalSeatsLineItemMaybe = hasAdditionalSeats
+  ? [
+      {
+        code: 'line-item/additional-guests',
+        unitPrice: additionalSeatsPrice,
+        ...additionalUnitsAndSeats,
+        includeFor: ['customer', 'provider'],
+      },
+    ]
+  : [];
+```
+
+![Line items for additional guests at a lowered price](./additional-guests-line-items.png)
+
+### Price variants
+
+With bookings, you can enable price variants. You could add two variants
+of a single listing, e.g. standard and premium versions, which have a
+price difference.
+
+When using the Sharetribe Web Template, price variations can be
+configured in Console when creating listing types. Read more in our Help
+Center:
+
+- [How price variations work](https://www.sharetribe.com/help/en/articles/11124054-how-price-variations-work)

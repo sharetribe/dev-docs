@@ -227,43 +227,24 @@ constructs. For details on the Handlebars constructs and a full
 description of the email context, see the
 [Email templates](/references/email-templates/) reference.
 
-## Change a template
+## Make a change
 
-Let's change the email template for new booking requests.
+<Callout>
+  You can edit every piece of text or punctuation used in your
+  marketplace's email notifications using the Console. Read more in the
+  help centre on [How to edit email
+  texts](https://www.sharetribe.com/help/en/articles/8459261-how-to-edit-email-texts).
+</Callout>
 
-Open the `booking-new-request/booking-new-request-html.html` file in a
-text editor. Let's change the color of the "Accept or Decline the
-booking" button (line breaks added for clarity):
+Most changes to the email templates such as the color of the buttons or
+the copy text can be modified using no-code tools. For more significant
+modifications, you will need to edit the code of the email templates
+directly.
 
-```diff
-  <a
-    href="{{marketplace.url}}/sale/{{url-encode id}}/"
-    target="_blank"
-    style="color:#FFF;background-color:#6938EF;border-radius:4px;font-size:15px;
-    text-decoration:none;text-align:center;display:inline-block;min-width:210px;padding:0px 0px;
-    line-height:100%;max-width:100%"
-  >
-    <span>
-      <!--[if mso]>
-        <i style="letter-spacing: undefinedpx;mso-font-width:-100%;mso-text-raise:0" hidden>&nbsp;</i>
-      <![endif]-->
-    </span>
-    <span
--     style="color:#FFF;background-color:#6938EF;border-radius:4px;font-size:15px;
-+     style="color:#FFF;background-color:#7C3AED;border-radius:4px;font-size:15px;
-      text-decoration:none;text-align:center;display:inline-block;min-width:210px;
-      padding:16px 32px;max-width:100%;line-height:120%;text-transform:none;mso-padding-alt:0px;
-      mso-text-raise:0"
-    >
-      {{t "BookingNewRequest.AcceptOrDeclineLink" "Accept or Decline the booking"}}
-    </span>
-    <span>
-      <!--[if mso]>
-        <i style="letter-spacing: undefinedpx;mso-font-width:-100%" hidden>&nbsp;</i>
-      <![endif]-->
-    </span>
-  </a>
-```
+Make any change to the
+`booking-new-request/booking-new-request-html.html` file in a text
+editor. This could be updating text, styling, or structure. The specific
+change doesn't matter for this demonstration.
 
 When you've made the change, save the file.
 
@@ -284,7 +265,65 @@ with the output HTML:
 
 It will also output the rendered text version to the terminal:
 
-![Email preview in terminal](./preview-terminal.png)
+{/* ![Email preview in terminal](./preview-terminal.png) */}
+
+```bash
+Preview fetched
+
+Template: booking-new-request
+Subject: Jane P requested to book Wooden sauna
+Plain text content:
+You have a new booking request for Wooden sauna
+
+Jane P requested to book Wooden sauna in Bikesoil.
+
+Start
+
+End
+
+
+Fri
+
+Tue
+
+
+1 Dec
+
+12 Dec
+
+
+USD 300.00 × 3 nights
+
+900.00 USD
+
+
+Bikesoil fee
+
+-90.00 USD
+
+
+You'll earn
+
+810.00 USD
+
+You need to accept the request by 29 Nov 2017, 2:00 am. Otherwise the request
+will expire automatically and you won't get paid.
+
+If the booked dates don't work for you, you can also choose to decline the
+request.
+
+Accept or Decline the booking (
+https://www.sharetribe.com/sale/d8893061-c860-4e44-8d4d-61587a497e6e/ )
+
+Can't click the button? Here's the link for your convenience:
+https://www.sharetribe.com/sale/d8893061-c860-4e44-8d4d-61587a497e6e/ (
+https://www.sharetribe.com/sale/d8893061-c860-4e44-8d4d-61587a497e6e/ )
+
+You have received this email notification because you are a member of Bikesoil.
+If you no longer wish to receive these emails, please contact the Bikesoil team.
+---
+See http://localhost:3535 for the HTML preview. Refresh the browser to reload the template and render a new preview. Type <Ctrl>+C to quit.
+```
 
 You can now use your normal browser developer tooling to test changes to
 the template and verify how the responsiveness of the content works.
@@ -318,7 +357,7 @@ You can see the default context JSON here:
 To change the data that is used for previews, download the sample JSON
 file and make edits to it:
 
-```diff
+```diff filename="sample-template-context.json"
     "customer" : {
       "id" : "ef7f40d5-da66-489a-957b-641313b68204",
       "first-name" : "Jane",
@@ -335,7 +374,18 @@ flex-cli notifications preview --template process/templates/booking-new-request 
 
 Now you will see the preview with the context data that you edited:
 
-![Email preview with custom context](./preview-context.png)
+{/* ![Email preview with custom context](./preview-context.png) */}
+
+```bash {4, 8}
+Preview fetched
+
+Template: booking-new-request
+Subject: Mary P requested to book Wooden sauna
+Plain text content:
+You have a new booking request for Wooden sauna
+
+Mary P requested to book Wooden sauna in Bikesoil.
+```
 
 You can use the
 [sample-template-context.json](/resources/sample-template-context.json)
@@ -380,10 +430,6 @@ flex-cli process list --process default-booking -m my-marketplace-dev
 ```
 
 ## Summary
-
-In this tutorial we changed an email template in an existing process. We
-then pushed the changes to a new version and updated the alias to point
-to that version.
 
 This is the generic workflow to update the notification email contents
 that are part of the transaction process of your marketplace.

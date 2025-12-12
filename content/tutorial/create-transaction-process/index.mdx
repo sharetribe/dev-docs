@@ -1,8 +1,8 @@
 ---
 title: Create a new transaction process
 description:
-  This guide describes how to create a new transaction process and how
-  to take it into use in the Sharetribe Web Template.
+  This tutorial describes how to create a new transaction process and
+  how to take it into use in the Sharetribe Web Template.
 ---
 
 import { Callout } from 'nextra/components';
@@ -216,33 +216,66 @@ _night_.
 
 ```jsx filename="src/config/configListing.js"
 export const listingTypes = [
-  {
-    listingType: 'daily-booking',
-    label: 'Daily booking',
-    transactionType: {
-      process: 'default-booking',
-      alias: 'default-booking/release-1',
-      unitType: 'day',
-    },
-  },
+  // // Here are some examples of listingTypes
+  // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
+  // {
+  //   listingType: 'daily-booking',
+  //   label: 'Daily booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'day',
+  //   },
+  //   availabilityType: 'oneSeat',
+  //   defaultListingFields: {
+  //     location: true,
+  //     payoutDetails: true,
+  //   },
+  // },
+  // {
+  //   listingType: 'nightly-booking',
+  //   label: 'Nightly booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'night',
+  //   },
+  // },
+  ...
 ```
 
 Let's use the new _biketribe-instant-booking_ process as the daily
 booking process:
 
 ```diff filename="src/config/configListing.js"
+
+-  // {
+-  //   listingType: 'daily-booking',
+-  //   label: 'Daily booking',
+-  //   transactionType: {
+-  //     process: 'default-booking',
+-  //     alias: 'default-booking/release-1',
+-  //     unitType: 'day',
+-  //   },
+-  //   availabilityType: 'oneSeat',
+-  //   defaultListingFields: {
+-  //     location: true,
+-  //     payoutDetails: true,
+-  //   },
+-  // },
   {
--   listingType: 'daily-booking',
--   label: 'Daily booking',
 +   listingType: 'instant-booking',
 +   label: 'Instant booking',
-    transactionType: {
--     process: 'default-booking',
--     alias: 'default-booking/release-1',
++   transactionType: {
 +     process: 'biketribe-instant-booking',
 +     alias: 'biketribe-instant-booking/release-1',
-      unitType: 'day',
-    },
++     unitType: 'day',
++   },
++   availabilityType: 'oneSeat',
++   defaultListingFields: {
++     location: true,
++     payoutDetails: true,
++   },
   },
 ```
 
@@ -290,7 +323,7 @@ current version of the template.
         └── transactionProcessBooking.js
 ```
 
-Since our new process is very similar as the default one, we can
+Since our new process is very similar to the default one, we can
 duplicate the _transactionProcessBooking.js_ file into a new file in the
 same folder named _transactionProcessInstantBooking.js_ and make the
 necessary changes.
@@ -492,10 +525,13 @@ Let's first import the new process and export its name as a constant.
 
 ```
 
-Then, we will add it to the array of supported processes, and allow it
-to handle all time based unit types.
+Then, we will add our new instant process to the array of supported
+processes, and allow it to handle all time based unit types. Our new
+listing type uses `unitType: day`, and adding all time-based unit types
+in this configuration allows us to create other listing types that use
+the same process with other unit types.
 
-```jsx filename="src/transactions/transaction.js"
+```diff filename="src/transactions/transaction.js"
 const PROCESSES = [
   {
     name: PURCHASE_PROCESS_NAME,
@@ -507,7 +543,7 @@ const PROCESSES = [
     name: BOOKING_PROCESS_NAME,
     alias: `${BOOKING_PROCESS_NAME}/release-1`,
     process: bookingProcess,
-    unitTypes: [DAY, NIGHT, HOUR],
+    unitTypes: [DAY, NIGHT, HOUR, FIXED],
   },
   {
     name: INQUIRY_PROCESS_NAME,
@@ -521,18 +557,22 @@ const PROCESSES = [
     process: negotiationProcess,
     unitTypes: [OFFER, REQUEST],
   },
-  {
-    name: INSTANT_PROCESS_NAME,
-    alias: `${INSTANT_PROCESS_NAME}/release-1`,
-    process: instantProcess,
-    unitTypes: [DAY, NIGHT, HOUR],
-  },
++ {
++   name: INSTANT_PROCESS_NAME,
++   alias: `${INSTANT_PROCESS_NAME}/release-1`,
++   process: instantProcess,
++   unitTypes: [DAY, NIGHT, HOUR, FIXED],
++ },
 ];
 ```
 
-Finally, we need to update the _isBookingProcess_ helper – we need to
-add the new process name to the list used to determine booking
-processes.
+Finally, we need to update the _isBookingProcess_ helper. We need to add
+the new process name to the list used to determine which processes
+handle bookings, since we are adding a booking related process.
+
+This helper is used in multiple places in the template, such as in the
+ListingCard and OrderPanel components, and on checkout page, listing
+editing page, and transaction page.
 
 ```diff filename="src/transactions/transaction.js"
 export const isBookingProcess = processName => {

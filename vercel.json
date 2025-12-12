@@ -1762,6 +1762,66 @@
       "source": "/docs/how-to/users-and-authentication/implement-delete-user/",
       "destination": "/docs/",
       "permanent": true
+    },
+    {
+      "source": "/docs/how-to/listings/multiple-seats/",
+      "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/transactions/change-transaction-process/",
+      "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/development/console-overview/",
+      "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/content-management/article-library/",
+      "destination": "/docs/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/listings/requiring-approval/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8413545-approve-listings-before-publishing",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/payments/enable-payment-intents/",
+      "destination": "/docs/concepts/payments/payment-intents/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/how-to/payments/save-payment-card/",
+      "destination": "/docs/template/payments/save-payment-card/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/concepts/payments/strong-customer-authentication/",
+      "destination": "/docs/template/payments/strong-customer-authentication/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/template/maps/how-to-set-up-mapbox-for-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
+      "permanent": true
+    },
+    {
+      "source": "/docs/template/maps/how-to-use-google-maps-in-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
+      "permanent": true
+    },
+    {
+      "source": "/template/styling/how-to-change-template-icons/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8413066-how-to-customize-your-branding",
+      "permanent": true
+    },
+    {
+      "source": "/docs/template/styling/how-to-improve-performance/",
+      "destination": "/docs/template/performance/how-to-improve-performance/",
+      "permanent": true
     }
   ]
 }
