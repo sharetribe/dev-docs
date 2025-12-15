@@ -65,7 +65,7 @@
     },
     {
       "source": "/docs/background/save-payment-card/",
-      "destination": "/docs/how-to/payments/save-payment-card/",
+      "destination": "/docs/template/payments/save-payment-card/",
       "permanent": true
     },
     {
@@ -415,7 +415,7 @@
     },
     {
       "source": "/docs/background/strong-customer-authentication/",
-      "destination": "/docs/concepts/payments/strong-customer-authentication/",
+      "destination": "/docs/template/payments/strong-customer-authentication/",
       "permanent": true
     },
     {
@@ -535,7 +535,7 @@
     },
     {
       "source": "/docs/cookbook-payments/save-payment-card/",
-      "destination": "/docs/how-to/payments/save-payment-card/",
+      "destination": "/docs/template/payments/save-payment-card/",
       "permanent": true
     },
     {
@@ -650,7 +650,7 @@
     },
     {
       "source": "/docs/ftw-search/how-to-set-up-mapbox-for-ftw/",
-      "destination": "/docs/template/maps/how-to-set-up-mapbox-for-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
       "permanent": true
     },
     {
@@ -1050,7 +1050,7 @@
     },
     {
       "source": "/docs/ftw/how-to-set-up-mapbox-for-ftw/",
-      "destination": "/docs/template/maps/how-to-set-up-mapbox-for-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
       "permanent": true
     },
     {
@@ -1325,7 +1325,7 @@
     },
     {
       "source": "/docs/template/how-to-set-up-mapbox-for-template/",
-      "destination": "/docs/template/maps/how-to-set-up-mapbox-for-template/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services",
       "permanent": true
     },
     {
@@ -1470,7 +1470,7 @@
     },
     {
       "source": "/docs/how-to/save-payment-card/",
-      "destination": "/docs/how-to/payments/save-payment-card/",
+      "destination": "/docs/template/payments/save-payment-card/",
       "permanent": true
     },
     {
@@ -1675,7 +1675,7 @@
     },
     {
       "source": "/docs/concepts/strong-customer-authentication/",
-      "destination": "/docs/concepts/payments/strong-customer-authentication/",
+      "destination": "/docs/template/payments/strong-customer-authentication/",
       "permanent": true
     },
     {
