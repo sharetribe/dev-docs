@@ -1200,7 +1200,7 @@
     },
     {
       "source": "/docs/how-to/add-new-stripe-countries",
-      "destination": "/docs/concepts/payments/payments-overview/#can-i-add-more-stripe-countries-to-the-sharetribe-web-template",
+      "destination": "/docs/concepts/payments/payments-overview/#add-countries",
       "permanent": true
     },
     {
