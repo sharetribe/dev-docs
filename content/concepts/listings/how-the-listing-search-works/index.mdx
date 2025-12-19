@@ -205,7 +205,7 @@ In the example below, a listing would be returned if it has at least
 three seats available for the full duration between the start and end
 time points.
 
-```js
+```jsx
 sdk.listings.query({
   start: '2026-02-17T08:00:00.000Z',
   end: '2026-04-17T15:00:00.000Z',
@@ -224,7 +224,7 @@ In the example below, a listing would be returned if it has at least
 three seats available for at least one hour at some point between the
 start and end time points.
 
-```js
+```jsx
 sdk.listings.query({
   start: '2026-02-17T10:00:00.000Z',
   end: '2026-04-17T10:00:00.000Z',
@@ -255,7 +255,7 @@ Read more in the API reference:
 You can filter your query to only return listings with positive stock
 using the **minStock** parameter.
 
-```js
+```jsx
 sdk.listings.query({ minStock: 1 });
 ```
 
@@ -268,7 +268,7 @@ listings that do not have defined stock, such as booking or free
 messaging listings. In that case, you can explicitly set the
 **stockMode** parameter to **match-undefined** alongside **minStock**:
 
-```js
+```jsx
 sdk.listings.query({ minStock: 1, stockMode: 'match-undefined' });
 ```
 
@@ -296,7 +296,7 @@ option of using listings as user profiles:
 
 The Sharetribe Integration API does have an endpoint for querying users.
 However,
-[using the Integration API safely requires a trusted context](/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-integration-api),
+[using the Integration API safely requires a secure environment](/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-integration-api),
 such as the template application server.
 
 <Callout type="error">

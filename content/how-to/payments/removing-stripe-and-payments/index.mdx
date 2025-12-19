@@ -458,7 +458,7 @@ export const processCheckoutWithoutPayment = (
   </FileTree.Folder>
 </FileTree>
 
-```jsx
+```jsx filename="CheckoutPage.js"
 if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
   // Fetch speculateTransition for transactions that include bookings or purchases
   loadInitialData({

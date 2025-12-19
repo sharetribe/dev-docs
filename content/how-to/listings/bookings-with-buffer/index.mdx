@@ -416,7 +416,7 @@ Finally, we can simplify the end hour handling. Since the first entry is
 determined in the `findNextBoundary` function, we do not need to remove
 it. Instead, we can just return the full list from `getSharpHours`.
 
-```diff
+```diff filename="src/util/dates.js"
   export const getEndHours = (intl, timeZone, startTime, endTime) => {
 -   const hours = getSharpHours(startTime, endTime, timeZone, intl);
 -   return hours.length < 2 ? [] : hours.slice(1);

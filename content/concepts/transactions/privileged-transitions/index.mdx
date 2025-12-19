@@ -62,7 +62,7 @@ enable full control over requests that invoke privileged transitions.
 A privileged transition is defined by setting a `privileged?` attribute
 to `true` for the given transition in a transaction process as follows:
 
-```
+```clojure filename="process.edn"
 {:name :transition/request-payment
  :actor :actor.role/customer
  :actions [{:name :action/create-pending-booking}

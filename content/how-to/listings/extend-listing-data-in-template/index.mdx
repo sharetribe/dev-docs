@@ -75,7 +75,7 @@ Let's extend the default bike related listing data by adding an
 attribute 'accessories' to show what accessories are included. The full
 configuration looks like this:
 
-```js
+```jsx filename="configListing.js"
   {
     key: 'accessories',
     scope: 'public',
@@ -108,7 +108,7 @@ configuration looks like this:
 Extended data attributes in the `configListing.js` file need to be
 defined, at minimum, by **key**, by **scope**, and by **schemaType**.
 
-```js
+```jsx filename="configListing.js"
 key: 'accessories',
 scope: 'public',
 schemaType: 'multi-enum',
@@ -176,7 +176,7 @@ other contexts where the attribute shows up. You can also set the
 attribute as required, and determine the error message to show if the
 attribute is missing.
 
-```js
+```jsx filename="configListing.js"
 saveConfig: {
   label: 'Accessories',
   placeholderMessage: 'Select an option…',
@@ -208,7 +208,7 @@ Console, the default is _has_all_. To define a multi-enum listing field
 with _has_any_ search logic, you will need to define the field in your
 local code.
 
-```js
+```jsx filename="configListing.js"
 filterConfig: {
   indexForSearch: true,
   label: 'Accessories',
@@ -232,7 +232,7 @@ are shown on the listing page, but by setting **isDetail** to **false**
 on an attribute with schema type _enum_, _long_, or _boolean_, you can
 hide the attribute from the Details section on the listing page.
 
-```js
+```jsx filename="configListing.js"
 showConfig: {
   label: 'Accessories',
 },
