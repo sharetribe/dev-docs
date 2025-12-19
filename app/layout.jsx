@@ -95,6 +95,14 @@ export default async function RootLayout({ children }) {
           enabled={isProduction}
           domain={isPreviewEnv ? 'flex-docs.vercel.app' : 'sharetribe.com/docs'}
         />
+        <script
+          async
+          src="https://widget.kapa.ai/kapa-widget.bundle.js"
+          data-website-id="dd497fc3-4a12-4cfc-931d-bb6c3f4742eb"
+          data-project-name="Sharetribe"
+          data-project-color="#eb9534"
+          data-project-logo="./icon.png"
+        ></script>
       </Head>
       <body>
         <Layout
