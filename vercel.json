@@ -165,7 +165,7 @@
     },
     {
       "source": "/docs/guides/how-to-set-up-and-use-stripe/",
-      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
+      "destination": "/docs/introduction/set-up-and-use-stripe/",
       "permanent": true
     },
     {
@@ -520,7 +520,7 @@
     },
     {
       "source": "/docs/cookbook-payments/set-up-and-use-stripe/",
-      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
+      "destination": "/docs/introduction/set-up-and-use-stripe/",
       "permanent": true
     },
     {
@@ -1200,7 +1200,7 @@
     },
     {
       "source": "/docs/how-to/add-new-stripe-countries",
-      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
+      "destination": "/docs/concepts/payments/payments-overview/#can-i-add-more-stripe-countries-to-the-sharetribe-web-template",
       "permanent": true
     },
     {
@@ -1360,7 +1360,7 @@
     },
     {
       "source": "/docs/template/how-to-change-template-icons/",
-      "destination": "/docs/template/styling/how-to-change-template-icons/",
+      "destination": "https://www.sharetribe.com/help/en/articles/8413066-how-to-customize-your-branding",
       "permanent": true
     },
     {
@@ -1475,7 +1475,7 @@
     },
     {
       "source": "/docs/how-to/set-up-and-use-stripe/",
-      "destination": "/docs/how-to/payments/set-up-and-use-stripe/",
+      "destination": "/docs/introduction/set-up-and-use-stripe/",
       "permanent": true
     },
     {
