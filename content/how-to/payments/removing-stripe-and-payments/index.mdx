@@ -174,7 +174,7 @@ handlePublishListing(id) {
     const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
 +   const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
 
-    ...
+    /* ... */
 
     if (
       isInquiryProcess ||
@@ -348,7 +348,7 @@ CheckoutPage `return` statement to take it into use.
   ) : processName && !isInquiryProcess && !speculateTransactionInProgress ? (
     <CheckoutPageWithPayment
       config={config}
-    ...
+    /* ... */
 ```
 
 To use _CheckoutPageWithoutPayment_, we also need to make these changes
@@ -552,7 +552,7 @@ In `routeConfiguration.js`, remove references to `StripePayoutPage` and
 +export const ACCOUNT_SETTINGS_PAGES = ['ContactDetailsPage', 'PasswordChangePage'];
 
 return [
-  ...
+  /* ... */
 -  {
 -     path: '/account/payments',
 -     name: 'StripePayoutPage',

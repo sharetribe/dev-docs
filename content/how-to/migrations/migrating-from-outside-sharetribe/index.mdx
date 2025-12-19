@@ -534,9 +534,10 @@ location attribute if your marketplace uses maps in some way, whether or
 not you provide an address attribute in e.g. public data.
 
 ```clj
-#:im.listing{...
+#:im.listing{;;...
             :location #im/location [23.12 21.21]
-                      ...}
+                      ;;...
+            }
 ```
 
 #### Money
@@ -550,9 +551,10 @@ the `money` type differs somewhat from the Intermediary `#im/money` type
 minor unit.
 
 ```clj
-#:im.listing{...
+#:im.listing{;;...
             :price #im/money [12.12M "EUR"]
-            ...}
+            ;;...
+            }
 ```
 
 #### UUID

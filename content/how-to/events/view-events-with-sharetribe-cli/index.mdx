@@ -62,7 +62,7 @@ Events command supports various ways to query events. Querying without
 any of the additional parameters lists the 100 latest events for your
 marketplace:
 
-```
+```bash
 $ flex-cli events -m my-marketplace-dev
 
 Seq ID   Resource ID                           Event type                     Created at local time   Source           Actor
@@ -82,7 +82,7 @@ Seq ID   Resource ID                           Event type                     Cr
 3471873  5fce86c7-e435-4047-ab3b-dc4fee02d51d  listing/updated                2020-12-07 9:50:35 PM   marketplace-api  joe@example.com
 3471875  5fce8536-61f5-4c85-8160-61b1799d256f  user/updated                   2020-12-07 9:50:52 PM   marketplace-api  joe@example.com
 3471890  5fce86c7-e435-4047-ab3b-dc4fee02d51d  listing/updated                2020-12-07 9:53:15 PM   marketplace-api  joe@example.com
-...
+# ...
 ```
 
 The default table output mode lists a few key
@@ -111,7 +111,7 @@ Seq ID   Resource ID                           Event type       Created at local
 3471813  5fce8536-61f5-4c85-8160-61b1799d256f  user/created     2020-12-07 9:40:38 PM   marketplace-api
 3471856  5fce86c7-e435-4047-ab3b-dc4fee02d51d  listing/created  2020-12-07 9:47:19 PM   marketplace-api  joe@example.com
 3471857  5fce86c7-e435-4047-ab3b-dc4fee02d51d  listing/updated  2020-12-07 9:47:28 PM   marketplace-api  joe@example.com
-...
+# ...
 ```
 
 Filtering accepts multiple event types separated with commas. Event
@@ -180,13 +180,13 @@ sequence id / time.
 
 ```bash
 $ flex-cli events --after-seqid 3391593 -M my-marketplace-dev
-...
+# ...
 
 $ flex-cli events --before-seqid 3462912  -m my-marketplace-dev
-...
+# ...
 
 $ flex-cli events --after-ts 2020-12-05  -m my-marketplace-dev
-...
+# ...
 
 $ flex-cli events --before-ts 2020-12-05T10:00.000Z  -m my-marketplace-dev
 ```
@@ -296,7 +296,7 @@ $ flex-cli events -m my-marketplace-dev --json | less
 {"eventType":"user/updated","createdAt":"2020-12-07T13:36:28.469Z","resourceType":"user","source":"so
 {"eventType":"availabilityException/created","createdAt":"2020-12-07T14:27:31.243Z","resourceType":"a
 {"eventType":"availabilityException/created","createdAt":"2020-12-07T14:27:31.835Z","resourceType":"a
-...
+# ...
 ```
 
 The output can be easily parsed and transformed by using e.g. the

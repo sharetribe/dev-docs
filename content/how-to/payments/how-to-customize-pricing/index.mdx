@@ -74,16 +74,16 @@ On submit, save price and `insuranceFee`:
 
 ```diff filename="src/containers/EditListingPricingPanel/EditListingPricingPanel.js"
 + import { HOUR } from '../../../../transactions/transaction';
-...
+/* ... */
 <EditListingPricingForm
-  ...
+  /* ... */
   onSubmit={values => {
     const { price } = values;
 +   const insuranceFeeAmount = unitType === HOUR ? 500 : 2000;
 +   const insuranceFee = { amount: insuranceFeeAmount, currency: marketplaceCurrency };
-            ...
+    /* ... */
     if (unitType === FIXED || isPriceVariationsInUse) {
-      ...
+      /* ... */
       updateValues = {
         ...priceVariantChanges,
         ...startTimeIntervalChanges,
@@ -179,20 +179,28 @@ const insuranceFeeLineItem = insuranceFeePrice
     ]
   : [];
 
-  // Note: extraLineItems for product selling (aka shipping fee)
-  // is not included in either customer or provider commission calculation.
+// Note: extraLineItems for product selling (aka shipping fee)
+// is not included in either customer or provider commission calculation.
 
-  ...
+/* ... */
 
-  // Let's keep the base price (order) as first line item and provider and customer commissions as last.
-  // Note: the order matters only if OrderBreakdown component doesn't recognize line-item.
-  const lineItems = [
+// Let's keep the base price (order) as first line item and provider and customer commissions as last.
+// Note: the order matters only if OrderBreakdown component doesn't recognize line-item.
+const lineItems = [
+  order,
+  ...extraLineItems,
+  ...insuranceFeeLineItem,
+  ...getProviderCommissionMaybe(
+    providerCommission,
     order,
-    ...extraLineItems,
-    ...insuranceFeeLineItem,
-    ...getProviderCommissionMaybe(providerCommission, order, priceAttribute),
-    ...getCustomerCommissionMaybe(customerCommission, order, priceAttribute),
-  ];
+    priceAttribute
+  ),
+  ...getCustomerCommissionMaybe(
+    customerCommission,
+    order,
+    priceAttribute
+  ),
+];
 ```
 
 <Callout type="info">
@@ -240,7 +248,7 @@ Update `lineItemHelpers.js` to add the new
 +     : providerCommission.percentage;
 
 exports.getProviderCommissionMaybe = (providerCommission, order, priceAttribute) => {
-  ...
+  /* ... */
   // The provider commission is what the provider pays for the transaction, and
   // it is the subtracted from the order price to get the provider payout:
   // orderPrice - providerCommission = providerPayout

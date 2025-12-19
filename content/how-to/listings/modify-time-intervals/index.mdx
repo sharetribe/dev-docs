@@ -299,7 +299,7 @@ that millisecond change in our modified handling.
   const customTimeUnitConfig = bookingTimeUnits[timeUnit]?.isCustom
     ? bookingTimeUnits[timeUnit]
     : null;
-  ...
+  /* ... */
   } else if (timeUnit === 'hour') {
 +   // Add separate handling for the first timeslot so that bookings can start
 +   // from the beginning of the available time slot
@@ -321,7 +321,7 @@ that millisecond change in our modified handling.
   } else {
     // Other time units are handled with the default moment.js functions
     return moment(currentDate)
-    ...
+    /* ... */
 ```
 
 Then, in the `getBoundaries` function that calls `findNextBoundary`, we
@@ -330,7 +330,7 @@ will need to pass `true` as the `isFirst` parameter to the very first
 
 ```diff filename="src/util/dates.js"
 export const getBoundaries = (startTime, endTime, unitCount, timeUnit, timeZone, intl) => {
-  ...
+  /* ... */
   const millisecondBeforeStartTime = new Date(startTime.getTime() - 1);
   return findBookingUnitBoundaries({
 +   // Add isFirst param to determine first time slot handling
@@ -338,7 +338,7 @@ export const getBoundaries = (startTime, endTime, unitCount, timeUnit, timeZone,
 +   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
     startMoment: moment(startTime),
     endMoment: moment(endTime),
-    ...
+    /* ... */
 ```
 
 ## Add separate handling for first timeslot
@@ -380,7 +380,7 @@ export const findNextBoundary = (
 + isFirst = false,
 + isStart = false,
 ) => {
-  ...
+  /* ... */
   } else if (timeUnit === 'hour') {
     // Add separate handling for the first timeslot so that bookings can start
     // from the beginning of the available time slot
@@ -397,7 +397,7 @@ export const findNextBoundary = (
     // Revert the millisecondBeforeStartTime change if increment is 0, so that the rounding
     // works correctly
     const date = isFirst ? new Date(currentDate.getTime() + 1) : currentDate;
-    ...
+    /* ... */
 };
 ```
 
@@ -416,7 +416,7 @@ parameter in both, and pass the value on to `findNextBoundary`.
 +   isStart = false
   ) => {
     if (!moment.tz.zone(timeZone)) {
-...
+    /* ... */
     return findBookingUnitBoundaries({
 -   // Add isFirst param to determine first time slot handling
 -   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),

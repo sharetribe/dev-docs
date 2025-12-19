@@ -152,7 +152,7 @@ push payments on our marketplace.
     {:name :action/stripe-create-payment-intent-push}],
    :to :state/pending-payment,
    :privileged? true}
-   ...
+   ;;...
    {:name :transition/request-push-payment-after-inquiry,
    :actor :actor.role/customer,
    :actions
@@ -241,7 +241,7 @@ export const listingTypes = [
   //     unitType: 'night',
   //   },
   // },
-  ...
+  /* ... */
 ```
 
 Let's use the new _biketribe-instant-booking_ process as the daily
@@ -294,7 +294,7 @@ alongside the hosted ones next.
 
 ```diff filename="src/util/configHelpers.js"
 const mergeListingConfig = (hostedConfig, defaultConfigs) => {
-...
+  /* ... */
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
 - const listingTypes = shouldMerge
 -   ? union(hostedListingTypes, defaultListingTypes, 'listingType')
@@ -303,7 +303,7 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
   const listingFields = shouldMerge
     ? union(hostedListingFields, defaultListingFields, 'key')
     : hostedListingFields;
-...
+  /* ... */
 ```
 
 Now, both the built-in listing types and the Sharetribe Console created
@@ -413,8 +413,8 @@ export const graph = {
   // However if you have multiple transaction processes defined,
   // it is best to keep them in sync with transaction process aliases.
 + id: 'biketribe-instant-booking/release-1',
-...
-// States
+  /* ... */
+  // States
   states: {
     [states.INITIAL]: {
       on: {
@@ -460,7 +460,7 @@ export const graph = {
 
     [states.CANCELED]: {},
     [states.DELIVERED]: {
-    ...
+    /* ... */
 ```
 
 **Step 3**: Update relevant helper functions.
@@ -706,10 +706,10 @@ Stripe-related payment processing. This is handled in
 +     });
 
  Promise.all([
-    ...
+    /* ... */
 +     ongoingBiketribeInstantBookingsWithIncompletePaymentProcessing(),
   ])
-  ...
+  /* ... */
 };
 ```
 

@@ -145,10 +145,10 @@ updated):
   // other event keys: "eventType", "sequenceId", "createdAt", ...
   "resource": {
     "id": "5bbb2f6f-568f-470a-9949-a655e3f6ac46",
-    ...
+    //...
     "title": "Listing title",
-    "author": {"id": "5cf4c0eb-513f-419b-a8be-bdb6c14be10a"},
-    ...
+    "author": { "id": "5cf4c0eb-513f-419b-a8be-bdb6c14be10a" }
+    // ...
   },
   "previousValues": {
     "title": "old title"
@@ -168,12 +168,17 @@ updated):
       "id": "5bbb2f6f-568f-470a-9949-a655e3f6ac46",
       "type": "listing",
       "attributes": {
-        "title": "Listing title",
-        ...
+        "title": "Listing title"
+        // ...
       },
       "relationships": {
-        "author": {"data": {"id": "5cf4c0eb-513f-419b-a8be-bdb6c14be10a", "type": "user"}},
-        ...
+        "author": {
+          "data": {
+            "id": "5cf4c0eb-513f-419b-a8be-bdb6c14be10a",
+            "type": "user"
+          }
+        }
+        // ...
       }
     },
     "previousValues": {

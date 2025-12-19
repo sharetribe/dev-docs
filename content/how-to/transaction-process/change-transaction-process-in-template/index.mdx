@@ -86,7 +86,7 @@ export const listingTypes = [
   //     payoutDetails: true,
   //   },
   // },
-  ...
+  /* ... */
 ];
 ```
 
@@ -240,7 +240,7 @@ export const transitions = {
 + REQUEST_AFTER_INQUIRY: 'transition/request-after-inquiry',
 
 + PROVIDER_OFFER: 'transition/provider-offer',
-  ...
+  /* ... */
   EXPIRE_CUSTOMER_REVIEW_PERIOD: 'transition/expire-customer-review-period',
   EXPIRE_PROVIDER_REVIEW_PERIOD: 'transition/expire-provider-review-period',
   EXPIRE_REVIEW_PERIOD: 'transition/expire-review-period',
@@ -385,49 +385,60 @@ delivered or received. This logic is determined in the process specific
 // ConditionalResolver is basically a case structure
 // that takes the process state and transaction role as parameters
 return new ConditionalResolver([processState, transactionRole])
-    .cond([states.INQUIRY, CUSTOMER], () => {
-      const transitionNames = Array.isArray(nextTransitions)
-        ? nextTransitions.map(t => t.attributes.name)
-        : [];
-      const requestAfterInquiry = transitions.REQUEST_PAYMENT_AFTER_INQUIRY;
-      const hasCorrectNextTransition = transitionNames.includes(requestAfterInquiry);
-      const showOrderPanel = !isProviderBanned && hasCorrectNextTransition;
-      return { processName, processState, showOrderPanel };
-    })
-    .cond([states.INQUIRY, PROVIDER], () => {
-      return { processName, processState, showDetailCardHeadings: true };
-    })
-    .cond([states.PURCHASED, CUSTOMER], () => {
-      // In the default purchase process, after the item has been purchased the customer
-      // sees an action button to transition the transaction with 'mark-received-from-purchased'
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        showExtraInfo: true,
-        primaryButtonProps: actionButtonProps(transitions.MARK_RECEIVED_FROM_PURCHASED, CUSTOMER),
-      };
-    })
-    .cond([states.PURCHASED, PROVIDER], () => {
-      // In the same state, the provider sees an action button to transition the transaction
-      // with 'mark-delivered'. The component on the transaction page is the same, but the props are
-      // resolved in this ...stateData... -file.
-      const actionButtonTranslationId = isShippable
-        ? `TransactionPage.${processName}.${PROVIDER}.transition-mark-delivered.actionButtonShipped`
-        : `TransactionPage.${processName}.${PROVIDER}.transition-mark-delivered.actionButton`;
+  .cond([states.INQUIRY, CUSTOMER], () => {
+    const transitionNames = Array.isArray(nextTransitions)
+      ? nextTransitions.map((t) => t.attributes.name)
+      : [];
+    const requestAfterInquiry =
+      transitions.REQUEST_PAYMENT_AFTER_INQUIRY;
+    const hasCorrectNextTransition = transitionNames.includes(
+      requestAfterInquiry
+    );
+    const showOrderPanel =
+      !isProviderBanned && hasCorrectNextTransition;
+    return { processName, processState, showOrderPanel };
+  })
+  .cond([states.INQUIRY, PROVIDER], () => {
+    return { processName, processState, showDetailCardHeadings: true };
+  })
+  .cond([states.PURCHASED, CUSTOMER], () => {
+    // In the default purchase process, after the item has been purchased the customer
+    // sees an action button to transition the transaction with 'mark-received-from-purchased'
+    return {
+      processName,
+      processState,
+      showDetailCardHeadings: true,
+      showActionButtons: true,
+      showExtraInfo: true,
+      primaryButtonProps: actionButtonProps(
+        transitions.MARK_RECEIVED_FROM_PURCHASED,
+        CUSTOMER
+      ),
+    };
+  })
+  .cond([states.PURCHASED, PROVIDER], () => {
+    // In the same state, the provider sees an action button to transition the transaction
+    // with 'mark-delivered'. The component on the transaction page is the same, but the props are
+    // resolved in this ...stateData... -file.
+    const actionButtonTranslationId = isShippable
+      ? `TransactionPage.${processName}.${PROVIDER}.transition-mark-delivered.actionButtonShipped`
+      : `TransactionPage.${processName}.${PROVIDER}.transition-mark-delivered.actionButton`;
 
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        primaryButtonProps: actionButtonProps(transitions.MARK_DELIVERED, PROVIDER, {
+    return {
+      processName,
+      processState,
+      showDetailCardHeadings: true,
+      showActionButtons: true,
+      primaryButtonProps: actionButtonProps(
+        transitions.MARK_DELIVERED,
+        PROVIDER,
+        {
           actionButtonTranslationId,
-        }),
-      };
-    })
-    ...
+        }
+      ),
+    };
+  });
+/*...*/
 ```
 
 The main `...stateData.js` file imports functions from these process
@@ -436,8 +447,8 @@ specific files, such as `...stateDataBooking.js` and
 the correct process.
 
 ```jsx filename="TransactionPage.stateData.js"
-export const getStateData = params => {
-  ...
+export const getStateData = (params) => {
+  /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
@@ -449,7 +460,7 @@ export const getStateData = params => {
   } else {
     return {};
   }
-}
+};
 ```
 
 If you have added a new process name constant besides the defaults
@@ -517,7 +528,7 @@ export const getStateDataForNegotiatedBookingProcess = (txInfo, processInfo) => 
         tertiaryButtonProps: tertiary
       };
     })
-    ...
+    /* ... */
 ```
 
 If you have created a new **stateData** file (e.g.
@@ -527,7 +538,7 @@ then use it in the `...stateData.js` file.
 
 ```diff filename="TransactionPage.stateData.js"
 export const getStateData = params => {
-  ...
+  /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
@@ -565,7 +576,7 @@ Add the tabs you want to use for listings using this process.
 
 ```diff filename="EditListingWizard.js"
 const tabsForListingType = (processName, listingTypeConfig) => {
-  ...
+  /* ... */
   const tabs = {
     ['default-booking']: [DETAILS, ...locationMaybe, PRICING, AVAILABILITY, ...styleOrPhotosTab],
 +   ['booking-with-negotiation']: [DETAILS, ...locationMaybe, PRICING, AVAILABILITY, ...styleOrPhotosTab],
@@ -585,12 +596,12 @@ A lot of marketplace text strings in Sharetribe Web Template are
 transaction process and state specific.
 
 ```jsx filename="src/translations/en.json"
-...
+/* ... */
   "InboxPage.default-booking.accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
   "InboxPage.default-booking.declined.status": "Declined",
   "InboxPage.default-booking.delivered.status": "Delivered",
-...
+/* ... */
 ```
 
 This means that when you create a new transaction process, you will also
@@ -633,7 +644,7 @@ checked before submitting the user deletion request.
 
 ```diff filename="server/api/delete-account.js"
 + stripeRelatedStatesForNegotiatedBookings = [
-+   ...
++   // ...add the relevant states
 + ];
 
 + const ongoingNegotiatedBookingsWithIncompletePaymentProcessing = () =>
@@ -643,10 +654,10 @@ checked before submitting the user deletion request.
 +     });
 
  Promise.all([
-    ...
+    /* ... */
 +     ongoingNegotiatedBookingsWithIncompletePaymentProcessing(),
   ])
-  ...
+  /* ... */
 };
 ```
 

@@ -73,7 +73,7 @@ const routeConfiguration = () => {
       component: AuthenticationPage,
       extraProps: { tab: 'signup' },
     },
-    //...
+    /* ... */
   ];
 };
 
@@ -154,7 +154,7 @@ Here's a simplified _app.js_ code that renders the client-side app:
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import routeConfiguration from './routeConfiguration';
-//...
+/* ... */
 export const ClientApp = (props) => {
   return (
     <BrowserRouter>
@@ -169,10 +169,10 @@ component renders the first _Route_ that matches the location.
 
 ```jsx
 import { Switch, Route } from 'react-router-dom';
-//...
+/* ... */
 
 const Routes = (props, context) => {
-  //...
+  /* ... */
   return (
     <Switch>
       {routes.map(toRouteComponent)}
@@ -374,7 +374,7 @@ dataLoader
   .loadData(req.url, sdk /* other params */)
   .then((preloadedState) => {
     const html = renderer.render(req.url /* and other params */);
-    //...
+    /* ... */
     res.send(html);
   });
 ```

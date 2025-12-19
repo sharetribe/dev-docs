@@ -89,7 +89,7 @@ _helmetFee_, on the other hand, needs to be under the _publicData_ key.
 +   const helmetFeeMaybe = helmetFee ? { amount: helmetFee.amount, currency: helmetFee.currency } : null;
 
     if (unitType === FIXED || isPriceVariationsInUse) {
-      ...
+      /* ... */
       updateValues = {
         ...priceVariantChanges,
         ...startTimeIntervalChanges,
@@ -117,10 +117,10 @@ _helmetFee_, on the other hand, needs to be under the _publicData_ key.
 +   updateValues = {price, publicData: { ...priceVariationsEnabledMaybe, helmetFee: helmetFeeMaybe, } };
     }
 
-    ...
+    /* ... */
     onSubmit(updateValues);
   }}
-  ...
+  /* ... */
 />
 ```
 
@@ -312,7 +312,7 @@ as the checkbox component _FieldCheckbox_.
   import { propTypes } from '../../util/types';
 + import { formatMoney } from '../../../util/currency';
 + import { types as sdkTypes } from '../../../util/sdkLoader';
-  ...
+  /* ... */
 import {
   Form,
   IconArrowHead,
@@ -333,7 +333,7 @@ for selecting the helmet rental fee. For this, we need to extract the
 helmetFee from **formRenderProps**.
 
 ```diff
-    ...
+    /* ... */
    fetchLineItemsError,
    onFetchTimeSlots,
    form: formApi,
@@ -629,11 +629,11 @@ _lineItemHelpers.js_:
 - exports.getProviderCommissionMaybe = (providerCommission, order, currency) => {
 + exports.getProviderCommissionMaybe = (providerCommission, order, currency, helmetFee)
  => {
-    ...
+    /* ... */
     // Calculate the total money paid into the transaction
 -   const totalMoneyIn = this.calculateTotalFromLineItems([order]);
 +   const totalMoneyIn = this.calculateTotalFromLineItems([order, ...helmetFee]);
-    ...
+    /* ... */
 };
 ```
 
@@ -642,7 +642,7 @@ is returned in the end of the function.
 
 ```diff
 exports.transactionLineItems = (listing, orderData, providerCommission, customerCommission) => {
-...
+  /* ... */
 
   const order = {
     code,
@@ -723,7 +723,7 @@ const getOrderParams = (pageData, shippingDetails, optionalPaymentParams, config
 + const hasHelmetFee = pageData.orderData?.helmetFee?.length > 0;
   const { listingType, unitType, priceVariants } = pageData?.listing?.attributes?.publicData || {};
 
-  ...
+  /* ... */
 
   // These are the order parameters for the first payment-related transition
   // which is either initiate-transition or initiate-transition-after-enquiry
