@@ -6,7 +6,7 @@ description:
   lengths, using e.g. booking length periods of 30 minutes.
 ---
 
-import { Callout } from 'nextra/components';
+import { Callout, FileTree } from 'nextra/components';
 
 # Modify booking time intervals in time-based listings
 
@@ -40,18 +40,20 @@ booking length by setting a start time and an end time.
 The simplest use case is to create uniform 30 minute booking slots.
 Start with adding a constant for the booking length in minutes.
 
-```js
+```jsx filename="src/util/dates.js"
 const timeSlotMinutes = 30;
 ```
 
 Time slot handling is done using a few helper functions in
 `src/util/dates.js`
 
-```shell
-└── src
-    └── util
-        └── dates.js
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="util" defaultOpen>
+      <FileTree.File name="dates.js" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 - `getStartHours` and `getEndHours` return a list of timepoints that are
   displayed as the booking's possible start and end moments,
@@ -78,10 +80,7 @@ Time slot handling is done using a few helper functions in
   predefined value, both for custom time units and for the default ones
   – day and hour.
 
-```js
-/**
- * This is the default behavior of the template
- */
+```jsx filename="src/util/dates.js" showLineNumbers{718}
 export const findNextBoundary = (
   currentDate,
   unitCount,
@@ -131,7 +130,7 @@ hour or day. For custom time slots, the function uses customized
 moment.js extension `startOfMinuteBasedInterval()`, which is defined
 earlier in the same `dates.js` file.
 
-```js
+```jsx filename="src/util/dates.js"
 moment.fn.startOfMinuteBasedInterval = function (unitCount) {
   const durationInMs = moment
     .duration(unitCount, 'minutes')
@@ -155,7 +154,7 @@ where you use the `startOfMinuteBasedInterval` function instead of the
 default `startOf(timeUnit)` function, and pass the `timeSlotMinutes`
 value as the addition and rounding duration values.
 
-```diff
+```jsx filename="src/util/dates.js" {25-32}
 export const findNextBoundary = (
   currentDate,
   unitCount,
@@ -180,14 +179,14 @@ export const findNextBoundary = (
       .add(minuteOffset, 'minute')
       .startOfMinuteBasedInterval(customTimeUnitInMinutes)
       .toDate();
-+ } else if (timeUnit === 'hour') {
-+   // Replace hourly handling with the defined booking length
-+   return moment(currentDate)
-+     .clone()
-+     .tz(timeZone)
-+     .add(timeSlotMinutes, 'minute')
-+     .startOfMinuteBasedInterval(timeSlotMinutes)
-+     .toDate();
+  } else if (timeUnit === 'hour') {
+    // Replace hourly handling with the defined booking length
+    return moment(currentDate)
+      .clone()
+      .tz(timeZone)
+      .add(timeSlotMinutes, 'minute')
+      .startOfMinuteBasedInterval(timeSlotMinutes)
+      .toDate();
   } else {
     // Other time units are handled with the default moment.js functions
     return moment(currentDate)
@@ -260,7 +259,7 @@ greatest common factor of the booking length and a full hour using the
 For instance, when using a 45 minute time slot, the greatest common
 divisor with an hour is 15 minutes.
 
-```js
+```jsx filename="src/util/dates.js"
 const timeSlotMinutes = 45;
 const hourMinutes = 60;
 
@@ -294,13 +293,13 @@ and the `startOfDuration(...)` function cancel each other out. Now that
 we want to set the first booking slot manually, we also need to revert
 that millisecond change in our modified handling.
 
-```diff
+```diff filename="src/util/dates.js"
 - export const findNextBoundary = (currentDate, unitCount, timeUnit, timeZone) => {
 + export const findNextBoundary = (currentDate, unitCount, timeUnit, timeZone, isFirst = false) => {
   const customTimeUnitConfig = bookingTimeUnits[timeUnit]?.isCustom
     ? bookingTimeUnits[timeUnit]
     : null;
-  ...
+  /* ... */
   } else if (timeUnit === 'hour') {
 +   // Add separate handling for the first timeslot so that bookings can start
 +   // from the beginning of the available time slot
@@ -322,16 +321,16 @@ that millisecond change in our modified handling.
   } else {
     // Other time units are handled with the default moment.js functions
     return moment(currentDate)
-    ...
+    /* ... */
 ```
 
 Then, in the `getBoundaries` function that calls `findNextBoundary`, we
 will need to pass `true` as the `isFirst` parameter to the very first
 `findBookingUnitBoundaries` function call.
 
-```diff
+```diff filename="src/util/dates.js"
 export const getBoundaries = (startTime, endTime, unitCount, timeUnit, timeZone, intl) => {
-  ...
+  /* ... */
   const millisecondBeforeStartTime = new Date(startTime.getTime() - 1);
   return findBookingUnitBoundaries({
 +   // Add isFirst param to determine first time slot handling
@@ -339,7 +338,7 @@ export const getBoundaries = (startTime, endTime, unitCount, timeUnit, timeZone,
 +   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
     startMoment: moment(startTime),
     endMoment: moment(endTime),
-    ...
+    /* ... */
 ```
 
 ## Add separate handling for first timeslot
@@ -351,7 +350,7 @@ the option to extend it for 30 minutes at a time. In those cases, you
 need to create different handling for the first time slot, i.e. the
 first start and end boundaries.
 
-```js
+```jsx filename="src/util/dates.js"
 const timeSlotMinutes = 30;
 const firstSlotMinutes = 75;
 
@@ -371,7 +370,7 @@ need to pass an `isStart` parameter to `findNextCustomBoundary` and use
 it to determine the boundary timepoints in addition to the `isFirst`
 parameter.
 
-```diff
+```diff filename="src/util/dates.js"
 export const findNextBoundary = (
   currentDate,
   unitCount,
@@ -381,7 +380,7 @@ export const findNextBoundary = (
 + isFirst = false,
 + isStart = false,
 ) => {
-  ...
+  /* ... */
   } else if (timeUnit === 'hour') {
     // Add separate handling for the first timeslot so that bookings can start
     // from the beginning of the available time slot
@@ -398,7 +397,7 @@ export const findNextBoundary = (
     // Revert the millisecondBeforeStartTime change if increment is 0, so that the rounding
     // works correctly
     const date = isFirst ? new Date(currentDate.getTime() + 1) : currentDate;
-    ...
+    /* ... */
 };
 ```
 
@@ -406,7 +405,7 @@ The `getBoundaries` and `getSharpHours` functions are used for both
 start hours and end hours, so we need to receive `isStart` as a
 parameter in both, and pass the value on to `findNextBoundary`.
 
-```diff
+```diff filename="src/util/dates.js"
   export const getBoundaries = (
     startTime,
     endTime,
@@ -417,7 +416,7 @@ parameter in both, and pass the value on to `findNextBoundary`.
 +   isStart = false
   ) => {
     if (!moment.tz.zone(timeZone)) {
-...
+    /* ... */
     return findBookingUnitBoundaries({
 -   // Add isFirst param to determine first time slot handling
 -   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
@@ -426,7 +425,7 @@ parameter in both, and pass the value on to `findNextBoundary`.
       startMoment: moment(startTime),
 ```
 
-```diff
+```diff filename="src/util/dates.js"
 - export const getSharpHours = (startTime, endTime, timeZone, intl) => {
 + export const getSharpHours = (startTime, endTime, timeZone, intl, isStart) => {
 -   return getBoundaries(startTime, endTime, 1, 'hour', timeZone, intl);
@@ -449,7 +448,7 @@ start time, there is enough availability for the first timeslot. We do
 this by removing enough entries from the end so that the first time slot
 can be booked even from the last start moment.
 
-```diff
+```diff filename="src/util/dates.js"
 export const getStartHours = (startTime, endTime, timeZone, intl) => {
 -  const hours = getSharpHours(startTime, endTime, timeZone, intl);
 +  const hours = getSharpHours(startTime, endTime, timeZone, intl, true);
@@ -467,7 +466,7 @@ determined in the `findNextCustomBoundary` function, we do not need to
 remove it. Instead, we can just return the full list from
 `getSharpHours`.
 
-```diff
+```diff filename="src/util/dates.js"
 export const getEndHours = (startTime, endTime, timeZone, intl) => {
 -  const hours = getSharpHours(startTime, endTime, timeZone, intl);
 -  return hours.length < 2 ? [] : hours.slice(1);

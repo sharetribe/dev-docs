@@ -2,42 +2,32 @@
 title: How PaymentIntents work
 sidebarTitle: Payment Intents
 description:
-  Overview of how Stripe PaymentIntents work with Sharetribe, and how
-  you can build your transaction process with support for Strong
-  Customer Authentication (SCA).
+  Overview of how payments work with the Sharetribe Stripe integration.
 ---
 
-# How PaymentIntents work
+import { Callout } from 'nextra/components';
+import { Steps } from 'nextra/components';
+
+# How PaymentIntents work with the Sharetribe Stripe integration
 
 ## Introduction
 
 [PaymentIntents](https://stripe.com/docs/payments/payment-intents) are a
 mechanism provided by Stripe to track the lifecycle of customer checkout
 flow. In addition, PaymentIntents provide tools for
-[Strong Customer Authentication (SCA)](/concepts/payments/strong-customer-authentication/)
+[Strong Customer Authentication (SCA)](/template/payments/strong-customer-authentication/)
 where required. Sharetribe has built-in support for PaymentIntents and
 Strong Customer Authentication.
 
-In September 2019
-[new European regulation](https://stripe.com/en-fi/payments/strong-customer-authentication)
-will begin requiring SCA for online payments from European customers. In
-order to conform to these regulatory changes, Stripe encourages users to
-[migrate or use PaymentIntents](https://stripe.com/docs/strong-customer-authentication/migration)
-instead of directly creating Charges.
-
-In the future, PaymentIntents can be required in other countries outside
-Europe due to local regulatory changes but they can already be used
-outside Europe. And if needed, they can provide fraud prevention with
-things like
-[3D Secure Card Payments](https://stripe.com/docs/payments/3d-secure).
-
-PaymentIntents also allow a variety of payment methods to be used when
-making a payment in Sharetribe. See the
+PaymentIntents provide fraud prevention with things like
+[3D Secure Card Payments](https://stripe.com/docs/payments/3d-secure),
+and allow a variety of payment methods to be used when making a payment
+in Sharetribe. See the
 [overview of supported payment methods in Sharetribe](/concepts/payments/payment-methods-overview/).
 
-This article will describe how PaymentIntents relate to Sharetribe
-transaction processes and the general principles of implementing a
-checkout flow with PaymentIntents.
+This article describes how PaymentIntents relate to Sharetribe
+transaction process payment logic, as well as the general principles of
+implementing a checkout flow with PaymentIntents.
 
 ## Transaction process with PaymentIntents
 
@@ -53,7 +43,7 @@ steps:
    [card payments](/concepts/payments/payment-methods-overview/#card-payment-flow))
    or fully captured (in the case of
    [push payment methods](/concepts/payments/payment-methods-overview/#push-payment-flow)).
-4. Transaction flow continues as usual onwards.
+4. Transaction flow continues with the next appropriate transition.
 
 ### Example transaction process with card payments
 
@@ -99,9 +89,8 @@ that are similar, such as Google Pay or Apple Pay). You can optionally
 pass in a
 [PaymentMethod](https://stripe.com/docs/payments/payment-methods) ID, or
 attach a PaymentMethod later to the transaction during the validation
-and confirmation in the client by using Stripe Elements. The latter is
-the recommended way and is covered in the
-[implementation guide](#implementing-the-paymentintent-flow).
+and confirmation in the client by using Stripe Elements. The latter
+option is what we recommend you use.
 
 For detailed reference, see
 [here](/references/transaction-process-actions/#actionstripe-create-payment-intent).
@@ -112,9 +101,8 @@ Creates a PaymentIntent for use with push payments. You can optionally
 pass in a
 [PaymentMethod](https://stripe.com/docs/payments/payment-methods) ID, or
 attach a PaymentMethod later to the transaction during the validation
-and confirmation in the client by using Stripe Elements. The latter is
-the recommended way and is covered in the
-[implementation guide](#implementing-the-paymentintent-flow).
+and confirmation in the client by using Stripe Elements. The latter
+option is what we recommend you use.
 
 For detailed reference, see
 [here](/references/transaction-process-actions/#actionstripe-create-payment-intent-push).
@@ -165,11 +153,16 @@ For detailed reference, see
 The required actions in the client are related to authentication and
 confirmation. You need to be able to handle potential authentication
 steps required by the customer's card issuing bank. After
-authentication, the client needs to
-[obtain PaymentIntent data from the transaction's protected data](#implementing-the-automatic-paymentintent-flow)
+authentication, the client needs to obtain PaymentIntent data from the
+transaction's protected data
+([as described in step 2 below](#step-2-collect-payment-information-and-handle-customer-actions))
 and use that to confirm the payment.
 
-In case you wish to enforce
+<Callout type="important">
+  These steps are already implemented in the Sharetribe Web Template.
+</Callout>
+
+In case you want to enforce
 [3D Secure Card Payments](https://stripe.com/docs/payments/3d-secure)
 for cards that support 3DS, in addition to supporting payment
 authentication in your client app, you may need to update your
@@ -226,7 +219,9 @@ guides as a reference:
 Below we outline the concrete steps and how they work in combination
 with the Sharetribe transaction process.
 
-#### Step 1: Initiate or transition a Sharetribe transaction
+<Steps>
+
+#### Initiate or transition a Sharetribe transaction
 
 With Sharetribe, the step to create a PaymentIntent in handled by the
 transaction engine when a transaction transitions with a transition
@@ -237,12 +232,14 @@ using one of the following actions:
 - [stripe-create-payment-intent-push](#stripe-create-payment-intent-push) -
   use this action for payments with push payment methods
 
-If we assume that your transaction process follows
-[this example](#example-transaction-process-with-both-card-and-push-payments),
+If we assume that your transaction process has two initiating
+transitions, as in the image below,  
 you would use the `request-card-payment` transition for card payments
 and the `request-push-payment` transition for push payments.
 
-#### Step 2: Collect payment information and handle customer actions
+![Transaction initial transitions for card and push payments](./request-transitions-regular-push.png)
+
+#### Collect payment information and handle customer actions
 
 [Stripe Elements](https://stripe.com/docs/stripe-js) provides ready
 tools and a reference for implementing the automatic PaymentIntent flow.
@@ -276,7 +273,7 @@ The value of `stripePaymentIntents` is an object in the form of:
 This data is only exposed to the customer in the transaction. The
 provider can not access the PaymentIntent ID or the client secret.
 
-#### Step 3: Transition the Sharetribe transaction further
+#### Transition the Sharetribe transaction further
 
 Once any customer authentication or payment confirmation is handled in
 the UI, you need to transition the Sharetribe transaction further in
@@ -284,18 +281,14 @@ order for Sharetribe to record the payment details correctly. Make sure
 that the transition includes the
 [stripe-confirm-payment-intent](#stripe-confirm-payment-intent) action.
 
-If we assume that your transaction process follows
-[this example](#example-transaction-process-with-both-card-and-push-payments),
-you would use the `confirm-payment` transition for card payments and the
-`confirm-payment-instant-booking` transition for push payments.
+If we assume that your transaction process uses both card and push
+payments as in the image below, you would use the `confirm-payment`
+transition for card payments and the `confirm-payment-instant-booking`
+transition for push payments.
 
-## Using PaymentIntents in Sharetribe
+![Confirm transitions for instant and card payments](./confirm-transitions-card-instant.png)
 
-The Sharetribe Web Template supports card payments with PaymentIntents
-by default. If you need to adjust the default implementation, or if
-you're currently using one of our
-[legacy templates](https://www.sharetribe.com/docs/template/legacy/legacy-templates/),
-[learn more about how to take PaymentIntents into use](/how-to/payments/enable-payment-intents/).
+</Steps>
 
 ## Further reading
 

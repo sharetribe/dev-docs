@@ -6,87 +6,35 @@ description:
 published: true
 ---
 
+import { Steps } from 'nextra/components';
+
 # Payments
 
-Sharetribe is a full-fledged marketplace solution, complete with payment
-capabilities. In this article, you will learn about the Sharetribe
-default payment integration, implemented with Stripe, as well as some
-alternatives in case the default integration does not fully serve your
-marketplace needs.
-
-## Marketplace payment flow
-
-In a nutshell, a basic payment flow in a marketplace contains five
-significant steps:
+Payments in Sharetribe are powered by Stripe, using
+[Stripe Connect](https://stripe.com/en-fi/connect/) with
+[Custom Accounts](https://stripe.com/docs/connect/custom-accounts).
 
 ![Payment gateway logic](./payment-flow.png)
 
-### Step 1: Provider onboarding
+## Payments with Stripe
 
-In this step, the provider connects their Sharetribe account with the
-payment gateway. This is where they provide the bank details that
-eventually receive money from the customers. In addition, in this step,
-they provide the necessary information and documents for the identity
-verification and _Know Your Customer_
-[(KYC)](https://en.wikipedia.org/wiki/Know_your_customer) requirements.
-[These requirements vary](https://stripe.com/docs/connect/required-verification-information)
-depending on the user’s country of residence.
+All default transaction processes are built to support Stripe. The
+Sharetribe Web Template also comes with built-in support for payments
+with Stripe.
 
-### Step 2: Customer checkout
+The built-in Stripe integration requires you to use:
 
-Customer checkout happens when the customer initiates or transitions a
-transaction to pay for their order. At this stage, they provide the
-payment information, such as their credit card number. Also, the payment
-will be made at this point. The payment gateway will preauthorize the
-money, i.e. reserve the money on the customer's credit card.
+- [Stripe Connect with Custom accounts](https://stripe.com/docs/connect/custom-accounts)
+- [Destination charges](https://stripe.com/docs/connect/destination-charges)
+  with the `on_behalf_of` parameter
 
-### Step 3: Provider acceptance
-
-After the customer has checked out, the provider may have the ability to
-either accept or reject the request. If the request is accepted, the
-payment will be captured, and the reserved money will be transferred
-from the customer's credit card to the payment gateway.
-
-This is a step that you can combine with the customer checkout. The flow
-where the “provider accept” happens instantly after customer checkout is
-called [instant booking](#instant-booking) flow.
-
-### Step 4: Customer refund
-
-Typically, the marketplace payment flow contains a delayed payment
-period. This is the time between when the money is captured from the
-customer's credit card and when it is transferred to the provider's bank
-account. The payout in marketplaces usually happens after the provider
-has successfully provided the agreed product or service.
-
-Customer refund usually happens during this delayed payment period.
-There are many reasons why a refund may be necessary. For example, the
-provider or customer may not be able to make it to a booked event, or
-the provided product or service was not what was agreed.
-
-### Step 5: Provider payout
-
-If everything in the transaction went right and the customer received
-the agreed product or service, the money from the payment gateway will
-be eventually paid out to the provider.
-
-## Stripe default integration
-
-In the default Sharetribe transaction process and Sharetribe Web
-Template, the steps described above are implemented using Stripe. The
-integration uses
-[Stripe Custom Connect accounts](https://stripe.com/docs/connect/custom-accounts)
-for providers. The customer can check out using a payment card or
-[another supported method](#payment-methods-and-currencies), and they
-can also save their payment method for future use. The integration uses
-[Stripe destination charges](https://stripe.com/docs/connect/destination-charges)
-([on behalf of the provider](https://stripe.com/docs/payments/connected-accounts))
-to collect the payment from the customer to the provider's Custom
-Connect account first, and the possible commission is then transferred
-to the platform account as an
-[application fee](https://stripe.com/docs/connect/destination-charges#application-fee).
+Commissions are collected as
+[application fees](https://stripe.com/docs/connect/destination-charges#application-fee).
 Once the transaction is successfully over, the provider's share is paid
-out to the bank account that the provider gave upon onboarding.
+out to the bank account that the provider gave upon onboarding. The
+customer can check out using a payment card or
+[another supported method](#payment-methods-and-currencies), and they
+can also save their payment method for future use.
 
 <details>
   <summary>"What does &quot;destination charge&quot; mean?"</summary>
@@ -103,7 +51,9 @@ out to the bank account that the provider gave upon onboarding.
 
 ![Default payment flow in Sharetribe](./automatic_confirmation_flow.png)
 
-#### 1. Provider onboarding
+<Steps>
+
+#### Provider onboarding
 
 In the Sharetribe default integration, users need to have a Stripe
 account with a bank account set up before others can initiate
@@ -120,7 +70,7 @@ the provider's country. You can check the verification requirements for
 your most likely marketplace provider demographics in
 [Stripe's own documentation](https://stripe.com/docs/connect/required-verification-information).
 
-#### 2. Customer checkout
+#### Customer checkout
 
 When the customer triggers a payment related transition in the
 Sharetribe default transaction processes, Sharetribe creates a
@@ -143,7 +93,7 @@ process.
 - [:action/stripe-create-payment-intent](/references/transaction-process-actions/#actionstripe-create-payment-intent)
 - [:action/stripe-confirm-payment-intent](/references/transaction-process-actions/#actionstripe-confirm-payment-intent)
 
-#### 3. Provider acceptance
+#### Provider acceptance
 
 The default purchase and negotiation processes in the Sharetribe Web
 Template uses an instant checkout, which means customer checkout and
@@ -176,7 +126,7 @@ cover those expenses as well.
 
 - [:action/stripe-capture-payment-intent](/references/transaction-process-actions/#actionstripe-capture-payment-intent)
 
-#### 4. Customer refund
+#### Customer refund
 
 If the customer requests a refund for one reason or another, the
 operator can refund the PaymentIntent. The Sharetribe integration with
@@ -190,7 +140,7 @@ PaymentIntent has already been captured from the customer's account.
 
 - [:action/stripe-refund-payment](/references/transaction-process-actions/#actionstripe-refund-payment)
 
-#### 5. Provider payout
+#### Provider payout
 
 Once the order has completed successfully, the provider's payout is paid
 to the bank account that is linked to their Custom Connect account.
@@ -201,8 +151,14 @@ In other words, the payout must be triggered no more than 90 days after
 the PaymentIntent is created. This means that for booking or purchase
 times exceeding 90 days, the process needs to be modified.
 
+**Related Stripe actions:**
+
+- [:action/stripe-create-payout](/references/transaction-process-actions/#actionstripe-create-payout)
+
+</Steps>
+
 <details>
-  <summary>Manual or automatic payout?</summary>
+  <summary> Manual or automatic payout? </summary>
   In Stripe terms, the Sharetribe integration uses manual payouts. This
   means that Stripe does not automatically pay out the funds from the
   Connect accounts e.g. daily or weekly, and instead the platform
@@ -212,10 +168,6 @@ times exceeding 90 days, the process needs to be modified.
   out funds manually through the Stripe Dashboard if the marketplace
   transaction process is using the Stripe payout action.
 </details>
-
-**Related Stripe actions:**
-
-- [:action/stripe-create-payout](/references/transaction-process-actions/#actionstripe-create-payout)
 
 ### Modifications to the default processes
 
@@ -310,32 +262,26 @@ determined by the provider's bank account currency.
 
 <details>
   <summary>Stripe currency terminology</summary>
-  In Stripe terminology, the <b>presentment currency</b> is the currency
+  In Stripe terminology, the **presentment currency** is the currency
   of the charge, i.e. the currency at which the listing price is charged
   from the customer's card. The customer's card provider may charge a
   conversion fee if the presentment currency differs from the customer's
   card currency, or if the credit card and the marketplace platform are
   registered in different countries regardless of currency.
-  <br />
-  <br />
-  The <b>settlement currency</b> is the currency of the payout, i.e. the
-  currency at which the provider's payout is paid to their bank account.
-  If the presentment currency differs from the settlement currency,
-  Stripe converts the charge to the settlement currency.
-  <br />
-  <br />
-  See{' '}
-  <a href="https://stripe.com/docs/currencies">
-    Stripe's own documentation
-  </a>
-  for country-specific details on supported currencies.
+
+The **settlement currency** is the currency of the payout, i.e. the
+currency at which the provider's payout is paid to their bank account.
+If the presentment currency differs from the settlement currency, Stripe
+converts the charge to the settlement currency.
+
+See [Stripe's own documentation](https://stripe.com/docs/currencies) for
+country-specific details on supported currencies.
+
 </details>
 
 ## Sharetribe Web Template and Stripe
 
-The default Stripe integration in Sharetribe works with any client
-application. However, the Sharetribe Web Template is further configured
-to work hand in hand with Stripe:
+The Sharetribe Web Template comes with a working Stripe integration.
 
 - [Provider onboarding](/concepts/payments/providers-and-customers-on-stripe-platform/)
   is handled with Stripe Connect Onboarding. A provider cannot create
@@ -350,25 +296,64 @@ to work hand in hand with Stripe:
   making a payment on a transaction, or on a separate Payment Methods
   page.
 
-## Frequently asked questions
+## Frequently asked questions about payments
 
-### Where can I use Stripe?
+### Is Stripe supported in my country?
 
 In order to use Stripe for your marketplace, your platform account needs
-to be in a Stripe-supported country. (You can define your country in
-Stripe Dashboard Account Settings.) The platform country then determines
-in which countries the platform can create Connect accounts, i.e. where
-your marketplace's users can be from. Check
-[Stripe's own documentation](https://stripe.com/docs/connect/custom-accounts#requirements)
-for the most up-to-date requirements for your marketplace country.
+to be in a Stripe-supported country. Refer to our
+[Help Center](https://www.sharetribe.com/help/en/articles/8418388-countries-and-currencies-supported-by-stripe)
+for more information.
 
-### I'm having problems with the Stripe integration, how do I fix it?
+#### Can I add more Stripe countries to the Sharetribe Web Template? [#add-countries]
+
+The Sharetribe Web Template by default includes all countries that
+support the Sharetribe Stripe integration. In addition to being
+Stripe-supported in general, the country needs to support the following
+Stripe features:
+
+- Custom account types
+- Destination charges with the `on_behalf_of` API parameter
+- Application fees
+- Manual payout setting
+- 90-day holding period
+
+We do regularly check whether support for new countries is added for
+Stripe Connect with Custom accounts and these specified requirements,
+and we add new supported countries when we become aware of them. If you
+notice that your country supports all of these attributes and is not
+included in the Stripe supported countries in Sharetribe Web Template,
+do reach out to us!
+
+#### Known exceptions related to Brazil, India, and Hungary Stripe support [#country-exceptions]
+
+The Sharetribe Web Template does not support Brazil (BR), India (IN) and
+Hungary (HU), even though all three countries are mentioned as available
+Stripe countries in
+[Stripe's documentation](https://stripe.com/docs/connect/accounts#custom-accounts).
+If you want to support one of these three regions, you will need to do a
+fair amount of customization on top of the default Sharetribe setup.
+
+- The Sharetribe transaction engine uses manual payouts, which are{' '}
+  [not supported for Brazil and India](https://stripe.com/docs/payouts#manual-payouts).
+- India has restrictions on
+  [cross-border payments](https://support.stripe.com/questions/stripe-india-support-for-marketplaces).
+- Stripe treats the Hungarian currency HUF as a
+  [zero-decimal currency for payouts](https://stripe.com/docs/currencies#special-cases).
+  This means that even though the Sharetribe engine can create charges
+  in two-decimal amounts (e.g. HUF 20.38), payouts can only be created
+  in integer amounts evenly divisible by 100 (e.g. HUF 20.00).
+  Additionally, if Stripe needs to do currency conversions from another
+  currency to HUF, the resulting amount may have decimals which can
+  cause the payout to fail.
+
+### I'm having problems with the Stripe integration [#stripe-integration-problems]
 
 Sometimes it takes a while to get Stripe to work. Here are some ideas to
 troubleshoot the problem.
 
 - Double check that you have followed the
-  [Stripe setup instructions](/how-to/payments/set-up-and-use-stripe/).
+  [Stripe setup instructions](https://www.sharetribe.com/help/en/articles/8413086-how-to-set-up-stripe-for-payments-on-your-marketplace).
   Note that in your Dev and Test environments, you need to use the
   Stripe keys starting with `sk_test` and `pk_test`, and you will also
   need to use
@@ -378,7 +363,7 @@ troubleshoot the problem.
   with those test keys. In the Live environment with real payment
   methods, you will need to use the keys starting with `sk_live` and
   `pk_live`. Also check that the keys you are using match the keys in
-  Stripe Dashboard. You can "roll" i.e. refresh the keys if necessary
+  Stripe Dashboard. You can "roll", i.e. refresh the keys if necessary
   and enter the new keys &mdash; they will still be connected to the
   same Stripe platform account.
 
@@ -393,16 +378,16 @@ troubleshoot the problem.
   for advice or ideas.
 
 If nothing seems to work, you can always contact Sharetribe technical
-support through the chat widget in your
+support through the chat widget in the
 [Sharetribe Console](https://console.sharetribe.com/) or
 [by email](mailto:hello@sharetribe.com) for further troubleshooting.
 
-### How can I partially refund transactions in my Sharetribe marketplace?
+### How to implement partial refunds?
 
-The default Stripe integration in Sharetribe only supports fully
-refunding PaymentIntents. If you have a use case where you would need to
-implement partial refunds, here are some options you can consider. All
-of these require some degree of custom development effort.
+The default Stripe integration in Sharetribe only supports full refunds.
+If you have a use case where you would need to implement partial
+refunds, here are some options you can consider. All of these require
+some degree of custom development effort.
 
 #### Multiple transactions for one purchase
 

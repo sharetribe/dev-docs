@@ -46,7 +46,7 @@ result in changes across all content pages. Let’s demonstrate. We will
 create a new rule set in SectionArticle.module.css that does not apply
 any centering:
 
-```css
+```css filename="SectionArticle.module.css"
 .title {
   max-width: 30ch;
 }
@@ -57,7 +57,7 @@ any centering:
 
 Next, let’s use these rulesets in the SectionArticle.js component:
 
-```diff
+```diff filename="SectionArticle.js"
  <SectionContainer
      id={sectionId}
      className={className}
@@ -103,9 +103,9 @@ Remember to also rename all files within the new directory from
 
 We can now reapply the changes we made in the previous chapter to our
 new component. First, create a new rule set in
-**SectionArticleAlignLeft.module.css**:
+SectionArticleAlignLeft.module.css:
 
-```css
+```css filename="SectionArticleAlignLeft.module.css"
 .title {
   max-width: 30ch;
 }
@@ -114,10 +114,10 @@ new component. First, create a new rule set in
 }
 ```
 
-And change the **SectionArticleAlignLeft.js** file to use the new rule
-set we just created:
+And change the SectionArticleAlignLeft.js file to use the new rule set
+we just created:
 
-```diff
+```diff filename="SectionArticleAlignLeft.js"
  <SectionContainer
      id={sectionId}
      className={className}
@@ -133,27 +133,26 @@ set we just created:
 +        <Field data={ingress} className={css.ingress} options={fieldOptions} />
 ```
 
-We won't be able to see this change live yet. First, we will have to
-import the new component and use the _options_ prop in
-**LandingPage.js**:
+To see this change live, we will have to import the new component and
+use the _options_ prop in _LandingPage.js_:
 
-```js
+```js filename="LandingPage.js"
 import SectionArticleAlignLeft from '../../containers/PageBuilder/SectionBuilder/SectionArticleAlignLeft';
 ```
 
-We can then define an object in **LandingPage.js** that will be passed
-on as the _options_ prop:
+We can then define an object in LandingPage.js that will be passed on as
+the _options_ prop:
 
-```js
+```js filename="LandingPage.js"
 const sectionOverrides = {
   article: { component: SectionArticleAlignLeft },
 };
 ```
 
 Let's pass that object to the **PageBuilder** component in
-**LandingPage.js** as the _options_ prop:
+LandingPage.js as the _options_ prop:
 
-```diff
+```diff filename="LandingPage.js"
  return (
    <PageBuilder
      pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
@@ -220,7 +219,7 @@ import { exposeContentAsChildren } from '../PageBuilder/Field/Field.helpers';
 In this case, we would define our custom heading component in the
 Heading.js file:
 
-```js
+```js filename="Heading.js"
 export const CustomH1 = React.forwardRef((props, ref) => {
   const { rootClassName: rootClass, as, ...otherProps } = props;
   return (
@@ -235,15 +234,15 @@ export const CustomH1 = React.forwardRef((props, ref) => {
 CustomH1.displayName = 'CustomH1';
 ```
 
-And export it in the **PageBuilder/Primitives/Heading/index.js** file:
+And export it in the PageBuilder/Primitives/Heading/index.js file:
 
-```js
+```js filename="PageBuilder/Primitives/Heading/index.js"
 export { CustomH1, H1, H2, H3, H4, H5, H6 } from './Heading';
 ```
 
-Finally, we’d pass it on to the _options_ prop in **LandingPage.js**:
+Finally, we’d pass it on to the _options_ prop in LandingPage.js:
 
-```js
+```js filename="LandingPage.js"
 options={{fieldComponents: fieldOverrides}}
 ```
 

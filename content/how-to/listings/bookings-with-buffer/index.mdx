@@ -28,18 +28,10 @@ booking's display time attribute.
 First, we will add a helper function in `src/util/dates.js` file to add
 the correct buffer time.
 
-<FileTree>
-  <FileTree.Folder name="src" defaultOpen>
-    <FileTree.Folder name="util" defaultOpen>
-      <FileTree.File name="dates.js" />
-    </FileTree.Folder>
-  </FileTree.Folder>
-</FileTree>
-
-```diff
-+ const bufferMinutes = 15;
-
-+ export const addBuffer = (date) => moment(date).add(bufferMinutes, 'minutes').toDate();
+```jsx filename="src/util/dates.js"
+const bufferMinutes = 15;
+export const addBuffer = (date) =>
+  moment(date).add(bufferMinutes, 'minutes').toDate();
 ```
 
 ### Add display end time handling
@@ -51,23 +43,13 @@ This way, the booking extends over both the customer's booking time and
 the buffer, so that other customers can not book over the buffer. We use
 the newly created `addBuffer` function to extend the display end time.
 
-<FileTree>
-  <FileTree.Folder name="src" defaultOpen>
-    <FileTree.Folder name="containers" defaultOpen>
-      <FileTree.Folder name="CheckoutPage" defaultOpen>
-        <FileTree.File name="CheckoutPage.duck.js" />
-      </FileTree.Folder>
-    </FileTree.Folder>
-  </FileTree.Folder>
-</FileTree>
-
-```diff
+```diff filename="src/containers/CheckoutPage/CheckoutPage.duck.js"
 + import { addBuffer } from '../../util/dates';
- ...
+ /* ... */
 
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
   dispatch(initiateOrderRequest());
- ...
+  /* ... */
   const quantityMaybe = quantity ? { stockReservationQuantity: quantity } : {};
 
 - const bookingParamsMaybe = bookingDates || {};
@@ -82,9 +64,9 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
 +   }
 + }
 
-  // Parameters only for client app's server
-  const orderData = deliveryMethod ? { deliveryMethod } : {};
-...
+// Parameters only for client app's server
+const orderData = deliveryMethod ? { deliveryMethod } : {};
+/* ... */
 ```
 
 We also need to modify line item calculation. By default, the
@@ -108,7 +90,7 @@ with and without display end time, e.g. when calling
 The `lineItems.js` file has a helper function for calculating hourly
 booking quantity, so we can modify it directly.
 
-```diff
+```diff filename="src/api-util/lineItems.js"
 const getHourQuantityAndLineItems = orderData => {
 - const { bookingStart, bookingEnd } = orderData || {};
 + const { bookingStart, bookingEnd, bookingDisplayEnd } = orderData || {};
@@ -138,7 +120,7 @@ availability for both the time slot and the buffer.
 
 First, add a constant for a full hour in addition to the buffer time.
 
-```diff
+```diff filename="src/util/dates.js"
   const bufferMinutes = 15;
 + const hourMinutes = 60;
 ```
@@ -155,7 +137,7 @@ single start time to fit a one hour booking slot, we remove as many
 start times as it takes to fit a buffered hour before the final end
 time.
 
-```diff
+```diff filename="src/util/dates.js"
 export const getStartHours = (startTime, endTime, timeZone, intl) => {
   const hours = getSharpHours(startTime, endTime, timeZone, intl);
 - return hours.length < 2 ? hours : hours.slice(0, -1);
@@ -213,7 +195,7 @@ src/util/dates.js
   `findNextBoundary`. The `findNextBoundary` function increments the
   current boundary by a predefined value.
 
-```js
+```js filename="src/util/dates.js"
 export const findNextBoundary = (timeZone, currentMomentOrDate) =>
   moment(currentMomentOrDate)
     .clone()
@@ -248,7 +230,7 @@ as the default `startOf('hour')` function.
 This rounding function rounds to sharp hours when the buffer minutes
 value is a factor of an hour, e.g. 15, 20 or 30 minutes.
 
-```js
+```jsx filename="src/util/dates.js"
 /**
  * Rounding function for moment.js. Rounds the Moment provided by the context
  * to the start of the specified time value in the specified units.
@@ -285,7 +267,7 @@ rounding to the buffer time (here: 15 minutes), we'll need to manually
 set the first time slot to correspond to the start of the available time
 slot.
 
-```jsx
+```jsx filename="src/util/dates.js"
 export const findNextCustomBoundary = (
   currentMomentOrDate,
   timeUnit,
@@ -319,7 +301,7 @@ The default `findNextBoundary` function is called from the
 `isFirst` parameters are passed correctly. The function gets
 `findNextBoundary` function as the `nextBoundaryFn` parameter.
 
-```diff
+```diff filename="src/util/dates.js"
 const findBookingUnitBoundaries = params => {
   const {
     cumulatedResults,
@@ -378,7 +360,7 @@ instead of adding an hour and rounding off an hour as in the default
 implementation, we are now manually setting the start time to the
 beginning of the available time slot.
 
-```diff
+```diff filename="src/util/dates.js"
 - export const getSharpHours = (startTime, endTime, timeZone, intl) => {
 + export const getSharpHours = (startTime, endTime, timeZone, intl, isStart = false) => {
     if (!moment.tz.zone(timeZone)) {
@@ -420,7 +402,7 @@ Since the first time slots are now set at the buffer minute interval, we
 divide the full booking time by `bufferMinutes` to get the correct
 `removeCount` value.
 
-```diff
+```diff filename="src/util/dates.js"
 export const getStartHours = (startTime, endTime, timeZone, intl) => {
 - const hours = getSharpHours(startTime, endTime, timeZone, intl);
 - const removeCount = Math.ceil((hourMinutes + bufferMinutes) / hourMinutes)
@@ -434,7 +416,7 @@ Finally, we can simplify the end hour handling. Since the first entry is
 determined in the `findNextBoundary` function, we do not need to remove
 it. Instead, we can just return the full list from `getSharpHours`.
 
-```diff
+```diff filename="src/util/dates.js"
   export const getEndHours = (intl, timeZone, startTime, endTime) => {
 -   const hours = getSharpHours(startTime, endTime, timeZone, intl);
 -   return hours.length < 2 ? [] : hours.slice(1);

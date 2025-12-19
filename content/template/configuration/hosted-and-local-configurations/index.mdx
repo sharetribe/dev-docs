@@ -174,7 +174,7 @@ to the _mergeListingConfig_ function:
 
 ```diff
 const mergeListingConfig = (hostedConfig, defaultConfigs) => {
-...
+  /* ... */
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
 - const listingTypes = shouldMerge
 -   ? union(hostedListingTypes, defaultListingTypes, 'listingType')
@@ -183,7 +183,7 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
   const listingFields = shouldMerge
     ? union(hostedListingFields, defaultListingFields, 'key')
     : hostedListingFields;
-...
+  /* ... */
 ```
 
 With this change, you are still retrieving listing fields and other

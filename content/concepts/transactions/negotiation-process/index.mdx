@@ -30,7 +30,7 @@ flow.
 The _default-negotiation_ process has one initial transition defined for
 a customer:
 
-```clj
+```clj filename="process.edn"
   {:name :transition/request-quote,
    :to :state/quote-requested,
    :actor :actor.role/customer,
@@ -52,7 +52,7 @@ flow.
 The _default-negotiation_ process has two initial transitions defined
 for a provider: _transition/make-offer_ and _transition/inquire_:
 
-```clj
+```clj filename="process.edn"
   {:name :transition/make-offer,
    :to :state/offer-pending,
    :actor :actor.role/provider,

@@ -13,7 +13,7 @@ import { Callout } from 'nextra/components';
 The Sharetribe Web Template is a marketplace web application built on
 top of the [Marketplace API](/introduction/#the-marketplace-api). While
 you can create a marketplace purely using just the API, it requires a
-significant amount of effort (both money and time) and we recommended
+significant amount of effort (both money and time) and we recommend
 using the template as a starting point for customizations.
 
 The Sharetribe Web Template is built with [React](https://reactjs.org/),
@@ -151,25 +151,50 @@ to create both processes in your environment through Sharetribe CLI.
 ## Mandatory Integrations
 
 The Sharetribe Web Template has 3 mandatory integrations that you need
-to configure before the app is fully functional. The app obviously needs
-to discuss with Sharetribe Marketplace API, but the client app also
-makes direct calls to [Stripe](https://stripe.com/en-fi). Sharetribe
-uses Stripe as a payment processor, and Sharetribe Web Template saves
-sensitive payment information directly to it.
+to configure before the app is fully functional:
 
-The third default integration is to a map provider.
-[Mapbox](https://www.mapbox.com) provides location search (geocoding)
-and maps for the web app.
+- Stripe
+- a map provider for location services
+- Sharetribe Marketplace API
 
 ![Mandatory integrations: Sharetribe Marketplace API, Stripe, Map provider](./web-template-customizations.png)
 
-The Sharetribe Web Template just needs 4 environment variables to make
-these integrations work.
+One of the integrations is configured in Console, and two are configured
+with environment variables. So the Sharetribe Web Template needs these
+three environment variables to make mandatory integrations work:
 
 - **[`REACT_APP_SHARETRIBE_SDK_CLIENT_ID`](#sharetribe-client-id-and-client-secret)**
 - **[`SHARETRIBE_SDK_CLIENT_SECRET`](#sharetribe-client-id-and-client-secret)**
-- **[`REACT_APP_STRIPE_PUBLISHABLE_KEY`](#stripe-keys)**
-- **[`REACT_APP_MAPBOX_ACCESS_TOKEN`](#mapbox-access-token)**
+- **[`REACT_APP_STRIPE_PUBLISHABLE_KEY`](/introduction/set-up-and-use-stripe/)**
+
+### Stripe
+
+The Sharetribe Web Template uses [Stripe](https://stripe.com/en-fi) as a
+payment processor, and Sharetribe Web Template saves sensitive payment
+information directly to Stripe.
+
+First, follow these instructions to get your Stripe keys. Add your
+Sandbox secret key to Console, and make a note of your Sandbox
+publishable key. We will set that publishable key as the value of
+**REACT_APP_STRIPE_PUBLISHABLE_KEY** later in this guide.
+
+- [Set up Stripe for a custom developed marketplace](/introduction/set-up-and-use-stripe/)
+
+### A map provider
+
+You can use either [Mapbox](https://www.mapbox.com) or
+[Google Maps](https://developers.google.com/maps/) to provide location
+search (geocoding) and maps for the web app. You can configure your map
+provider in Console by following these instructions:
+
+- [How to set up Mapbox or Google Maps for location services](https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services)
+
+You can make map access tokens in your web applications more secure by
+adding URL restrictions. When you add a URL restriction to a token, that
+token will only work for requests that originate from the URLs you
+specify. See the Mapbox documentation for domain restrictions:
+
+- [Token management – URL restrictions](https://docs.mapbox.com/accounts/guides/tokens/#url-restrictions).
 
 ### Sharetribe client ID and client secret
 
@@ -187,132 +212,6 @@ secret** is needed to make this secure call from the template's own
 server to Sharetribe API.
 
 ![Sharetribe Console: Applications tab](./console-build-application.png)
-
-### Stripe keys
-
-Both Sharetribe API and your client app need to be able to discuss with
-Stripe API. Stripe has two different keys:
-
-- _Secret key_ for server-side requests
-- _Publishable key_ for calls from web browser
-
-Sharetribe API uses the Stripe secret key to make payment-related
-requests when a transaction moves forward. The client app needs to use
-the Stripe publishable key to run the `stripe.js` script. The script has
-two main functions: it has fraud detection built in, and it is also used
-to save sensitive information directly to Stripe. For instance, a
-customer's credit card number is saved directly to Stripe.
-
-#### 1. Create and confirm your free Stripe account
-
-Follow the steps outlined in
-[this article](https://www.sharetribe.com/help/en/articles/8413086-how-to-set-up-stripe-for-payments-on-your-marketplace?location=conversation#h_7a65415eaa)
-to get started with Stripe and set up your account.
-
-#### 2. Enable Stripe Connect in your platform
-
-Sharetribe uses the [Stripe Connect](https://stripe.com/docs/connect)
-features with
-[Custom accounts](https://stripe.com/docs/connect/accounts#custom-accounts).
-
-[Stripe Connect](https://stripe.com/docs/connect) is used to route
-payments between customers, providers (sellers), and the marketplace,
-which can take a commission from transactions.
-
-[Stripe Custom accounts](https://stripe.com/docs/connect/accounts#custom-accounts)
-are created to hold the provider's account information (e.g. payout
-details) on Stripe's side. A Custom Stripe account is almost completely
-invisible to the account holder, but marketplace operators see the
-accounts on their Stripe dashboard.
-
-**United States**<br /> If you're based in The United States, Stripe
-will need to review your platform account before you get access. See
-[this article](https://docs.google.com/document/d/1AdGRFAxQkc_g9UP-IUtwAwo5eOAvGGOw2md-LjybR60/edit#heading=h.iln8r84fkuja)
-to learn how to apply for Stripe Connect review.
-
-**Other countries**<br /> If you are in any other country, follow these
-instructions to enable Stripe Connect:
-
-1. Click the **Connect** top menu item, and then click the **Get
-   Started** button.
-
-   ![Stripe connect](./stripe-connect.png)
-
-1. Once a modal opens, select **Platform or marketplace** and click
-   **Continue**.
-
-   ![Activate Stripe Connect](./stripe-connect-activate.png)
-
-1. Now when you click the gear icon on the top bar to go to **Settings**
-   at https://dashboard.stripe.com/settings, you will see a new
-   **Connect** section. Click **Settings** in that section.
-
-   ![Connect settings](./stripe-connect-settings.png)
-
-1. Make sure that **Custom** is enabled in the **Account types** section
-
-   ![Custom enabled](./stripe-custom-enabled.png)
-
-Great! You now have to get your API keys and input them into your
-marketplace.
-
-#### 3. Get your API keys from Stripe and add them to your Sharetribe marketplace
-
-- Click the _Developers_ top menu item and go to _Developers_ → _API
-  Keys_.
-- In the section _"Standard keys"_ you will see two keys:
-  - Publishable key
-  - Secret key
-
-The publishable key (with prefix **pk**) is one used in frontend
-application (e.g. Sharetribe Web Template) and secret key (with prefix
-**sk**) is the one you need to add to Console. If you want to use test
-data make sure the value of the key is eg. **pk_test**\<somethinghere\>
-and not **pk_live**\<somethinghere\>
-
-<Callout>
-
-If you want to use test data in development, make sure that the
-_"Viewing test data"_ toggle is on. This way no real money will be used.
-In production, make sure that the toggle is off.
-
-</Callout>
-
-![Get API keys from Stripe](./stripe-api-keys.png)
-
-#### 4. Add your Stripe secret API key to Console
-
-- Log in to Console and go to _Build_ → _Payments_
-- In the section _Stripe configuration_ paste your secret key to "Stripe
-  secret key" field and save the changes.
-
-![Add Stripe secret key to Console](./add-stripe-to-console.png)
-
-<Callout>
-
-The secret key and publishable key need to match with each other. You
-can't use a publishable key from a different Stripe account than the
-secret key - or mix test keys and live keys.
-
-</Callout>
-
-### Mapbox Access Token
-
-[Sign up to Mapbox](https://account.mapbox.com/auth/signup/) and go to
-the [account page](https://account.mapbox.com/). Then copy the _"Default
-public token"_.
-
-![Mapbox Account Page: copy access token](./mapbox-access-token.png)
-
-If you wish to create a new one, click _"+ Create a token"_ button, give
-it a name and make sure all Public scopes are selected. Create the token
-and copy its value.
-
-You can make access tokens in your web applications more secure by
-adding URL restrictions. When you add a URL restriction to a token, that
-token will only work for requests that originate from the URLs you
-specify. See the Mapbox documentation for
-[domain restrictions](https://docs.mapbox.com/help/account/tokens/#domain-restrictions).
 
 ## Add Environment Variables
 

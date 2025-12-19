@@ -12,8 +12,9 @@ import { FileTree } from 'nextra/components';
 # Extend user data in Sharetribe Web Template
 
 This guide shows you how to expand the user data model in your
-marketplace. We'll have a look on how the user can be configured so that
-the data gets added, and how it can then be presented.
+marketplace with code. We'll have a look on how the user can be
+configured so that the data gets added, and how it can then be
+presented.
 
 Adding new attributes to the data model relies on
 [extended data](/references/extended-data/). In Sharetribe Web Template,
@@ -22,6 +23,15 @@ starting from release
 top-level user extended data can be configured in the
 [configUser.js](https://github.com/sharetribe/web-template/blob/main/src/config/configUser.js)
 file.
+
+As of November 2025, public and private user fields can be configured in
+Console. Protected data user fields still need to be configured in
+configUser.js.
+
+In addition, Console allows configuring up to 100 user fields. If you
+have more than 100 user fields configured in Console, for example if you
+have a complex user type and user field setup on your marketplace, you
+will need to configure the rest of your user fields in configUser.js.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
@@ -43,54 +53,56 @@ to modify the way your template merges local and hosted configurations.
 Configuring the user data this way allows you to
 
 - declare the attribute and its possible values
-- show the attribute selection inputs in the signup page and profile
-  settings page, and
+- show the attribute selection inputs in the signup page, and
 - optionally show public attribute values on the user's profile page
 
-## Add a new top-level attribute
+## Add a new top-level protected data attribute
 
-Let's extend the default user data by adding an attribute
-'additionalServices' to show what additional services are included. The
-full configuration looks like this:
+Let's extend the default user data by adding a protected data attribute
+'arrivalInstructions' to allow providers to share how customers can get
+to their service facility. Adding the attribute as protected data allows
+us to expose the attribute to the other party of the transaction –
+[see these instructions](/tutorial/use-protected-data-in-emails/) for
+more details.
+
+The full configuration looks like this:
 
 ```js
 {
-  key: 'additionalServices',
-  scope: 'public',
-  schemaType: 'boolean',
-  saveConfig: {
-    label: 'Do you offer other services besides bike rentals?',
-    displayInSignUp: true,
-    isRequired: true,
-    placeholderMessage: 'Select...',
-  },
-  showConfig: {
-    label: 'Do you offer other services besides bike rentals?',
-    displayInProfile: true,
-  },
+    key: 'arrivalInstructions',
+    scope: 'protected',
+    schemaType: 'text',
+    showConfig: {
+      label: 'How do people arrive at your facility?',
+    },
+    saveConfig: {
+      label: 'How do people arrive at your facility?',
+      displayInSignUp: true,
+      isRequired: true,
+    },
   // If you have defined user types, you can limit
   // individual user fields to specific user types:
-  // userTypeConfig: {
-  //   limitToUserTypeIds: true,
-  //   userTypeIds: ['a', 'b', 'c'],
-  // },
+  userTypeConfig: {
+    limitToUserTypeIds: true,
+    userTypeIds: ['provider'],
+  },
 },
 ```
 
-### Declaring the attribute and its possible values
+### Declare the attribute and its possible values
 
 Extended data attributes in the `configUser.js` file need to be defined,
 at minimum, by **key**, by **scope**, and by **schemaType**.
 
 ```js
-  key: 'additionalServices',
-  scope: 'public',
-  schemaType: 'boolean',
+    key: 'arrivalInstructions',
+    scope: 'protected',
+    schemaType: 'text',
 ```
 
-This attribute is defined as **public**, so it will be saved into the
-user's profile as `publicData.additionalServices`. The **schemaType**
-attribute determines the shape of the data being saved:
+This attribute is defined as **protected**, so it will be saved into the
+user's profile as `protectedData.arrivalInstructions`. The
+**schemaType** attribute determines the shape of the data being saved:
 
 - **enum** attributes are saved as a single string value from a list of
   predefined options
@@ -106,7 +118,7 @@ define an array of `enumOptions` for the attribute. This allows the user
 profile page and signup page to show the options when your user creates
 or edits their profile.
 
-### Configuring the profile settings page and signup page
+### Configure the signup page
 
 The `ProfileSettingsPage` and `AuthenticationPage` are configured to
 show specific inputs for specific schema types. This means that you only
@@ -131,33 +143,37 @@ you want to hide a field from the signup page, you will need to set
 </Callout>
 
 You can separately determine the label for editing the attribute and
-displaying the attribute. You can also set the attribute as required.
+displaying the attribute, if it is displayed publicly. You can also set
+the attribute as required.
 
 ```js
-  saveConfig: {
-    label: 'Do you offer other services besides bike rentals?',
-    displayInSignUp: true,
-    isRequired: true,
-    placeholderMessage: 'Select...',
-  },
+    saveConfig: {
+      label: 'How do people arrive at your facility?',
+      displayInSignUp: true,
+      isRequired: true,
+    },
 ```
 
-### Configuring the profile page
+### Configure the profile page for public fields
 
-The configuration for showing top-level extended data on the profile
-page is straightforward. By default, all public user config attributes
-with a `showConfig.label` are shown on the user's public profile page,
-but by setting `displayInProfile` to `false` on an attribute with schema
-type `enum`, `long`, or `boolean`, you can hide the attribute from the
-Details section on the profile page.
+Protected and private user fields are managed on the ManageAccountPage,
+and they are not displayed on other pages. For these scopes, in other
+words, there is no display configuration.
+
+For public user fields, the configuration for showing top-level extended
+data on the profile page is straightforward. By default, all public user
+config attributes with a `showConfig.label` are shown on the user's
+public profile page, but by setting `displayInProfile` to `false` on an
+attribute with schema type `enum`, `long`, or `boolean`, you can hide
+the attribute from the Details section on the profile page.
 
 ```js
-showConfig: {
-  label: 'Do you offer other services besides bike rentals?',
-  displayInProfile: true,
+// showConfig: {
+//   label: 'Do you offer other services besides bike rentals?',
+//   displayInProfile: true,
 },
 ```
 
-And that is it! With this configuration, the attribute can be added to
-the user's profile on authentication page or profile settings page, and
-shown on the user's profile page.
+And that is it! With this configuration, a custom user attribute can be
+added to the user's extended data on authentication page, and public
+fields can be shown on the user's profile page.

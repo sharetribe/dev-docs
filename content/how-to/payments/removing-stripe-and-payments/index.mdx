@@ -7,7 +7,7 @@ description:
   a starting point for these customizations.
 ---
 
-import { Callout } from 'nextra/components';
+import { Callout, FileTree } from 'nextra/components';
 import { Steps } from 'nextra/components';
 
 # How to remove Stripe and payments
@@ -19,12 +19,13 @@ project.
 ## Removing Stripe
 
 The Sharetribe Web Template works with specific transaction processes
-and payments are a core feature of the booking and purchase processes:
-the ubiquitous nature means that you need to touch several components
-and files. Most likely you need to customize some parts (e.g.
-transaction process, email templates, checkout page) more depending on
-your marketplace idea. For example, you might also want to remove unused
-Stripe components from your project to clean up the code.
+and payments are a core feature of the booking, purchase, and
+negotiation processes: the ubiquitous nature means that you need to
+touch several components and files. When you remove Stripe payments, you
+may need to customize some parts (e.g. transaction process, email
+templates, checkout page) more depending on your marketplace idea. For
+example, you might also want to remove unused Stripe components from
+your project to clean up the code.
 
 <Callout type="info">
 
@@ -35,6 +36,18 @@ bookings, stock reservations, or negotiation without Stripe, you will
 need to follow the steps in this guide.
 
 </Callout>
+
+To follow these instructions, the transaction process you are modifying
+needs to **already exist in your marketplace**.
+
+If you want to add a new transaction process without Stripe actions (for
+example `default-booking-no-stripe/release-1`) instead of making a new
+version of your existing one (for example `default-booking/release-1`),
+you first need to add an unmodified version of it to your marketplace by
+following these instructions:
+
+- [Create a new transaction process with the Sharetribe CLI](/how-to/transaction-process/create-new-transaction-process-with-cli/)
+- [Change transaction process in Sharetribe Web Template](/how-to/transaction-process/change-transaction-process-in-template/)
 
 <Steps>
 
@@ -61,11 +74,18 @@ is to remove `pending-payment` and `expire-payment` states and point
 - `purchased` in `default-purchase`
 - `offer-accepted` in `default-negotiation`
 
-However, when you are building the transaction process to your
-marketplace it might make sense to rename some of the states and
-transitions so that they make more sense in your use-case. For instance,
-_preauthorized_ state refers to the state of payment - it is
-preauthorized to be captured.
+When you are building the transaction process for your marketplace, it
+may make sense to rename some of the states and transitions so that they
+make more sense in your use-case. For instance, _preauthorized_ state
+refers to the state of payment - it is preauthorized to be captured.
+Without payments in the process, it can be a good idea to change the
+state name to something else.
+
+This guide proceeds with the assumption that you have not changed state
+and transition names in your process. If you do change your transition
+and state names, you will need to double check all example code and
+files to make sure you have updated the transition and state names
+referenced in those files.
 
 ### Edit the transaction process file to reflect the changes in your transaction process
 
@@ -79,11 +99,11 @@ _src/transactions/transactionProcessPurchase.js_ or
 _src/transactions/transactionProcessNegotiation.js_ for the correct
 states in each process. The transaction process file should be updated
 to match the new transaction process.
-[Read more about editing transaction related files](/how-to/change-transaction-process-in-template/#2-update-the-relevant-files-in-srctransactions-folder).
+[Read more about editing transaction related files](/how-to/transaction-process/change-transaction-process-in-template/#update-the-relevant-files-in-srctransactions-folder).
 
 Example:
 
-```diff
+```diff filename="transactionProcessBooking.js"
      [STATE_INITIAL]: {
        on: {
          [TRANSITION_INQUIRE]: STATE_INQUIRY,
@@ -112,29 +132,131 @@ Example:
 
 ```
 
-### Remove Stripe checks from EditListingWizard and MakeOfferForm
+### Remove Stripe checks from EditListingWizard handlePublishListing function
 
 In
 [`EditListingWizard.js`](https://github.com/sharetribe/web-template/blob/main/src/containers/EditListingPage/EditListingWizard/EditListingWizard.js)
-we are checking if a provider has a Stripe account with all the required
-information before we allow them to publish listings. This check is done
-in the `handlePublishListing` function and needs to be removed.
+we check if a provider has a Stripe account with all the required
+information before we allow them to publish listings.
 
-```js
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="EditListingPage" defaultOpen>
+        <FileTree.Folder name="EditListingWizard" defaultOpen>
+          <FileTree.File name="EditListingWizard.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+This check is done in the `handlePublishListing` function. If you are
+removing all Stripe functionality from your marketplace, you can
+simplify the whole function like this, and remove the unused code.
+
+```js filename="EditListingWizard.js"
   handlePublishListing(id) {
     this.props.onPublishListingDraft(id);
   }
+```
+
+If you are adding an option to not use Stripe, for example a listing
+type where you handle payments outside the Sharetribe transaction
+process, you can instead add a new variable such as `isNoStripeProcess`
+and use it to bypass the Stripe requirement while keeping it for other
+listing types.
+
+```diff filename="EditListingWizard.js"
+handlePublishListing(id) {
+    const { onPublishListingDraft, currentUser, stripeAccount, listing, config } = this.props;
+    const processName = listing?.attributes?.publicData?.transactionProcessAlias.split('/')[0];
+    const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
++   const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+
+    /* ... */
+
+    if (
+      isInquiryProcess ||
++     isNoStripeProcess ||
+      !isPayoutDetailsRequired ||
+      (stripeConnected && !stripeRequirementsMissing)
+    ) {
+      onPublishListingDraft(id);
+    } else {
+      this.setState({
+        draftId: id,
+        showPayoutDetails: true,
+      });
+    }
+  }
+
 ```
 
 After changing the `handlePublishListing` you can remove unused code.
 You also might want to clean up `EditListingPage` and remove the Stripe
 related props we pass to `EditListingWizard`.
 
-In addition, the
-[MakeOfferForm.js](https://github.com/sharetribe/web-template/blob/main/src/containers/MakeOfferPage/MakeOfferForm/MakeOfferForm.js)
-component has a limitation that providers cannot submit their offer if
-they don't have a Stripe account. You will need to remove the references
-to `stripeConnected` in the form to remove this restriction.
+### Remove Stripe checks from ListingPageCarousel and ListingPageCoverPhoto
+
+The listing page components show a warning to listing authors if they
+need to add their Stripe payout details to start accepting orders. With
+a non-Stripe listing type, this logic needs to be modified in both
+files.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="ListingPageCarousel.js" />
+        <FileTree.File name="ListingPageCoverPhoto.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+```diff filename="ListingPageCarousel.js"
++ const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+  const currentAuthor = authorAvailable ? currentListing.author : null;
+  const ensuredAuthor = ensureUser(currentAuthor);
+  const authorNeedsPayoutDetails =
+-   ['booking', 'purchase'].includes(processType) || (isNegotiation && unitType === OFFER);
++   (!isNoStripeProcess && ['booking', 'purchase'].includes(processType)) ||
++   (isNegotiation && unitType === OFFER);
+  const noPayoutDetailsSetWithOwnListing =
+    isOwnListing && (authorNeedsPayoutDetails && !currentUser?.attributes?.stripeConnected);
+  const payoutDetailsWarning = noPayoutDetailsSetWithOwnListing ? (
+    <span className={css.payoutDetailsWarning}>
+      <FormattedMessage id="ListingPage.payoutDetailsWarning" values={{ processType }} />
+      <NamedLink name="StripePayoutPage">
+        <FormattedMessage id="ListingPage.payoutDetailsWarningLink" />
+      </NamedLink>
+    </span>
+  ) : null;
+```
+
+### Remove Stripe checks from MakeOfferForm
+
+If you are fully removing Stripe, or if you are removing Stripe payments
+from a process that is based on `default-negotiation`, you also need to
+modify the
+[MakeOfferForm.js](https://github.com/sharetribe/web-template/blob/main/src/containers/MakeOfferPage/MakeOfferForm/MakeOfferForm.js).
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="MakeOfferPage" defaultOpen>
+        <FileTree.Folder name="MakeOfferForm" defaultOpen>
+          <FileTree.File name="MakeOfferForm.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+This component has a limitation that providers cannot submit their offer
+if they don't have a Stripe account. You will need to remove the
+references to `stripeConnected` in the form to remove this restriction.
 
 ### Edit CheckoutPage
 
@@ -157,27 +279,95 @@ modifications.
 
 - [CheckoutPageWithoutPayment.js](/resources/cookbook-assets/CheckoutPageWithoutPayment.js)
 
+The `CheckoutPageWithoutPayment.js` component uses the default
+transition variables REQUEST_PAYMENT and REQUEST_PAYMENT_AFTER_INQUIRY
+in the `fetchSpeculatedTransactionIfNeeded` function, so if you have
+edited your transition names, double check that this function calls the
+right transitions.
+
 The _CheckoutPageWithoutPayment_ component also imports a
-_SimpleOrderForm_ component. Let's add the component to the
+_SimpleOrderForm_ component. Let's add the component to the existing
 StripePaymentForm folder.
 
-```shell
-  └── src
-      └── containers
-          └── CheckoutPage
-              └── StripePaymentForm
-                  └── SimpleOrderForm.js
-```
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="CheckoutPage" defaultOpen>
+        <FileTree.Folder name="StripePaymentForm" defaultOpen>
+          <FileTree.File name="SimpleOrderForm.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
 - [SimpleOrderForm.js](/resources/cookbook-assets/SimpleOrderForm.js)
 
-To use _CheckoutPageWithoutPayment_, we need to make these changes to
-existing components:
+If you are removing Stripe entirely, you can replace the
+`CheckoutPageWithPayment` component with the
+`CheckoutPageWithoutPayment` one on CheckoutPage.js.
+
+If you are adding a separate transaction process that works without
+Stripe, you will need to add the `CheckoutPageWithoutPayment` to the
+CheckoutPage `return` statement to take it into use.
+
+```diff filename="CheckoutPage.js"
++ const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+
+  return processName && isInquiryProcess ? (
+    <CheckoutPageWithInquiryProcess
+      config={config}
+      routeConfiguration={routeConfiguration}
+      intl={intl}
+      history={history}
+      processName={processName}
+      pageData={pageData}
+      listingTitle={listingTitle}
+      title={title}
+      onInquiryWithoutPayment={onInquiryWithoutPayment}
+      onSubmitCallback={onSubmitCallback}
+      showListingImage={showListingImage}
+      {...props}
+    />
++ ) : processName && isNoStripeProcess && !speculateTransactionInProgress ? (
++   <CheckoutPageWithoutPayment
++     config={config}
++     routeConfiguration={routeConfiguration}
++     intl={intl}
++     history={history}
++     processName={processName}
++     sessionStorageKey={STORAGE_KEY}
++     pageData={pageData}
++     setPageData={setPageData}
++     listingTitle={listingTitle}
++     title={title}
++     onSubmitCallback={onSubmitCallback}
++     showListingImage={showListingImage}
++     {...props}
++   />
+  ) : processName && !isInquiryProcess && !speculateTransactionInProgress ? (
+    <CheckoutPageWithPayment
+      config={config}
+    /* ... */
+```
+
+To use _CheckoutPageWithoutPayment_, we also need to make these changes
+to existing components:
 
 - Export a _processCheckoutWithoutPayment_ function from
   _src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js_
 
-```jsx
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="CheckoutPage" defaultOpen>
+        <FileTree.File name="CheckoutPageTransactionHelpers.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+```jsx filename="CheckoutPageTransactionHelpers.js"
 export const processCheckoutWithoutPayment = (
   orderParams,
   extraParams
@@ -207,7 +397,11 @@ export const processCheckoutWithoutPayment = (
     const requestTransition =
       storedTx?.attributes?.lastTransition ===
       process.transitions.INQUIRE
-        ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
+        ? // =====================
+          // Double check that these transition names match the
+          // transition names in your transaction process!
+          // =====================
+          process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
         : process.transitions.REQUEST_PAYMENT;
     const isPrivileged = process.isPrivileged(requestTransition);
 
@@ -254,7 +448,17 @@ export const processCheckoutWithoutPayment = (
 - Import and use _loadInitialData_ instead of
   _loadInitialDataForStripePayments_ in _CheckoutPage.js_.
 
-```jsx
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="CheckoutPage" defaultOpen>
+        <FileTree.File name="CheckoutPage.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+```jsx filename="CheckoutPage.js"
 if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
   // Fetch speculateTransition for transactions that include bookings or purchases
   loadInitialData({
@@ -265,48 +469,80 @@ if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
 }
 ```
 
-### Hide/remove Stripe related pages
+### Hide or remove Stripe related pages
 
-If you are not using Stripe, you should remove or at least hide the
-pages that are meant for managing the information saved to Stripe. These
-pages are
+If you are not using Stripe at all, you should remove or at least hide
+the pages that are meant for managing the information saved to Stripe.
+These pages are
 [StripePayoutPage](https://github.com/sharetribe/web-template/tree/main/src/containers/StripePayoutPage)
 and
 [PaymentMethodsPage](https://github.com/sharetribe/web-template/tree/main/src/containers/PaymentMethodsPage).
 Both of these pages are accessible through the account settings so we
-want to remove them from both navigation component and route
+want to hide them from both navigation component and route
 configuration.
 
-Changes to `LayoutWrapperAccountSettingsSideNav`
+To hide the pages from account settings, modify the
+`LayoutWrapperAccountSettingsSideNav` component:
 
-```diff
-        name: 'PasswordChangePage',
-      },
-    },
--    {
--      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
--      selected: currentTab === 'StripePayoutPage',
--      id: 'StripePayoutPageTab',
--      linkProps: {
--        name: 'StripePayoutPage',
--      },
--    },
--    {
--      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />,
--      selected: currentTab === 'PaymentMethodsPage',
--      id: 'PaymentMethodsPageTab',
--      linkProps: {
--        name: 'PaymentMethodsPage',
--      },
--    },
-  ];
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="LayoutComposer" defaultOpen>
+        <FileTree.Folder name="LayoutSideNavigation" defaultOpen>
+          <FileTree.File name="LayoutWrapperAccountSettingsSideNav.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
-  return <LayoutWrapperSideNav tabs={tabs} />;
+```diff filename="LayoutWrapperAccountSettingsSideNav.js"
+- const { currentPage, showPaymentMethods, showPayoutDetails } = accountSettingsNavProps;
++ const { currentPage } = accountSettingsNavProps;
+
+- const payoutDetailsMaybe = showPayoutDetails
+-   ? [
+-       {
+-         text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
+-         selected: currentPage === 'StripePayoutPage',
+-         id: 'StripePayoutPageTab',
+-         linkProps: {
+-           name: 'StripePayoutPage',
+-         },
+-       },
+-     ]
+-   : [];
++ const payoutDetailsMaybe = [];
+
+- const paymentMethodsMaybe = showPaymentMethods
+-   ? [
+-       {
+-         text: (
+-           <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />
+-         ),
+-         selected: currentPage === 'PaymentMethodsPage',
+-         id: 'PaymentMethodsPageTab',
+-         linkProps: {
+-           name: 'PaymentMethodsPage',
+-         },
+-       },
+-     ]
+-   : [];
++  const paymentMethodsMaybe = [];
 ```
 
-Changes to `routeConfiguration.js`
+In `routeConfiguration.js`, remove references to `StripePayoutPage` and
+`PaymentMethodsPage`.
 
-```diff
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="routing" defaultOpen>
+      <FileTree.File name="routeConfiguration.js" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+```diff filename="routeConfiguration.js"
 -export const ACCOUNT_SETTINGS_PAGES = [
 -  'ContactDetailsPage',
 -  'PasswordChangePage',
@@ -314,6 +550,58 @@ Changes to `routeConfiguration.js`
 -  'PaymentMethodsPage',
 -];
 +export const ACCOUNT_SETTINGS_PAGES = ['ContactDetailsPage', 'PasswordChangePage'];
+
+return [
+  /* ... */
+-  {
+-     path: '/account/payments',
+-     name: 'StripePayoutPage',
+-     auth: true,
+-     authPage: 'LoginPage',
+-     component: StripePayoutPage,
+-     loadData: pageDataLoadingAPI.StripePayoutPage.loadData,
+-   },
+-   {
+-     path: '/account/payments/:returnURLType',
+-     name: 'StripePayoutOnboardingPage',
+-     auth: true,
+-     authPage: 'LoginPage',
+-     component: StripePayoutPage,
+-     loadData: pageDataLoadingAPI.StripePayoutPage.loadData,
+-   },
+-   {
+-     path: '/account/payment-methods',
+-     name: 'PaymentMethodsPage',
+-     auth: true,
+-     authPage: 'LoginPage',
+-     component: PaymentMethodsPage,
+-     loadData: pageDataLoadingAPI.PaymentMethodsPage.loadData,
+-   },
+
+```
+
+Finally, you need to remove StripePayoutPage from the
+ModalMissingInformation.js component whitelist.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="ModalMissingInformation" defaultOpen>
+        <FileTree.File name="ModalMissingInformation.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+```diff filename="ModalMissingInformation.js"
+const MISSING_INFORMATION_MODAL_WHITELIST = [
+  'LoginPage',
+  'SignupPage',
+  'ContactDetailsPage',
+  'EmailVerificationPage',
+  'PasswordResetPage',
+- 'StripePayoutPage',
+];
 ```
 
 ### Extra: Removing unused exports

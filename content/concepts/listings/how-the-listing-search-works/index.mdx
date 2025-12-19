@@ -14,63 +14,27 @@ import { Callout } from 'nextra/components';
 In Sharetribe, listings are searched by using the
 [/listings/query](https://www.sharetribe.com/api-reference/marketplace.html#query-listings)
 endpoint. Sharetribe has a powerful listing search engine, which can
-find listings based on multiple criteria:
+find listings based on multiple criteria. This article provides an
+overview of those criteria.
 
-- **Geolocation.** The search can be used to display only listings that
-  are within a provided radius from certain coordinates. Read more about
-  [location search below](#location-search).
-- **Free text.** The search can be used to find listings that have a
-  [certain keyword](#keyword-search) provided by the user. The search
-  can find from listing title and description. You can also choose to
-  index some public data fields so the search finds from them as well.
-- **Price.** It's possible to filter out listings with too high or too
-  low price.
-  - e.g. show only listings between $20 and $100:
-    `sdk.listings.query({ price: "2000,10000" })`
-- **Availability.** It's possible to filter out listings that have
-  insufficient availability during a given time range. Works together
-  with seats so that you can filter for availability with minimum number
-  of seats. It is also possible to filter by required minimum duration
-  of availability for the given time range.
-  - e.g. show only listings available for October 22-29, 2022:
-    `sdk.listings.query({ availability: "full", start: "Sat Oct 22 2022 01:00:00 GMT+0100", end: "Sat Oct 29 2022 01:00:00 GMT+0100" })`
-- **Stock.** It's possible to show all listings or only listings with
-  positive stock.
-  - e.g. show only listings with at least one item in stock:
-    `sdk.listings.query({ minStock: 1 })`
-- **Custom filter: any value.** Any number of custom filters can be
-  added. "Any value" filters out listings that don't have the given
-  value (or any of a set of given values) in their public data.
-  - e.g. show only listings from public data with condition 'used':
-    `sdk.listings.query({ pub_condition: "used" })`
-- **Custom filter: all values**. Filters out listings that don't have
-  all values in a given set. A typical use case is choosing among
-  "amenities": an apartment must have both balcony and floor heating in
-  their public data to be displayed in the search.
-  - e.g. show only listings that have both balcony and floor heating:
-    `sdk.listings.query({ pub_amenities: "has_all:balcony,floorHeating" })`
-- **Custom numeric filter.** Filters out listings that don't have a
-  certain numeric value in their public data. For example, you might
-  want to build a slider filter for the skill level of the user, ranging
-  from 0 to 10.
-  - e.g. show only listings for user skill levels 4-7:
-    `sdk.listings.query({ pub_userSkillLevel: "4,7" })`
-- **Sorting.** Listing sorting order can be customized per query.
-  Sorting is supported by one or more of: listing price, listing
-  creation time, or any numeric attribute in the listing's public data
-  or metadata.
-  - e.g. sort listings for user skill level:
-    `sdk.listings.query({ ...params, sort: "pub_userSkillLevel" })`
+See the API reference documentation for a full list of available search
+parameters for the following endpoints:
 
-This article approaches the search from two different perspectives:
-keywords and location. See the API
-[reference documentation](https://www.sharetribe.com/api-reference/marketplace.html#query-listings)
-for a full list of search parameters. Do note that for all search
-parameters, you will need to create a
+- [Marketplace API listings/query](https://www.sharetribe.com/api-reference/marketplace.html#query-listings)
+- [Marketplace API own_listings/query](https://www.sharetribe.com/api-reference/marketplace.html#query-own-listings)
+- [Integration API listings/query](https://www.sharetribe.com/api-reference/integration.html#query-listings)
+
+Do note that for all search parameters created in custom code (i.e.
+outside Console configurations), you will need to create a
 [search schema](/how-to/search/manage-search-schemas-with-sharetribe-cli/)
 so that the data is indexed correctly for search.
 
 ## Keyword search
+
+The search can be used to find listings that have a certain keyword
+provided by the user. The search can find from listing title and
+description. You can also choose to index some public data fields so the
+search finds from them as well.
 
 The keyword search works so that it matches the `keywords` parameter to
 text content of a listing. The listing attributes that are matched in
@@ -104,11 +68,16 @@ and _attractions_ and those are then matched against the listing
 content. A listing will be included in the results, in case any of the
 keywords match.
 
-In order to take the keyword search into use in the Sharetribe Web
-Template, you need to
-[change the configuration files](/template/configuration/variables/).
+If you are using Console configurations, you can configure your
+marketplace to use keyword search in Console. Read more in our Help
+Center:
+
+- [Listing search options](https://www.sharetribe.com/help/en/articles/8413316-listing-search-options)
 
 ## Location search
+
+The search can be used to display only listings that are within a
+provided radius from certain coordinates.
 
 The listings search provides two parameters to modify the search by
 location: `origin` and `bounds`. `origin` parameter takes a single
@@ -121,6 +90,187 @@ can be used. It takes north-east and south-west corners of a bounding
 box that limits the returned results to that area. It does not affect
 the sorting of results. The bounds can then conveniently be used to
 match search results to a map view.
+
+The Sharetribe Web Template uses `bounds` search by default. You can
+also take the `origin` parameter to use in
+[src/config/configMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js#L39-L45)
+if you are not using keyword search.
+
+## Custom filter search with extended data
+
+In Sharetribe, only top-level extended data attributes can be indexed
+i.e. used for search. If you have a public data attribute where the
+value is a JSON object with nested attributes, it is not possible to
+create a search schema for the attribute.
+
+So instead of using a nested attribute:
+
+```jsx
+publicData: {
+  instrumentProficiency: {
+    // These attributes cannot be indexed for search in Sharetribe
+    violin: 'professional',
+    guitar: 'intermediate',
+    tuba: 'beginner',
+  },
+}
+```
+
+you would need to set all attributes you want to query as top-level
+attributes:
+
+```js
+publicData: {
+  // These attributes can be indexed for search in Sharetribe
+  violinProficiency: 'professional',
+  guitarProficiency: 'intermediate',
+  tubaProficiency: 'beginner',
+}
+```
+
+This allows you to search for each attribute.
+
+```jsx
+sdk.listings.query({
+  pub_violinProficiency: 'professional',
+  pub_guitarProficiency: ['beginner', 'intermediate'],
+});
+```
+
+You would then index the attributes by adding a search schema according
+to the data type of the extended data attribute:
+
+- String values can be indexed for keyword search with **schemaType:
+  text**, or for **enum** search, i.e. searching with the attribute name
+  and exact values, using **schemaType: enum**
+- Arrays of strings can be indexed for multi-enum search, i.e. searching
+  with the attribute name and exact values, using **schemaType:
+  multi-enum**
+- Integers can be indexed for numeric search with start and end ranges
+  using **schemaType: long**
+- Booleans can be indexed for boolean search using **schemaType:
+  boolean**
+
+Schema type **multi-enum** supports two types of query semantics:
+**has_all** i.e. AND semantics, and **has_any** i.e. OR semantics. The
+Sharetribe Web Template uses the default **has_all** querying when a
+multi-enum attribute is configured in Console. To configure a
+**has_any** attribute, you can follow the instructions in this article:
+
+- [Extend listing data in Sharetribe Web Template](/how-to/listings/extend-listing-data-in-template/)
+
+## Price search
+
+Prices can be searched with a single value, or with **start** and
+**end** parameters:
+
+- **listings/query?price=2000** returns listings with the exact price of
+  2000 minor units of the listing's currency (e.g. USD 20)
+- **listings/query?price=2000,10000** returns listings with a price
+  between 2000 and 10000 minor units of the listing's currency (e.g. USD
+  20 - USD 100)
+- **listings/query?price=2000,** returns listings with a price at or
+  above 2000 minor units of the listing's currency (e.g. USD 20)
+- **listings/query?price=,10000** returns listings with a price below
+  10000 minor units of the listing's currency (e.g. USD 100)
+
+The price filter does not consider the listing's currency. This means
+that if you develop a multi-currency marketplace, listings costing e.g.
+USD 20 and HKD 20 will be returned with the same query.
+
+## Availability search
+
+Listings can be queried by their availability for booking. Listings can
+have either day-based or time-based availability, so availability
+filtering also has day-based and time-based options.
+
+- Day-based availability filtering matches listings with day-based
+  availability plans. The corresponding query parameters are
+  **day-full** and **day-partial**.
+- Time-based availability filtering matches listings with time-based
+  availability plans. The corresponding query parametrers are
+  **time-full** and **time-partial**. Queries using time-based
+  availability filtering do not support pagination.
+
+All bookable listings created with the Sharetribe Web Template use
+time-based availability plans by default. They therefore require
+time-based availability filtering, regardless of the unit type specified
+in the listing type.
+
+Full availability queries, i.e. **day-full** and **time-full**, match
+listings that have the specified availability for the full duration of
+the queried time.
+
+In the example below, a listing would be returned if it has at least
+three seats available for the full duration between the start and end
+time points.
+
+```jsx
+sdk.listings.query({
+  start: '2026-02-17T08:00:00.000Z',
+  end: '2026-04-17T15:00:00.000Z',
+  availability: 'time-full',
+  seats: 3,
+});
+```
+
+Partial availability queries, i.e. **day-partial** and **time-partial**,
+match listings that have the specified seats available for the specified
+minimum duration (days in **day-partial**, minutes in **time-partial**)
+at any point during the queried time. Partial queries using
+**minDuration** do not support pagination.
+
+In the example below, a listing would be returned if it has at least
+three seats available for at least one hour at some point between the
+start and end time points.
+
+```jsx
+sdk.listings.query({
+  start: '2026-02-17T10:00:00.000Z',
+  end: '2026-04-17T10:00:00.000Z',
+  availability: 'time-partial',
+  seats: 3,
+  minDuration: '60',
+});
+```
+
+In availability queries, the **start** and **end** moments must be at
+most 90 days apart. So to query intervals of more than 90 days at a
+time, you will need to combine results from multiple API calls.
+
+| Availability filtering type                | **day-full** | **day-partial** | **time-full** | **time-partial** |
+| ------------------------------------------ | ------------ | --------------- | ------------- | ---------------- |
+| Match listings with availability plan type | day          | day             | time          | time             |
+| Availability match type                    | full         | partial         | full          | partial          |
+| Unit of **minDuration** parameter          | –            | days            | -             | minutes          |
+| Used in the Sharetribe Web Template        | no           | no              | yes           | yes              |
+| Supports result pagination                 | yes          | no              | no            | no               |
+
+Read more in the API reference:
+
+- [Marketplace API listings/query availability filtering](https://www.sharetribe.com/api-reference/marketplace.html#availability-filtering)
+
+## Stock search
+
+You can filter your query to only return listings with positive stock
+using the **minStock** parameter.
+
+```jsx
+sdk.listings.query({ minStock: 1 });
+```
+
+This query will only return listings where stock is defined and the
+value matches or exceeds **minStock**. This is because the API uses
+**stockMode: strict** by default.
+
+On a marketplace with multiple listing types, you may also want to show
+listings that do not have defined stock, such as booking or free
+messaging listings. In that case, you can explicitly set the
+**stockMode** parameter to **match-undefined** alongside **minStock**:
+
+```jsx
+sdk.listings.query({ minStock: 1, stockMode: 'match-undefined' });
+```
 
 ## How about user search?
 
@@ -137,11 +287,16 @@ from the user's service provider entity. You can then use the default
 listing search to query the service provider profiles with all the query
 options described above.
 
+This article in our Help Center has more detailed instructions on the
+option of using listings as user profiles:
+
+- [How to configure listings to look like user profiles](https://www.sharetribe.com/help/en/articles/12953405-how-to-configure-listings-to-look-like-user-profiles)
+
 ### Custom user search endpoint in the template server
 
 The Sharetribe Integration API does have an endpoint for querying users.
 However,
-[using the Integration API safely requires a trusted context](/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-integration-api),
+[using the Integration API safely requires a secure environment](/concepts/api-sdk/marketplace-api-integration-api/#when-to-use-the-integration-api),
 such as the template application server.
 
 <Callout type="error">
@@ -163,7 +318,24 @@ public information** – public data and metadata – back to the browser.
 Otherwise, you risk revealing sensitive user information to everyone who
 visits your marketplace site.
 
-That said, the Integration API query has fewer filtering and sorting
-options than the Marketplace API listing query, so for any level of
-complexity in your user search we recommended using the "users as
-listings" approach.
+You can see all of the available search parameters for the endpoint in
+our API reference:
+
+- [Integration API users/query](https://www.sharetribe.com/api-reference/integration.html#query-users)
+
+## Sorting your search results
+
+Listing sorting order can be customized per query.
+
+When a query uses **keyword** and **origin** parameters, the results are
+sorted based on those attributes as described above.
+
+When using the **sort** parameter, sorting is supported by one or more
+of the following attributes:
+
+- listing price,
+- listing creation time,
+- or any **numeric** attribute in the listing's public data or metadata.
+
+The **sort** parameter supports up to three parameters in a single
+query.

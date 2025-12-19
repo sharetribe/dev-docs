@@ -39,7 +39,7 @@ The Integration API
 endpoint will be used at the core of this guide. In the most basic form,
 a query for all available events using the SDK looks like this:
 
-```javascript
+```jsx
 integrationSdk.events.query();
 ```
 
@@ -60,15 +60,15 @@ one of three ways:
   [published](https://www.sharetribe.com/api-reference/marketplace.html#publish-draft-listing)
   separately
 - in case your marketplace has the
-  [listing approval feature](/concepts/listings/requiring-approval/) on,
-  a listing that is pending approval becomes published when it is
+  [listing approval feature](https://www.sharetribe.com/help/en/articles/8413545-approve-listings-before-publishing)
+  on, a listing that is pending approval becomes published when it is
   approved by an operator
 
 Therefore, in order to cover all cases, we need to process both
 `listing/created` and `listing/updated` events. A query for only these
 types of events looks like this:
 
-```javascript
+```jsx
 integrationSdk.events.query({
   eventTypes: 'listing/created,listing/updated',
 });
@@ -79,7 +79,7 @@ keeps in history. In practice, often we are interested in _new_ events
 only. In the absence of another point of reference, it is possible to
 query events starting from a given timestamp:
 
-```javascript
+```jsx
 const now = new Date();
 const fiveMinutesAgo = new Date(now - 300000);
 integrationSdk.events.query({
@@ -113,7 +113,7 @@ A new listing is first published when one of these happen:
 
 In code, analyzing the event data can be done like this:
 
-```javascript
+```jsx
 const now = new Date();
 const fiveMinutesAgo = new Date(now - 300000);
 
@@ -191,7 +191,7 @@ can be used to query for strictly newer events, using the
 [query parameter](https://www.sharetribe.com/api-reference/integration.html#query-events).
 For example:
 
-```javascript
+```jsx
 // Given the sequence ID of last processed event, query only for newer events
 const lastEventSequenceId = 1234;
 integrationSdk.events.query({
@@ -254,7 +254,7 @@ application can process all available events in a timely manner (e.g.
 Below is a full polling loop example, using a local file to store the
 last processed event's sequence ID:
 
-```javascript
+```jsx
 const fs = require('fs');
 
 // Start polling from current time on, when there's no stored state
