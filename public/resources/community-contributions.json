@@ -1,0 +1,38 @@
+{
+  "contributions": [
+    {
+      "title": "Type definitions for the Sharetribe SDK",
+      "description": "Provides TypeScript support and improved developer experience when integrating with Marketplace API.",
+      "username": "Jayen Ashar",
+      "userProfileUrl": "https://sharetribe.jayenashar.org/",
+      "href": "https://www.npmjs.com/package/@types/sharetribe-flex-sdk",
+      "additionalLinks": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/sharetribe-flex-sdk"
+        },
+        {
+          "label": "npm",
+          "url": "https://www.npmjs.com/package/@types/sharetribe-flex-sdk"
+        }
+      ]
+    },
+    {
+      "title": "Type definitions for the Integration SDK",
+      "description": "Provides TypeScript support and improved developer experience when integrating with Integration API.",
+      "username": "Jayen Ashar",
+      "userProfileUrl": "https://sharetribe.jayenashar.org/",
+      "href": "https://www.npmjs.com/package/@types/sharetribe-flex-integration-sdk",
+      "additionalLinks": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/sharetribe-flex-integration-sdk"
+        },
+        {
+          "label": "npm",
+          "url": "https://www.npmjs.com/package/@types/sharetribe-flex-integration-sdk"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+---
+title: Community contributions
+description: Highlights contributions made by our developer community.
+---
+
+import CustomCard, {
+  ContributionCard,
+  CustomCards,
+} from '../../app/components/CustomCards/CustomCards';
+
+import contributionsData from '../../public/resources/community-contributions.json';
+
+# Community Contributions
+
+This page highlights a selection of community-built contributions
+created by developers within the Sharetribe community that extend what's
+possible on the platform by default. They showcase the creativity,
+skill, and initiative of our developer network, and provide resources
+that others can use, learn from, or build upon.
+
+Each project is independently developed and maintained by its author -
+Sharetribe does not own or maintain these contributions.
+
+Want to share ideas, suggest improvements, or build something of your
+own?  
+[Join the conversation in our community Slack](https://www.sharetribe.com/dev-slack)
+
+---
+
+## Featured community projects
+
+<CustomCards columns={1}>
+  {contributionsData.contributions.map((contribution, index) => (
+    <ContributionCard
+      key={index}
+      title={contribution.title}
+      description={contribution.description}
+      username={contribution.username}
+      userProfileUrl={contribution.userProfileUrl}
+      href={contribution.href}
+      additionalLinks={contribution.additionalLinks}
+    />
+  ))}
+</CustomCards>
+
+---
+
+_This page is growing. If you've built something that extends the
+platform and want it featured here, let us know._

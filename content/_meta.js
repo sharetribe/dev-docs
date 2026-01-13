@@ -75,6 +75,14 @@ export default {
         title: "Integration API examples",
         href: "https://github.com/sharetribe/integration-api-examples/tree/master?tab=readme-ov-file",
       },
+      community_contributions: {
+        title: "Community contributions",
+        href: "/community-contributions",
+      },
     },
   },
+
+  "community-contributions": {
+    display: "hidden"
+  }
 };
