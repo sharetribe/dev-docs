@@ -1,3 +1,5 @@
+import ArrowRightIcon from '../../../content/assets/ArrowRight.png';
+
 /**
  * A reusable card component that displays a title and description.
  * Can be rendered as either a link (when href is provided) or an article element.
@@ -6,39 +8,73 @@
  * @param {string} title - The main heading text for the card
  * @param {string} description - The descriptive text displayed below the title
  * @param {string} [href] - Optional URL to make the card clickable as a link
+ * @param {string|Object} [icon] - Optional icon to display. If not provided, ArrowRight icon is shown on the right. If a different icon is provided, it's shown in the top left.
  * @param {string} [className] - Additional CSS classes to apply to the card
  */
-const LandingPageCard = ({ title, description, href, className = '' }) => {
+const LandingPageCard = ({
+  title,
+  description,
+  href,
+  icon,
+  className = '',
+}) => {
   // Use 'a' element for links, 'article' for static cards
   const CardComponent = href ? 'a' : 'article';
+
+  // Determine if we should use the default layout (text centered, arrow on right)
+  // or the icon layout (icon top left, text bottom)
+  // If icon is explicitly provided, use custom icon layout
+  // Otherwise, use default ArrowRight icon on the right
+  const hasCustomIcon = icon !== undefined && icon !== null;
+  const defaultIcon = ArrowRightIcon;
+  const displayIcon = hasCustomIcon ? icon : defaultIcon;
+  const iconSrc = displayIcon?.src || displayIcon;
 
   return (
     <CardComponent
       href={href}
       className={`
-        group flex flex-col justify-start overflow-hidden rounded-lg border border-gray-200 
-        text-current no-underline dark:shadow-none hover:shadow-gray-100 dark:hover:shadow-none 
-        shadow-gray-100 active:shadow-sm active:shadow-gray-200 transition-all duration-200 
-        hover:border-gray-300 bg-transparent shadow-sm dark:border-neutral-800 
-        hover:bg-slate-50 hover:shadow-md dark:hover:border-neutral-700 dark:hover:bg-neutral-900
+        group overflow-hidden rounded-lg
+        text-current no-underline transition-all duration-200 
+        bg-white dark:bg-[#181616]
         p-4 text-gray-700 hover:text-gray-900
         dark:text-neutral-200 dark:hover:text-neutral-50
-        gap-2 ${className}
+        ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-4'}
+        ${className}
       `
         .trim()
         .replace(/\s+/g, ' ')}
       style={{ cursor: href ? 'pointer' : 'default' }}
     >
-      {/* Card title with optional arrow indicator for links */}
-      <h3
-        className={`font-semibold text-lg mb-0 flex items-center gap-2 ${href ? 'after:content-["→"] after:transition-transform after:duration-75 group-hover:after:translate-x-0.5 group-focus:after:translate-x-0.5' : ''}`}
-      >
-        {title}
-      </h3>
-      {/* Card description text */}
-      <p className="text-m text-gray-900 dark:text-neutral-400">
-        {description}
-      </p>
+      {hasCustomIcon ? (
+        <>
+          {/* Custom icon in top left */}
+          <img
+            src={iconSrc}
+            alt=""
+            className="flex-shrink-0 self-start mb-16"
+          />
+          {/* Card content - title and description at bottom */}
+          <div className="flex flex-col gap-2">
+            <h3 className="font-semibold text-lg mb-0">{title}</h3>
+            <p className="text-m text-gray-900 dark:text-neutral-400">
+              {description}
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Card content - title and description */}
+          <div className="flex flex-col gap-2 flex-1">
+            <h3 className="font-semibold text-lg mb-0">{title}</h3>
+            <p className="text-m text-gray-900 dark:text-neutral-400">
+              {description}
+            </p>
+          </div>
+          {/* Arrow indicator for links (default behavior - only show when href exists) */}
+          {href && <img src={iconSrc} alt="" className="flex-shrink-0" />}
+        </>
+      )}
     </CardComponent>
   );
 };
@@ -142,27 +178,58 @@ const ContributionCard = ({
 };
 
 /**
- * A container component that displays multiple CustomCard components in a responsive grid layout.
+ * A container component that displays cards in a single column layout.
+ * Always displays cards in one column, regardless of screen size.
  *
  * @param {React.ReactNode} children - The card components to display
- * @param {number} [columns] - Number of columns for the grid layout. If not provided, uses auto-fit with minmax(280px, 1fr)
  * @param {string} [className] - Additional CSS classes to apply to the container
  */
-export const CustomCards = ({ children, columns, className = '' }) => {
-  // If columns is specified, use repeat(columns, 1fr), otherwise use auto-fit
-  const gridTemplateColumns = columns
-    ? `repeat(${columns}, 1fr)`
-    : 'repeat(auto-fit, minmax(280px, 1fr))';
-
+export const CustomCardColumn = ({ children, className = '' }) => {
   return (
     <div
       className={`mt-4 grid gap-4 ${className}`.trim()}
-      style={{ gridTemplateColumns }}
+      style={{ gridTemplateColumns: '1fr' }}
     >
       {children}
     </div>
   );
 };
 
-export { ContributionCard };
-export default LandingPageCard;
+/**
+ * A container component that displays cards in a responsive grid layout.
+ * Adapts to screen size and can optionally limit the maximum number of columns.
+ *
+ * @param {React.ReactNode} children - The card components to display
+ * @param {number} [columns] - Optional maximum number of columns (responsive grid adapts to screen size, capped at this number). If not provided, uses auto-fit.
+ * @param {string} [className] - Additional CSS classes to apply to the container
+ */
+export const CustomCardGrid = ({ children, columns, className = '' }) => {
+  let gridClasses = 'mt-4 grid gap-4';
+  let gridStyle = {};
+
+  if (columns) {
+    // Responsive grid with maximum column constraint
+    // Uses responsive Tailwind classes: 1 column on mobile, up to N columns on larger screens
+    const responsiveClasses = ['grid-cols-1'];
+
+    if (columns >= 2) responsiveClasses.push('md:grid-cols-2');
+    if (columns >= 3) responsiveClasses.push('lg:grid-cols-3');
+    if (columns >= 4) responsiveClasses.push('xl:grid-cols-4');
+
+    gridClasses += ` ${responsiveClasses.join(' ')}`;
+  } else {
+    // Auto-fit responsive grid (default behavior, no column limit)
+    gridStyle = { gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' };
+  }
+
+  return (
+    <div
+      className={`${gridClasses} ${className}`.trim()}
+      style={Object.keys(gridStyle).length > 0 ? gridStyle : undefined}
+    >
+      {children}
+    </div>
+  );
+};
+
+export { LandingPageCard, ContributionCard };
