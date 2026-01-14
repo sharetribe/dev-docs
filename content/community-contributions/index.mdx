@@ -5,7 +5,7 @@ description: Highlights contributions made by our developer community.
 
 import CustomCard, {
   ContributionCard,
-  CustomCards,
+  CustomCardColumn,
 } from '../../app/components/CustomCards/CustomCards';
 
 import contributionsData from '../../public/resources/community-contributions.json';
@@ -29,7 +29,7 @@ own?
 
 ## Featured community projects
 
-<CustomCards columns={1}>
+<CustomCardColumn>
   {contributionsData.contributions.map((contribution, index) => (
     <ContributionCard
       key={index}
@@ -41,7 +41,7 @@ own?
       additionalLinks={contribution.additionalLinks}
     />
   ))}
-</CustomCards>
+</CustomCardColumn>
 
 ---
 
