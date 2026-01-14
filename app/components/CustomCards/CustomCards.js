@@ -35,7 +35,7 @@ const LandingPageCard = ({
       href={href}
       className={`
         group overflow-hidden rounded-lg
-        text-current no-underline transition-all duration-200 
+        text-current no-underline transition-all duration-150 ease-out hover:opacity-75
         bg-white dark:bg-[#181616]
         p-4 text-gray-700 hover:text-gray-900
         dark:text-neutral-200 dark:hover:text-neutral-50
@@ -56,8 +56,10 @@ const LandingPageCard = ({
           />
           {/* Card content - title and description at bottom */}
           <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-lg mb-0">{title}</h3>
-            <p className="text-m text-gray-900 dark:text-neutral-400">
+            <h3 className="font-semibold text-lg mb-0 text-[#2C3E50] dark:text-[#F9F3F4]">
+              {title}
+            </h3>
+            <p className="text-m text-slate-500 dark:text-neutral-400">
               {description}
             </p>
           </div>
@@ -66,8 +68,10 @@ const LandingPageCard = ({
         <>
           {/* Card content - title and description */}
           <div className="flex flex-col gap-2 flex-1">
-            <h3 className="font-semibold text-lg mb-0">{title}</h3>
-            <p className="text-m text-gray-900 dark:text-neutral-400">
+            <h3 className="font-semibold text-lg mb-0 text-[#2C3E50] dark:text-[#F9F3F4]">
+              {title}
+            </h3>
+            <p className="text-m text-slate-500 dark:text-neutral-400">
               {description}
             </p>
           </div>
@@ -111,7 +115,7 @@ const ContributionCard = ({
     'hover:bg-slate-50 hover:shadow-md dark:hover:border-neutral-700 dark:hover:bg-neutral-900',
     'p-6 gap-4',
     'text-gray-700 hover:text-gray-900 dark:text-neutral-200 dark:hover:text-neutral-50',
-    'transition-all duration-200',
+    'transition-all duration-150 ease-out hover:opacity-75',
     className,
   ]
     .filter(Boolean)
