@@ -1,4 +1,4 @@
-import ArrowRightIcon from '../../../content/assets/ArrowRight.png';
+import ArrowRightIcon from '../../../content/assets/ArrowRight.svg';
 
 /**
  * A reusable card component that displays a title and description.
