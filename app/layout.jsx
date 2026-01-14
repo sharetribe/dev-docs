@@ -30,6 +30,16 @@ const circular = localFont({
       style: 'normal',
     },
     {
+      path: './fonts/CircularXXWeb-Book.woff2',
+      weight: '450',
+      style: 'normal',
+    },
+    {
+      path: './fonts/CircularXXWeb-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
       path: './fonts/CircularXXWeb-Bold.woff2',
       weight: '700',
       style: 'normal',
