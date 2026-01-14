@@ -8,70 +8,121 @@ asIndexPage: false
 hideCopyPage: true
 ---
 
-import StyledHeader from '../app/components/StyledHeader/StyledHeader';
-import CustomCard, {
-  CustomCards,
+import {
+  MainHeader,
+  SectionHeader,
+} from '../app/components/StyledHeaders/StyledHeaders';
+import Center from '../app/components/Center/Center';
+import RoundedLinkButton from '../app/components/RoundedLinkButton/RoundedLinkButton';
+import {
+  LandingPageCard,
+  CustomCardGrid,
 } from '../app/components/CustomCards/CustomCards';
 import { Cards, Image } from 'nextra/components';
+import ArrowRightIcon from './assets/ArrowRight.png';
+import ArrowsLeftRightIcon from './assets/ArrowsLeftRight.png';
+import DownloadIcon from './assets/Download.png';
+import GitForkIcon from './assets/GitFork.png';
+import UserCirclePlusIcon from './assets/UserCirclePlus.png';
 
-<StyledHeader>Sharetribe Developer Documentation</StyledHeader>
+<Center
+  className="text-base text-center"
+  style={{ paddingTop: '20px', color: 'var(--x-color-primary-600)' }}
+>
+  Tutorials and guides to help you up to speed
+</Center>
 
-Sharetribe is designed from the ground up to be extended with code.
-These docs explain how your marketplace works under the hood, and how
-you can adapt it to fit your unique idea.
+<MainHeader>Developer Documentation</MainHeader>
 
-## Get Started
+<br />
+<Center
+  style={{
+    maxWidth: "500px",
+    margin: "auto"
+  }}
+>
+  <span className="text-gray-500 dark:text-neutral-400">
+    Sharetribe is designed from the ground up to be extended with code.
+    These docs explain how your marketplace works under the hood, and how
+    you can adapt it to fit your unique idea.
+  </span>
 
-<CustomCards>
-<CustomCard title={'Install the template'} description={'Install the Sharetribe Web Template and start customizing.'} href={'/docs/introduction/getting-started-with-web-template/'} />
+<br />
 
-<CustomCard title="API Reference" description="Explore our API reference with information on the Marketplace, Integration, Authentication and Asset Delivery API." href="https://www.sharetribe.com/api-reference" />
-<CustomCard title="Create an account" description="Create a free Sharetribe account and kick off development." href="https://console.sharetribe.com/new" />
-</CustomCards>
-
-## Learn more
-
-<CustomCards>
-  <CustomCard
-    title="Tutorials"
-    description="A step-by-step tutorial to help you build a fully functional marketplace and learn about all the key features of Sharetribe."
-    href="/docs/tutorial/"
+  <RoundedLinkButton
+    text="Read Introduction"
+    href="/introduction/"
+    color="rgb(46,204,113)"
   />
-  <CustomCard
-    title="Help Center"
-    description={
-      'Read more about the no-code features in the Help Center, such as how to adjust general marketplace settings and how to adjust the branding and layout of your marketplace.'
-    }
-    href={'https://www.sharetribe.com/help/en/'}
-  />
-  <CustomCard
-    title="Developer blog"
-    description="A practical resource crafted for our developer community with a focus on how to build a marketplace using the Sharetribe Developer Platform."
-    href="https://www.sharetribe.com/developer-blog"
-  />
-</CustomCards>
+</Center>
 
-## Do you already have a marketplace?
+<SectionHeader>Get Started</SectionHeader>
 
-<Cards num={1}>
-  <Cards.Card
-    arrow
+<br />
+
+<CustomCardGrid columns={2}>
+  <LandingPageCard
+    title="Install the Template"
+    description="Install the Sharetribe Web Template and start customizing."
+    href="introduction/getting-started-with-web-template/"
+    icon={DownloadIcon}
+  />
+  <LandingPageCard
+    title="API Reference"
+    description="Explore Sharetribe's APIs, endpoints and schemas."
+    href="https://www.sharetribe.com/api-reference/"
+    icon={GitForkIcon}
+  />
+  <LandingPageCard
+    title="Create an account"
+    description="Create a free Sharetribe account and kick off development."
+    href="https://console.sharetribe.com/new?meta_source=https%3A%2F%2Fwww.google.com%2F&meta_first_page_visited=%2F"
+    icon={UserCirclePlusIcon}
+  />
+  <LandingPageCard
     title="Migrate from another platform"
-    href="/how-to/migrations/migrating-from-outside-sharetribe"
+    description="Migrate and existing marketplace to Sharetribe."
+    href="how-to/migrations/migrating-from-outside-sharetribe/"
+    icon={ArrowsLeftRightIcon}
   />
-</Cards>
+</CustomCardGrid>
 
-## Need help with something?
+<SectionHeader>Resources & Tutorials</SectionHeader>
 
-<Cards num={2}>
-  <Cards.Card
-    arrow
-    title="Reach out to our support"
-    href="mailto:hello@sharetribe.com"
+<CustomCardGrid>
+  <LandingPageCard
+    title="Tutorials"
+    description="Step-by-step guides"
+    href="tutorial"
   />
-  <Cards.Card
-    arrow
+  <LandingPageCard
+    title="Help center"
+    description="Find answers to your questions"
+    href="https://www.sharetribe.com/help/en/"
+  />
+  <LandingPageCard
+    title="Developer blog"
+    description="Learn more with our platform"
+    href="https://www.sharetribe.com/developer-blog/"
+  />
+</CustomCardGrid>
+
+<SectionHeader>Community & Support</SectionHeader>
+
+<CustomCardGrid>
+  <LandingPageCard
     title="Ask the community"
+    description="Join 1000+ Sharetribe developers in Slack"
     href="https://www.sharetribe.com/dev-slack"
   />
-</Cards>
+  <LandingPageCard
+    title="Community contributions"
+    description="Check out what our community has created"
+    href="/community-contributions"
+  />
+  <LandingPageCard
+    title="Contact support"
+    description="Our support team is here for you seven days a week"
+    href="mailto:hello@sharetribe.com"
+  />
+</CustomCardGrid>
