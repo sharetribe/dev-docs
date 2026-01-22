@@ -86,7 +86,8 @@ export default async function RootLayout({ children }) {
             dark: 63,
           },
         }}
-      >
+      />
+      <body>
         <PlausibleProvider
           scriptProps={{
             src: '/docs/stats/js/script/',
@@ -94,21 +95,20 @@ export default async function RootLayout({ children }) {
           }}
           enabled={isProduction}
           domain={isPreviewEnv ? 'flex-docs.vercel.app' : 'sharetribe.com/docs'}
-        />
-      </Head>
-      <body>
-        <Layout
-          // banner={banner}
-          navbar={navbar}
-          pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/sharetribe/dev-docs/blob/main"
-          footer={footer}
-          sidebar={{ autoCollapse: true }}
-          editLink="Suggest an improvement"
-          // ... Your additional layout options
         >
-          {children}
-        </Layout>
+          <Layout
+            // banner={banner}
+            navbar={navbar}
+            pageMap={await getPageMap()}
+            docsRepositoryBase="https://github.com/sharetribe/dev-docs/blob/main"
+            footer={footer}
+            sidebar={{ autoCollapse: true }}
+            editLink="Suggest an improvement"
+            // ... Your additional layout options
+          >
+            {children}
+          </Layout>
+        </PlausibleProvider>
       </body>
     </html>
   );
