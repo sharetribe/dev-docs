@@ -7,8 +7,11 @@
 const MainHeader = ({ children }) => {
   return (
     <h1
-      className="text-4xl font-bold text-center text-slate-900 dark:text-slate-100"
-      style={{ paddingTop: '20px' }}
+      className="text-4xl font-medium text-center dark:text-slate-100"
+      style={{
+        paddingTop: '20px',
+        color: 'var(--text-primary)',
+      }}
     >
       {children}
     </h1>
@@ -24,8 +27,11 @@ const MainHeader = ({ children }) => {
 const SectionHeader = ({ children }) => {
   return (
     <h1
-      className="text-3xl font-bold text-start text-slate-900 dark:text-slate-100"
-      style={{ paddingTop: '60px' }}
+      className="text-3xl font-medium text-start"
+      style={{
+        paddingTop: '60px',
+        color: 'var(--text-primary)',
+      }}
     >
       {children}
     </h1>
