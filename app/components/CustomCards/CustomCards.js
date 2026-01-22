@@ -37,8 +37,7 @@ const LandingPageCard = ({
         group overflow-hidden rounded-lg
         text-current no-underline transition-all duration-150 ease-out hover:opacity-75
         bg-white dark:bg-[#181616]
-        p-4 text-gray-700 hover:text-gray-900
-        dark:text-neutral-200 dark:hover:text-neutral-50
+        p-4
         ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-4'}
         ${className}
       `
@@ -56,10 +55,16 @@ const LandingPageCard = ({
           />
           {/* Card content - title and description at bottom */}
           <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-lg mb-0 text-[#2C3E50] dark:text-[#F9F3F4]">
+            <h3
+              className="font-medium mb-0"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {title}
             </h3>
-            <p className="text-m text-slate-500 dark:text-neutral-400">
+            <p
+              className="text-m font-[450]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               {description}
             </p>
           </div>
@@ -68,10 +73,16 @@ const LandingPageCard = ({
         <>
           {/* Card content - title and description */}
           <div className="flex flex-col gap-2 flex-1">
-            <h3 className="font-semibold text-lg mb-0 text-[#2C3E50] dark:text-[#F9F3F4]">
+            <h3
+              className="font-medium mb-0"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {title}
             </h3>
-            <p className="text-m text-slate-500 dark:text-neutral-400">
+            <p
+              className="text-m font-[450]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               {description}
             </p>
           </div>
