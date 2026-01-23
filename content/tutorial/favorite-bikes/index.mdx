@@ -431,13 +431,14 @@ functionality with the button we created earlier. Add the _currentUser_
 and _onToggleFavorites_ props to the _OrderPanel_ component in
 _ListingPageCarousel_.
 
-```jsx filename="ListingPageCarousel.js" {7}
+```jsx filename="ListingPageCarousel.js" {7-8}
 <OrderPanel
   className={classNames(css.productOrderPanel, {
     [css.imagesEnabled]: showListingImage,
   })}
   listing={currentListing}
   isOwnListing={isOwnListing}
+  currentUser={currentUser}
   onToggleFavorites={onToggleFavorites}
 />
 ```
