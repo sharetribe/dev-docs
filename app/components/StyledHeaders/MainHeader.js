@@ -23,25 +23,6 @@ const MainHeader = ({ children }) => {
 };
 
 /**
- * A styled header component for section titles.
- * Displays as a medium-sized, left-aligned, bold heading with top padding.
- *
- * @param {React.ReactNode} children - The header text content
+ * Exported main header component.
  */
-const SectionHeader = ({ children }) => {
-  return (
-    <h1
-      className="text-3xl font-medium text-start"
-      style={{
-        marginTop: '96px',
-        marginBottom: '32px',
-        color: 'var(--text-primary)',
-        letterSpacing: '-1px',
-      }}
-    >
-      {children}
-    </h1>
-  );
-};
-
-export { MainHeader, SectionHeader };
+export { MainHeader };

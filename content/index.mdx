@@ -8,10 +8,7 @@ asIndexPage: false
 hideCopyPage: true
 ---
 
-import {
-  MainHeader,
-  SectionHeader,
-} from '../app/components/StyledHeaders/StyledHeaders';
+import { MainHeader } from '../app/components/StyledHeaders/MainHeader';
 import Center from '../app/components/Center/Center';
 import RoundedLinkButton from '../app/components/RoundedLinkButton/RoundedLinkButton';
 import {
@@ -69,9 +66,7 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
   />
 </Center>
 
-<SectionHeader>Get Started</SectionHeader>
-
-<CustomCardGrid columns={2}>
+<CustomCardGrid header="Get Started" columns={2}>
   <LandingPageCard
     title="Install the Template"
     description="Install the Sharetribe Web Template and start customizing."
@@ -98,9 +93,7 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
   />
 </CustomCardGrid>
 
-<SectionHeader>Resources & Tutorials</SectionHeader>
-
-<CustomCardGrid>
+<CustomCardGrid header="Resources & Tutorials">
   <LandingPageCard
     title="Tutorials"
     description="Step-by-step guides"
@@ -118,9 +111,7 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
   />
 </CustomCardGrid>
 
-<SectionHeader>Community & Support</SectionHeader>
-
-<CustomCardGrid>
+<CustomCardGrid header="Community & Support">
   <LandingPageCard
     title="Ask the community"
     description="Join 1000+ Sharetribe developers in Slack"

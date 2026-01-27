@@ -1,6 +1,18 @@
 import ArrowRightIcon from '../../../content/assets/ArrowRight.svg';
 
 /**
+ * Shared styles for section headers used above card layouts.
+ */
+const sectionHeaderStyle = {
+  marginTop: '96px',
+  marginBottom: '32px',
+  color: 'var(--text-primary)',
+  letterSpacing: '-1px',
+};
+
+const sectionHeaderClassName = 'text-3xl font-medium text-start';
+
+/**
  * A reusable card component that displays a title and description.
  * Can be rendered as either a link (when href is provided) or an article element.
  * Used on the landing page to display information cards with descriptions below titles.
@@ -203,16 +215,21 @@ const ContributionCard = ({
  * Always displays cards in one column, regardless of screen size.
  *
  * @param {React.ReactNode} children - The card components to display
- * @param {string} [className] - Additional CSS classes to apply to the container
+ * @param {string} [header] - Optional section heading text displayed above the column
+ * @param {string} [className] - Additional CSS classes to apply to the outer section
  */
-export const CustomCardColumn = ({ children, className = '' }) => {
+export const CustomCardColumn = ({ children, header, className = '' }) => {
   return (
-    <div
-      className={`mt-4 grid gap-4 ${className}`.trim()}
-      style={{ gridTemplateColumns: '1fr' }}
-    >
-      {children}
-    </div>
+    <section className={className}>
+      {header ? (
+        <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
+          {header}
+        </h1>
+      ) : null}
+      <div className="mt-4 grid gap-4" style={{ gridTemplateColumns: '1fr' }}>
+        {children}
+      </div>
+    </section>
   );
 };
 
@@ -222,9 +239,15 @@ export const CustomCardColumn = ({ children, className = '' }) => {
  *
  * @param {React.ReactNode} children - The card components to display
  * @param {number} [columns] - Optional maximum number of columns (responsive grid adapts to screen size, capped at this number). If not provided, uses auto-fit.
- * @param {string} [className] - Additional CSS classes to apply to the container
+ * @param {string} [header] - Optional section heading text displayed above the grid
+ * @param {string} [className] - Additional CSS classes to apply to the outer section
  */
-export const CustomCardGrid = ({ children, columns, className = '' }) => {
+export const CustomCardGrid = ({
+  children,
+  columns,
+  header,
+  className = '',
+}) => {
   let gridClasses = 'mt-4 grid gap-4';
   let gridStyle = {};
 
@@ -243,12 +266,19 @@ export const CustomCardGrid = ({ children, columns, className = '' }) => {
   }
 
   return (
-    <div
-      className={`${gridClasses} ${className}`.trim()}
-      style={Object.keys(gridStyle).length > 0 ? gridStyle : undefined}
-    >
-      {children}
-    </div>
+    <section className={className}>
+      {header ? (
+        <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
+          {header}
+        </h1>
+      ) : null}
+      <div
+        className={gridClasses.trim()}
+        style={Object.keys(gridStyle).length > 0 ? gridStyle : undefined}
+      >
+        {children}
+      </div>
+    </section>
   );
 };
 
