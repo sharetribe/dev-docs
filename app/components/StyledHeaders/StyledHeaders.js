@@ -11,6 +11,7 @@ const MainHeader = ({ children }) => {
       style={{
         paddingTop: '20px',
         color: 'var(--text-primary)',
+        letterSpacing: '-1.4px',
       }}
     >
       {children}
@@ -31,6 +32,7 @@ const SectionHeader = ({ children }) => {
       style={{
         paddingTop: '60px',
         color: 'var(--text-primary)',
+        letterSpacing: '-1px',
       }}
     >
       {children}
