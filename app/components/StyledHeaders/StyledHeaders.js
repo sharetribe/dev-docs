@@ -7,7 +7,7 @@
 const MainHeader = ({ children }) => {
   return (
     <h1
-      className="text-4xl font-medium text-center dark:text-slate-100"
+      className="text-[44px] font-medium text-center dark:text-slate-100"
       style={{
         paddingTop: '20px',
         color: 'var(--text-primary)',

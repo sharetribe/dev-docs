@@ -56,13 +56,13 @@ const LandingPageCard = ({
           {/* Card content - title and description at bottom */}
           <div className="flex flex-col gap-2">
             <h3
-              className="font-medium mb-0"
+              className="font-medium mb-0 text-[21px]"
               style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
             >
               {title}
             </h3>
             <p
-              className="text-m font-[450]"
+              className="text-m font-[450] text-[16px]"
               style={{
                 color: 'var(--text-secondary)',
                 letterSpacing: '-0.2px',
@@ -77,13 +77,13 @@ const LandingPageCard = ({
           {/* Card content - title and description */}
           <div className="flex flex-col gap-2 flex-1">
             <h3
-              className="font-medium mb-0"
+              className="font-medium mb-0 text-[21px]"
               style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
             >
               {title}
             </h3>
             <p
-              className="text-m font-[450]"
+              className="text-m font-[450] text-[16px]"
               style={{
                 color: 'var(--text-secondary)',
                 letterSpacing: '-0.2px',
