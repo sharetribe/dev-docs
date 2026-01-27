@@ -13,6 +13,36 @@ const sectionHeaderStyle = {
 const sectionHeaderClassName = 'text-3xl font-medium text-start';
 
 /**
+ * Shared typography for landing page card titles and descriptions.
+ */
+const landingCardTitleClassName = 'font-medium mb-0 text-[21px]';
+const landingCardTitleStyle = {
+  color: 'var(--text-primary)',
+  letterSpacing: '-0.5px',
+};
+
+const landingCardDescriptionClassName = 'text-m font-[450] text-[16px]';
+const landingCardDescriptionStyle = {
+  color: 'var(--text-secondary)',
+  letterSpacing: '-0.2px',
+};
+
+const LandingCardTitle = ({ children }) => (
+  <h3 className={landingCardTitleClassName} style={landingCardTitleStyle}>
+    {children}
+  </h3>
+);
+
+const LandingCardDescription = ({ children }) => (
+  <p
+    className={landingCardDescriptionClassName}
+    style={landingCardDescriptionStyle}
+  >
+    {children}
+  </p>
+);
+
+/**
  * A reusable card component that displays a title and description.
  * Can be rendered as either a link (when href is provided) or an article element.
  * Used on the landing page to display information cards with descriptions below titles.
@@ -67,42 +97,16 @@ const LandingPageCard = ({
           />
           {/* Card content - title and description at bottom */}
           <div className="flex flex-col gap-2">
-            <h3
-              className="font-medium mb-0 text-[21px]"
-              style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
-            >
-              {title}
-            </h3>
-            <p
-              className="text-m font-[450] text-[16px]"
-              style={{
-                color: 'var(--text-secondary)',
-                letterSpacing: '-0.2px',
-              }}
-            >
-              {description}
-            </p>
+            <LandingCardTitle>{title}</LandingCardTitle>
+            <LandingCardDescription>{description}</LandingCardDescription>
           </div>
         </>
       ) : (
         <>
           {/* Card content - title and description */}
           <div className="flex flex-col gap-2 flex-1">
-            <h3
-              className="font-medium mb-0 text-[21px]"
-              style={{ color: 'var(--text-primary)', letterSpacing: '-0.5px' }}
-            >
-              {title}
-            </h3>
-            <p
-              className="text-m font-[450] text-[16px]"
-              style={{
-                color: 'var(--text-secondary)',
-                letterSpacing: '-0.2px',
-              }}
-            >
-              {description}
-            </p>
+            <LandingCardTitle>{title}</LandingCardTitle>
+            <LandingCardDescription>{description}</LandingCardDescription>
           </div>
           {/* Arrow indicator for links (default behavior - only show when href exists) */}
           {href && <img src={iconSrc} alt="" className="flex-shrink-0" />}
