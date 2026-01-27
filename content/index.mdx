@@ -31,6 +31,10 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
     paddingTop: '20px',
     color: 'var(--x-color-primary-600)',
     letterSpacing: '-0.5px',
+    maxWidth: '600px',
+    alignSelf: 'stretch',
+    margin: '0 auto',
+    lineHeight: '29px',
   }}
 >
   Tutorials and guides to help you up to speed
@@ -38,23 +42,25 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
 
 <MainHeader>Developer Documentation</MainHeader>
 
-<br />
 <Center
   style={{
-    maxWidth: "500px",
-    margin: "auto",
+    maxWidth: '600px',
+    margin: 'auto',
+    alignSelf: 'stretch',
   }}
 >
-  <span className="font-[450] text-[21px]" style={{
-        color: 'var(--text-secondary)',
-        letterSpacing: '-0.5px'
-      }}>
-    Sharetribe is designed from the ground up to be extended with code.
+  <span
+    className="font-[450] text-[21px] inline-block mb-8"
+    style={{
+      color: 'var(--text-secondary)',
+      letterSpacing: '-0.5px',
+      lineHeight: '28px',
+    }}
+  >
+  Sharetribe is designed from the ground up to be extended with code.
     These docs explain how your marketplace works under the hood, and how
     you can adapt it to fit your unique idea.
   </span>
-
-<br />
 
   <RoundedLinkButton
     text="Read Introduction"
@@ -64,8 +70,6 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
 </Center>
 
 <SectionHeader>Get Started</SectionHeader>
-
-<br />
 
 <CustomCardGrid columns={2}>
   <LandingPageCard

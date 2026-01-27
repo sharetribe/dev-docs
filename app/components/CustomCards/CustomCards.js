@@ -37,8 +37,8 @@ const LandingPageCard = ({
         group overflow-hidden rounded-lg
         text-current no-underline transition-all duration-150 ease-out hover:opacity-75
         bg-white dark:bg-[#181616]
-        p-4
-        ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-4'}
+        p-8
+        ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-8'}
         ${className}
       `
         .trim()
@@ -230,12 +230,11 @@ export const CustomCardGrid = ({ children, columns, className = '' }) => {
 
   if (columns) {
     // Responsive grid with maximum column constraint
-    // Uses responsive Tailwind classes: 1 column on mobile, up to N columns on larger screens
+    // Uses responsive Tailwind classes: 1 column up to 1280px, then up to N columns on larger screens
     const responsiveClasses = ['grid-cols-1'];
 
-    if (columns >= 2) responsiveClasses.push('md:grid-cols-2');
-    if (columns >= 3) responsiveClasses.push('lg:grid-cols-3');
-    if (columns >= 4) responsiveClasses.push('xl:grid-cols-4');
+    if (columns >= 2) responsiveClasses.push('xl:grid-cols-2');
+    if (columns >= 3) responsiveClasses.push('2xl:grid-cols-3');
 
     gridClasses += ` ${responsiveClasses.join(' ')}`;
   } else {

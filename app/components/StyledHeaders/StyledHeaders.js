@@ -9,9 +9,12 @@ const MainHeader = ({ children }) => {
     <h1
       className="text-[44px] font-medium text-center dark:text-slate-100"
       style={{
-        paddingTop: '20px',
+        margin: '16px auto',
         color: 'var(--text-primary)',
         letterSpacing: '-1.4px',
+        lineHeight: '60px',
+        maxWidth: '600px',
+        alignSelf: 'stretch',
       }}
     >
       {children}
@@ -30,7 +33,8 @@ const SectionHeader = ({ children }) => {
     <h1
       className="text-3xl font-medium text-start"
       style={{
-        paddingTop: '60px',
+        marginTop: '96px',
+        marginBottom: '32px',
         color: 'var(--text-primary)',
         letterSpacing: '-1px',
       }}

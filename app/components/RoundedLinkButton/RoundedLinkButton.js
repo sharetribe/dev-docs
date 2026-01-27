@@ -14,7 +14,7 @@ const RoundedLinkButton = ({ text, color, href }) => {
       href={href}
       style={{
         display: 'inline-block',
-        padding: '18px 30px',
+        padding: '16px 32px',
         borderRadius: '30px',
         background: color,
         color: 'white',
