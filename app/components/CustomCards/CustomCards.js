@@ -51,16 +51,8 @@ const LandingCardDescription = ({ children }) => (
  * @param {string} description - The descriptive text displayed below the title
  * @param {string} [href] - Optional URL to make the card clickable as a link
  * @param {string|Object} [icon] - Optional icon to display. If not provided, ArrowRight icon is shown on the right. If a different icon is provided, it's shown in the top left.
- * @param {string} [className] - Additional CSS classes to apply to the card
  */
-const LandingPageCard = ({
-  title,
-  description,
-  href,
-  icon,
-  className = '',
-  iconAltText,
-}) => {
+const LandingPageCard = ({ title, description, href, icon, iconAltText }) => {
   // Use 'a' element for links, 'article' for static cards
   const CardComponent = href ? 'a' : 'article';
 
@@ -82,7 +74,6 @@ const LandingPageCard = ({
         bg-white dark:bg-[#181616]
         p-8
         ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-8'}
-        ${className}
       `
         .trim()
         .replace(/\s+/g, ' ')}
@@ -247,14 +238,8 @@ export const CustomCardColumn = ({ children, header, className = '' }) => {
  * @param {React.ReactNode} children - The card components to display
  * @param {number} [columns] - Optional maximum number of columns (responsive grid adapts to screen size, capped at this number). If not provided, uses auto-fit.
  * @param {string} [header] - Optional section heading text displayed above the grid
- * @param {string} [className] - Additional CSS classes to apply to the outer section
  */
-export const CustomCardGrid = ({
-  children,
-  columns,
-  header,
-  className = '',
-}) => {
+export const CustomCardGrid = ({ children, columns, header }) => {
   let gridClasses = 'mt-4 grid gap-4';
   let gridStyle = {};
 
@@ -273,7 +258,7 @@ export const CustomCardGrid = ({
   }
 
   return (
-    <section className={className}>
+    <section>
       {header ? (
         <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
           {header}
