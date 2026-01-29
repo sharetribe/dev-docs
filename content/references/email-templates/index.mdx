@@ -131,6 +131,38 @@ the template structure itself using the
 [`set-translations`](#set-translations) and [`set-locale`](#set-locale)
 helpers.
 
+#### `concat`
+
+**Parameters**:
+
+- ...strings - Any number of string literals and/or variables to
+  concatenate
+
+Example usage:
+
+```handlebars
+{{concat 'Hello ' customer.display-name '!'}}
+
+{{concat marketplace.url '/sale/' (url-encode id) '/'}}
+
+{{concat 'color:' primaryColor ';font-size:16px'}}
+```
+
+Inline helper that concatenates (joins) multiple strings and variables
+into a single string. No separators are automatically added between
+arguments, so you need to include spaces or other separators within your
+string literals where needed.
+
+The helper accepts any number of arguments and processes them in order
+from left to right. Variables are resolved to their values before
+concatenation.
+
+Common use cases include:
+
+- Building URLs with dynamic segments
+- Generating dynamic translation keys
+- Creating inline CSS styles with dynamic color values
+
 #### `contains`
 
 **Parameters**:
