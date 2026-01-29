@@ -238,8 +238,9 @@ export const CustomCardColumn = ({ children, header, className = '' }) => {
  * @param {React.ReactNode} children - The card components to display
  * @param {number} [columns] - Optional maximum number of columns (responsive grid adapts to screen size, capped at this number). If not provided, uses auto-fit.
  * @param {string} [header] - Optional section heading text displayed above the grid
+ * @param {Object} style - Optional override to the style for the outermost <section> component
  */
-export const CustomCardGrid = ({ children, columns, header }) => {
+export const CustomCardGrid = ({ children, columns, header, style = {} }) => {
   let gridClasses = 'mt-4 grid gap-4';
   let gridStyle = {};
 
@@ -258,7 +259,7 @@ export const CustomCardGrid = ({ children, columns, header }) => {
   }
 
   return (
-    <section>
+    <section style={style}>
       {header ? (
         <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
           {header}
