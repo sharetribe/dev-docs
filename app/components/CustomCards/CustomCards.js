@@ -59,6 +59,7 @@ const LandingPageCard = ({
   href,
   icon,
   className = '',
+  iconAltText,
 }) => {
   // Use 'a' element for links, 'article' for static cards
   const CardComponent = href ? 'a' : 'article';
@@ -92,7 +93,7 @@ const LandingPageCard = ({
           {/* Custom icon in top left */}
           <img
             src={iconSrc}
-            alt=""
+            alt={iconAltText}
             className="flex-shrink-0 self-start mb-16"
           />
           {/* Card content - title and description at bottom */}
@@ -109,7 +110,9 @@ const LandingPageCard = ({
             <LandingCardDescription>{description}</LandingCardDescription>
           </div>
           {/* Arrow indicator for links (default behavior - only show when href exists) */}
-          {href && <img src={iconSrc} alt="" className="flex-shrink-0" />}
+          {href && (
+            <img src={iconSrc} alt={iconAltText} className="flex-shrink-0" />
+          )}
         </>
       )}
     </CardComponent>
