@@ -52,9 +52,15 @@ const LandingCardDescription = ({ children }) => (
  * @param {string} [href] - Optional URL to make the card clickable as a link
  * @param {string|Object} [icon] - Optional icon to display. If not provided, ArrowRight icon is shown on the right. If a different icon is provided, it's shown in the top left.
  */
+/** True for http/https URLs (open in new window); false for mailto, relative paths, etc. */
+const isExternalUrl = (url) =>
+  typeof url === 'string' &&
+  (url.startsWith('http://') || url.startsWith('https://'));
+
 const LandingPageCard = ({ title, description, href, icon, iconAltText }) => {
   // Use 'a' element for links, 'article' for static cards
   const CardComponent = href ? 'a' : 'article';
+  const openInNewWindow = href && isExternalUrl(href);
 
   // Determine if we should use the default layout (text centered, arrow on right)
   // or the icon layout (icon top left, text bottom)
@@ -68,6 +74,7 @@ const LandingPageCard = ({ title, description, href, icon, iconAltText }) => {
   return (
     <CardComponent
       href={href}
+      {...(openInNewWindow && { target: '_blank', rel: 'noopener noreferrer' })}
       className={`
         group overflow-hidden rounded-lg
         text-current no-underline transition-all duration-150 ease-out hover:opacity-75
