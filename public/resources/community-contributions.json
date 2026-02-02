@@ -33,6 +33,19 @@
           "url": "https://www.npmjs.com/package/@types/sharetribe-flex-integration-sdk"
         }
       ]
+    },
+    {
+      "title": "TypeScript SDK for Sharetribe Flex",
+      "description": "A community-built SDK that makes building on Sharetribe Flex easier and more enjoyable for TypeScript developers.",
+      "username": "David Kogan",
+      "userProfileUrl": "https://github.com/Dkogan90",
+      "href": "https://www.npmjs.com/package/@vansite/ts-sharetribe-flex-sdk",
+      "additionalLinks": [
+        {
+          "label": "npm",
+          "url": "https://www.npmjs.com/package/@vansite/ts-sharetribe-flex-sdk"
+        }
+      ]
     }
   ]
 }
