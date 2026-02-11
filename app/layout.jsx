@@ -6,6 +6,7 @@ import localFont from 'next/font/local';
 // Components
 import Logo from './components/Logo.js';
 import SlackIcon from './components/SlackIcon.js';
+import AskAIButton from './components/AskAIButton.js';
 
 // Styles
 import 'nextra-theme-docs/style.css';
@@ -67,7 +68,9 @@ const navbar = (
     chatIcon={<SlackIcon />}
     projectLink="https://www.github.com/sharetribe/web-template"
     // ... Your additional navbar options
-  />
+  >
+    <AskAIButton />
+  </Navbar>
 );
 const footer = <Footer>{new Date().getFullYear()} © Sharetribe</Footer>;
 
