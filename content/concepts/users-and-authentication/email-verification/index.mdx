@@ -1,0 +1,144 @@
+---
+title: Email verification
+sidebarTitle: Email verification
+description:
+  This article describes how marketplace end user email verification
+  works in Sharetribe, and how a user's email address can be verified.
+---
+
+import { Callout, Table } from 'nextra/components';
+
+# Email verification
+
+When a user signs up to a Sharetribe marketplace, they must provide an
+email address. Sharetribe sends a verification email to that address to
+make sure the person signing up has access to the email inbox. This is
+done to prevent spam and undelivered messages due to typos and similar
+issues.
+
+Sharetribe does not send any other email notifications to the email
+address until the address is verified.
+
+The verification token is valid for 48 hours. The authenticated user can
+request a new token using the
+[current_user/send_verification_email](https://www.sharetribe.com/api-reference/marketplace.html#send-verification-email)
+Marketplace API endpoint.
+
+An authenticated user's email verification status is visible in the
+[`currentUser` resource](https://www.sharetribe.com/api-reference/marketplace.html#currentuser-resource-format)
+as `currentUser.attributes.emailVerified` (boolean).
+
+The Sharetribe Web Template shows a modal to the user the next time they
+sign in if they haven't verified their email address. The modal has
+links for the user to resend the verification email or update their
+email address if they notice a typo. The user can continue to use the
+marketplace normally whether or not their email address has been
+verified.
+
+## End-user email address verification
+
+The user can verify their email by making an API call to the
+[current_user/verify_email](https://www.sharetribe.com/api-reference/marketplace.html#verify-email-address)
+Marketplace API endpoint and passing in the verification token from the
+"Verify email address" notification.
+
+In the Sharetribe Web Template, that logic is built into the
+`/verify-email` route, and the verification token is passed to the API
+call as a query parameter. The default "Verify email address"
+notification constructs the link, so the user can click the link in the
+notification to verify their email.
+
+The "Verify email address" notification can be modified in Console. Read
+more:
+
+- [Built-in email notifications](/concepts/messages-notifications/email-notifications/#built-in-email-notifications)
+
+## Operator email verification steps
+
+An operator can also verify a user's email in Console, if they have for
+example received communications from the user through that email
+address. You can find instructions on verifying a user's email address
+through Console
+[in our Help Center](https://www.sharetribe.com/help/en/articles/9230296-manage-users#h_1896170a2e).
+
+<Callout type="warning">
+  It is imperative to make sure that the operator or integration only
+  verifies a user's email when the user in question has actively
+  provided the verification outside the Sharetribe platform. Verifying
+  an email address that has not been validated to belong to the user
+  exposes Sharetribe to spam reports, which is against our terms of
+  service.
+</Callout>
+
+## SSO email verification
+
+If a user signs up using SSO and the token received from the identity
+provider has an associated email address, the Sharetribe backend will
+use the token's `emailVerified` status as the Sharetribe account's email
+verification status. If the request contains an `email` parameter, the
+IdP token's email verification status is used only if the parameter
+email address matches the IdP token email address.
+
+If the address was verified by the SSO identity provider when the user
+signed up, then the user does not need to complete a separate email
+verification. If the address was not verified by the SSO identity
+provider when the user signed up, the user needs to complete the same
+email verification as with email signups. Verifying the email address
+with the identity provider later will not affect the email verification
+status of the Sharetribe account.
+
+If a user has an email address based account with a verified email
+address, and they log in with an IdP token that has a matching verified
+email address, the Sharetribe backend connects the IdP login with the
+existing account. After this first login, the IdP can be used to
+authenticate to the same account even if one of the email addresses
+later changes.
+
+However, if the email address in either the Sharetribe account or the
+IdP token is not verified, an attempt to login with an IdP token using a
+matching email address throws a 401 Unauthorized error.
+
+<br />
+<Table>
+  <thead>
+    <Table.Tr>
+      <Table.Th />
+      <Table.Th>
+        Existing account with matching address, verified email
+      </Table.Th>
+      <Table.Th>
+        Existing account with matching address, unverified email
+      </Table.Th>
+    </Table.Tr>
+  </thead>
+  <tbody>
+    <Table.Tr>
+      <Table.Td>**First SSO login, verified IdP token email**</Table.Td>
+      <Table.Td>
+        ✅ Login with IdP succeeds <br />
+        🔗 IdP linked to existing account
+      </Table.Td>
+      <Table.Td>❌ 401 Unauthorized</Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td>
+        **First SSO login, unverified IdP token email**
+      </Table.Td>
+      <Table.Td>❌ 401 Unauthorized</Table.Td>
+      <Table.Td>❌ 401 Unauthorized</Table.Td>
+    </Table.Tr>
+  </tbody>
+</Table>
+
+## Verifying a changed email address
+
+When a user changes their email address, a similar verification process
+takes place for the new address. In addition, Sharetribe sends a
+notification to the old email address about the email address change.
+Before the user verifies the new address, all marketplace notifications
+will continue their previous delivery pattern
+
+- if the previous address was verified, notifications continue to be
+  delivered to that address until the new address is verified
+- if the previous address was not verified, notifications are not
+  delivered until the new address is verified.
