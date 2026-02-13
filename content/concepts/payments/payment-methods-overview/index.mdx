@@ -30,6 +30,14 @@ and push payment methods:
   - iDEAL
   - Przelewy24
 
+<Callout type="info">
+  
+Stripe offers PayPal as a payment method. However, it is not supported in the 
+Sharetribe Stripe integration, because it 
+does not support  the `on_behalf_of` parameter for destination charges [(see Stripe Docs)](https://docs.stripe.com/payments/paypal#connect).
+
+</Callout>
+
 In Stripe's terms, Sharetribe supports payment methods that have
 _immediate payment confirmation_ (see the table
 [in this section of Stripe's guide to payments](https://stripe.com/en-fi/payments/payment-methods-guide#2-choosing-the-right-payment-methods-for-your-business))
