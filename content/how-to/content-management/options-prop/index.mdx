@@ -154,22 +154,14 @@ LandingPage.js as the _options_ prop:
 
 ```diff filename="LandingPage.js"
  return (
-   <PageBuilder
-     pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
-     title={schemaTitle}
-     description={schemaDescription}
-     schema={pageSchemaForSEO}
-     contentType={openGraphContentType}
-     inProgress={inProgress}
-+    options={{sectionComponents: sectionOverrides}}
-     fallbackPage={
-       <FallbackPage
-         title={schemaTitle}
-         description={schemaDescription}
-         schema={pageSchemaForSEO}
-         contentType={openGraphContentType}
-       />
-     }
+    <PageBuilder
+      pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
+      inProgress={inProgress}
+      error={error}
+      fallbackPage={<FallbackPage error={error} />}
+      featuredListings={getFeaturedListingsProps(camelize(ASSET_NAME), props)}
++     options={{sectionComponents: sectionOverrides}}
+    />
 ```
 
 When we go to the landing page, we can see that the the template now
