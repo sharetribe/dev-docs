@@ -1,0 +1,211 @@
+---
+title: Add transaction fields to a custom listing type
+sidebarTitle: Add transaction fields
+description:
+  This guide describes how to customize Sharetribe Web Template to
+  include transaction fields in a locally defined listing type.
+---
+
+# Add transaction fields to a custom listing type
+
+Starting in February 2026, you can configure transaction fields for your
+listing types in Console. Transaction fields are listing type specific.
+If you have configured your own custom listing types in code by
+[following these instructions](/how-to/transaction-process/change-transaction-process-in-template/#add-a-listing-type-that-uses-the-transaction-process),
+any transaction fields for those listing types will also need to be
+defined in code.
+
+This article illustrates how you can define transaction fields for your
+custom listing types.
+
+## Add transaction fields array
+
+A listing type can optionally have a `transactionFields` array that
+consists of transaction field definitions. The full configuration looks
+like this:
+
+```jsx filename="src/config/configListing.js"
+export const listingTypes = [
+  {
+    listingType: 'booking-with-negotiation',
+    label: 'Booking with negotiation',
+    transactionType: {
+      process: 'booking-with-negotiation',
+      alias: 'booking-with-negotiation/release-1',
+      unitType: 'night',
+    },
+    transactionFields: [
+      {
+        key: 'requests',
+        label: 'Extra requests for the hosts',
+        schemaType: 'text',
+        showTo: 'customer',
+      },
+      {
+        label: 'How many people are staying at the venue',
+        key: 'peopleStaying',
+        schemaType: 'long',
+        showTo: 'customer',
+        numberConfig: {
+          minimum: 1,
+          maximum: 10,
+        },
+        saveConfig: {
+          required: true,
+        },
+      },
+      {
+        key: 'schedulePreference',
+        label: 'Schedule preference',
+        schemaType: 'enum',
+        showTo: 'customer',
+        enumOptions: [
+          {
+            label: 'Morning cleanup (10am-12am)',
+            option: 'morning',
+          },
+          {
+            label: 'Afternoon cleanup (2pm-4pm)',
+            option: 'afternoon',
+          },
+        ],
+      },
+      {
+        key: 'dietaryPreferences',
+        label: 'Dietary preferences',
+        schemaType: 'multi-enum',
+        showTo: 'customer',
+        enumOptions: [
+          {
+            label: 'Vegetarian',
+            option: 'vegetarian',
+          },
+          {
+            label: 'Vegan',
+            option: 'vegan',
+          },
+          {
+            label: 'Gluten free',
+            option: 'glutenFree',
+          },
+          {
+            label: 'No caffeine',
+            option: 'decaf',
+          },
+          {
+            label: 'Nut free',
+            option: 'nutFree',
+          },
+          {
+            label: 'Dairy free',
+            option: 'dairyFree',
+          },
+        ],
+      },
+    ],
+  },
+```
+
+Transaction fields need to be defined, at minimum, by the attributes
+**key**, **label**, **schemaType**, and **showTo**.
+
+```jsx
+{
+  key: 'requests',
+  label: 'Extra requests for the hosts',
+  schemaType: 'text',
+  showTo: 'customer',
+},
+```
+
+The **schemaType** attribute determines the shape of the data being
+saved:
+
+- **enum** attributes are saved as a single string value from a list of
+  predefined options
+- **multi-enum** attributes are saved as an array of string values from
+  a list of predefined options
+- **boolean** attributes are saved as **true** or **false** boolean
+  values
+- **long** attributes are saved as long i.e. as an 8-byte whole number
+- **text** attributes are saved as a single text entry
+- **youtubeVideoUrl** attributes are saved as a single text entry and
+  displayed in the Sharetribe Web Template as an embedded Youtube video
+  component
+
+The **showTo** attribute determines the participant of the transaction
+from whom the fields are collected.
+
+For fields with `schemaType: enum` or `schemaType: multi-enum`, you need
+to define an **enumOptions** attribute. The `enumOptions` attribute is
+an array of objects, and each object needs to define **option** and
+**label** attributes.
+
+```jsx
+{
+  key: 'schedulePreference',
+  label: 'Schedule preference',
+  schemaType: 'enum',
+  showTo: 'customer',
+  enumOptions: [
+    {
+      label: 'Morning cleanup (10am-12am)',
+      option: 'morning',
+    },
+    {
+      label: 'Afternoon cleanup (2pm-4pm)',
+      option: 'afternoon',
+    },
+  ],
+},
+
+```
+
+For fields with `schemaType: long`, you can optionally define a
+**numberConfig** attribute with `minimum` and `maximum` attributes. If
+the field has a `numberConfig` attribute defined, the Sharetribe Web
+Template validates the input against those boundaries.
+
+For all fields, you can optionally define a **saveConfig** attribute to
+set the field as required.
+
+```jsx
+{
+  label: 'How many people are staying at the venue',
+  key: 'peopleStaying',
+  schemaType: 'long',
+  showTo: 'customer',
+  numberConfig: {
+    minimum: 1,
+    maximum: 10,
+  },
+  saveConfig: {
+    required: true,
+  },
+},
+```
+
+## Verify where the fields are collected and displayed for your process
+
+Transaction fields are collected in different places according to the
+transaction process.
+
+- `default-inquiry`: transaction fields with `showTo: 'customer'` are
+  collected on CheckoutPageWithInquiryProcess page. Fields with
+  `showTo: 'provider'` are not collected.
+- `default-booking` and `default-purchase`: transaction fields with
+  `showTo: 'customer'` are collected on CheckoutPageWithPayment. Fields
+  with `showTo: 'provider'` are not collected.
+- `default-negotiation`: transaction fields with `showTo: 'customer'`
+  are collected on RequestQuotePage, and transaction fields with
+  `showTo: 'provider'` are collected on the MakeOfferPage.
+
+Transaction fields are displayed on the TransactionPage. The page passes
+the prop `transactionFieldsComponent` to `TransactionPanel`,
+`RequestQuote`, and `Offer` components, and those components then
+display the transaction fields in the correct context.
+
+If you are using a custom transaction process with your custom listing
+type, you will need to review the logic that defines how transaction
+fields are collected and displayed. Depending on the process, you may
+need to make changes.
