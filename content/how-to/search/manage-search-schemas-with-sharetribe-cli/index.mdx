@@ -297,19 +297,20 @@ If you wish to remove a schema, you can use the `search unset` command.
 
 ## Adding a search schema with a default value
 
-Sometimes, you may want to query listings that do not have a certain
+Sometimes, you may want to query entities that do not have a certain
 attribute set. For instance, you may have promoted listings on your
 marketplace, labelled with a metadata attribute `isPromoted: true`. If
 you only have a handful of promoted listings, you likely do not want to
 tag all other listings with `isPromoted: false`.
 
 Instead, Sharetribe allows you to set a default value for the search
-schema – all listings that do not have the attribute get returned when
-querying the default value.
+schema – all listings (or users, or transactions) that do not have the
+attribute get returned when querying the default value.
 
-You can set the default value for a search schema simply by passing a
-`--default` flag with the desired default value. To create the search
-schema described above, the Sharetribe CLI command is as follows:
+You can set the default value for a search schema of any entity type by
+passing a `--default` flag with the desired default value. To create a
+listing search schema described above, the Sharetribe CLI command is as
+follows:
 
 ```
 $ flex-cli search set --key isPromoted --type boolean --scope metadata --default false -m my-marketplace-dev
