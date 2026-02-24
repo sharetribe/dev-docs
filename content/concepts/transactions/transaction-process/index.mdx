@@ -182,7 +182,19 @@ Transitions describe the possible next steps from a particular state.
 They also describe who can complete the steps. If there are no possible
 transitions from a state, the transaction has ended.
 
-Technically, transitions can be considered the main building block of
+It is possible to create loops in a transaction process. For example, in
+the `default-negotiation` process, transition
+`transition/customer-make-counter-offer` transitions from
+`state/offer-pending` to `state/customer-offer-pending`, and
+`transition/provider-make-counter-offer` transitions from
+`state/customer-offer-pending` to `state/offer-pending`. This means that
+the transaction can go between these two states multiple times. A
+transition can also have a single state as both `:from` and `:to`
+parameters – for example, `transition/update-from-update-pending` in the
+`default-negotiation` process both starts and ends in
+`state/update-pending`.
+
+Technically, transitions can be considered the main building blocks of
 Sharetribe transaction process. They define, implicitly or explicitly,
 all the other elements of a transaction process. We will not go to into
 more detail in this article, but you can find more information
