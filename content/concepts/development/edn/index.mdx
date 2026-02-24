@@ -8,6 +8,8 @@ description:
   Platform.
 ---
 
+import { Callout, Tabs } from 'nextra/components';
+
 # The edn format
 
 Sharetribe transaction processes and migration content uses Clojure
@@ -79,6 +81,31 @@ mentioned in the earlier example.
    ;; the value of :to is a qualified keyword in namespace 'state'
    :to :state/reviewed}
 ```
+
+<Callout type="info">
+
+You can use the Sharetribe CLI to validate your transaction process.
+Make sure you are using the latest CLI version when validating the
+process to avoid unnecessary errors.
+
+{/* prettier-ignore */}
+<Tabs items={['yarn', 'npm']}>
+  <Tabs.Tab>
+  ```shell 
+  yarn global add flex-cli
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```shell 
+  npm install --global flex-cli
+  ```
+  </Tabs.Tab>
+</Tabs>
+{/* // prettier-ignore */}
+
+You can see the CLI version you are using by running `flex-cli version`.
+
+</Callout>
 
 ## Creating your edn file for a data migration
 
