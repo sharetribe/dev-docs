@@ -6,7 +6,7 @@ description:
 published: true
 ---
 
-import { Steps } from 'nextra/components';
+import { Callout, Steps } from 'nextra/components';
 
 # Payments
 
@@ -175,6 +175,13 @@ One of the strengths of Sharetribe is that you have complete control
 over the transaction process. In terms of payments, you can make
 parallel paths depending on your payment strategy, and you can fine-tune
 the timeline of different actions to suit your marketplace.
+
+<Callout type="info">
+  Even when using parallel paths, a single transaction can only ever
+  have a single PaymentIntent associated with it. When customizing your
+  transaction process, make sure that a single path can only process a
+  single payment to avoid issues.
+</Callout>
 
 You can edit the transaction processes on your marketplace with
 [Sharetribe CLI](/how-to/transaction-process/edit-transaction-process-with-sharetribe-cli/).
