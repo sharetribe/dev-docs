@@ -36,6 +36,15 @@ provided by the user. The search can find from listing title and
 description. You can also choose to index some public data fields so the
 search finds from them as well.
 
+<Callout type="info">
+
+Because descriptions can be toggled off as a requirement per listing
+type, some listings may have 'hidden' descriptions if this setting
+changed after the listing was created. The description is still indexed
+for search and factored into the relevance score.
+
+</Callout>
+
 The keyword search works so that it matches the `keywords` parameter to
 text content of a listing. The listing attributes that are matched in
 keyword search by default are _title_ and _description_. Listing public
@@ -188,7 +197,7 @@ filtering also has day-based and time-based options.
   availability plans. The corresponding query parameters are
   **day-full** and **day-partial**.
 - Time-based availability filtering matches listings with time-based
-  availability plans. The corresponding query parametrers are
+  availability plans. The corresponding query parameters are
   **time-full** and **time-partial**. Queries using time-based
   availability filtering do not support pagination.
 
