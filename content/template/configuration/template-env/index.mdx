@@ -147,12 +147,18 @@ of environment variables.
 
 <Callout>
 
-The template is built on top of Create React App (CRA). CRA uses
-WebpackDevServer for providing Hot Module Reloading feature. In some
-environments, WebpackDevServer might require configuring additional
-environment variables. You should also check
+The Sharetribe Template webpack configuration is based on the now
+deprecated Create React App (CRA). The template uses Webpack's DevServer
+for providing Hot Module Reloading feature. In some environments,
+Webpack DevServer might require configuring additional environment
+variables.
+
+You can also check out
 [CRA's advanced configurations](https://create-react-app.dev/docs/advanced-configuration)
-if you experience problems with socket ports.
+if you experience problems with socket ports. Most of these advanced
+configurations are still used in the template, but it's best to ensure
+by making a codebase search for the specific variable you're wondering
+about.
 
 </Callout>
 
