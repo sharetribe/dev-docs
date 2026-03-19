@@ -98,6 +98,9 @@ const kapaScript = (
     data-consent-screen-disclaimer="By clicking 'Allow tracking and use AI assistant', you consent to anonymous user tracking which helps us improve our service. We don't collect any personally identifiable information."
     data-consent-screen-accept-button-text="Allow tracking and use AI assistant"
     data-consent-screen-reject-button-text="No, thanks"
+    // MCP Conf
+    data-mcp-enabled="true"
+    data-mcp-server-url="https://sharetribe.mcp.kapa.ai"
   ></script>
 );
 
