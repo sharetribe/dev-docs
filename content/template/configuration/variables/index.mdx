@@ -384,12 +384,23 @@ datepicker element.
 
 ### Sorting
 
-You can adjust sorting options through the `sortConfig` option. Here you
-can disable the sorting element altogether. You can add or remove
-existing sorting options by editing the options array. Extended data can
-also be used to sort listings. See all the available sorting options in
-the
+Operators can configure which sort options appear in the SortBy dropdown
+directly in Console, toggling individual options on or off without any
+code changes. These Console-managed settings are fetched via the Asset
+Delivery API and take precedence over local configuration.
+
+The `sortConfig` in
+[configSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/configSearch.js)
+defines the default sort options used as a fallback when no hosted
+configuration is present. You can also disable the sorting element
+altogether, or add sort options based on extended data through this
+local config. See all the available sorting options in the
 [API reference](https://www.sharetribe.com/api-reference/marketplace.html#sorting).
+
+If you want to customize how hosted and local sort configurations are
+merged, refer to the
+[hosted and local configurations](/template/configuration/hosted-and-local-configurations/)
+article.
 
 ## Map configurations
 
