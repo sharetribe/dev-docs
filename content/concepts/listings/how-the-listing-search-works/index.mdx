@@ -31,10 +31,9 @@ so that the data is indexed correctly for search.
 
 ## Keyword search
 
-The search can be used to find listings that have a certain keyword
-provided by the user. The search can find from listing title and
-description. You can also choose to index some public data fields so the
-search finds from them as well.
+The keyword search matches the user's search query against the listing's
+title, description, and `text` type metadata and public data fields with
+a defined schema.
 
 <Callout type="info">
 
@@ -48,11 +47,11 @@ for search and factored into the relevance score.
 The keyword search works so that it matches the `keywords` parameter to
 text content of a listing. The listing attributes that are matched in
 keyword search by default are _title_ and _description_. Listing public
-data fields can also be used in the keyword search by defining them to
-have type `text` in the marketplace's
-[listing public search schema](/references/extended-data/#search-schema).
-All `text` public data fields with defined schema are indexed for
-keyword search.
+data fields and metadata fields can also be used in the keyword search
+by defining a `text` type
+[search schema](/references/extended-data/#search-schema). All `text`
+type public data and metadata fields with a defined schema are indexed
+for the keyword search.
 
 When the listing text content is indexed, in addition to indexing the
 actual word, it is also broken into subwords, _n-grams_. For words
@@ -64,7 +63,7 @@ following n-grams are indexed: _loc_, _loca_, _ocal_, and _cal_.
 The search results are sorted so that a match with an actual word from
 the listing always weighs more than a match with an n-gram. The order in
 which matches in different fields of a listing effect the search score
-is the following: _title > description > public data fields_. However,
+is the following: _title > description > extended data fields_. However,
 the search score differences between the fields are substantially
 smaller than the difference between a match with an actual word in the
 listing and an n-gram. Listings that don't match the search keywords at
