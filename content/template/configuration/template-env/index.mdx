@@ -165,6 +165,15 @@ When the app is started locally with `yarn run dev` or
 can be edited only in the .env file. The repository contains a template
 file `.env-template` with default configuration.
 
+<Callout type="info">
+
+The template also has an .env.development file, used when you run
+`yarn run dev` or `yarn run dev-server`, and .env.test file, used when
+you run `yarn run test`. These files are used for context-specific
+overrides, such as setting REACT_APP_ENV.
+
+</Callout>
+
 In production, it's recommended that you set the configuration via env
 variables and do not deploy an `.env` file. The client application will
 only be packaged with env variables that start with `REACT_APP`. This
