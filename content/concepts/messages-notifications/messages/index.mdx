@@ -7,7 +7,7 @@ description:
   access messages through Zapier.
 ---
 
-import { Steps } from 'nextra/components';
+import { Callout, Steps } from 'nextra/components';
 
 # Messages
 
@@ -36,6 +36,26 @@ which requires an authenticated user’s access token to call. The
 [Integration API](/introduction/getting-started-with-integration-api/)
 does not offer an endpoint to send messages, and therefore, only
 authenticated users can send messages through the Marketplace API.
+
+<Callout type="info">
+  Allowing operators to send messages, or more than two users to
+  participate in a conversation, would require integrating a third-party
+  tool to replace the default Sharetribe messaging system.
+</Callout>
+
+### Marketplace leakage and sanitizing content in sent messages
+
+On some marketplaces, operators may want to prevent users from sharing
+phone numbers or other contact information. Sharetribe does not
+currently have a built-in mechanism to configure this in Console.
+However, you can modify the message sending logic in your custom code to
+check the message content for unwanted elements, and then replace that
+content with a sanitized version before passing it to the
+`messages.send` endpoint.
+
+It's good to note that if you block certain content, users might find
+ways to circumvent your technical measures, so it is good to also
+[implement other mechanisms to prevent marketplace leakage](https://www.sharetribe.com/academy/how-to-discourage-people-from-going-around-your-payment-system/).
 
 ## Querying messages
 
