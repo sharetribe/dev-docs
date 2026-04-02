@@ -62,3 +62,25 @@ html {
 .dark .ask-ai-button:hover {
   background-color: #374151;
 }
+
+.ask-ai-button--hero {
+  padding: 8px 24px;
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: rgb(46, 204, 113);
+  border-color: rgb(46, 204, 113);
+  color: #fff;
+}
+
+.ask-ai-button--hero:hover,
+.dark .ask-ai-button--hero:hover {
+  background-color: rgb(39, 174, 96);
+  border-color: rgb(39, 174, 96);
+  color: #fff;
+}
+
+.dark .ask-ai-button--hero {
+  background-color: rgb(46, 204, 113);
+  border-color: rgb(46, 204, 113);
+  color: #fff;
+}

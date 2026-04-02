@@ -1,10 +1,10 @@
 'use client';
 
-export default function AskAIButton() {
+export default function AskAIButton({ variant = 'default' }) {
   return (
     <button
       onClick={() => window.Kapa?.open()}
-      className="ask-ai-button"
+      className={`ask-ai-button ask-ai-button--${variant}`}
       type="button"
     >
       Ask AI

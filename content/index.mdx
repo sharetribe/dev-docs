@@ -11,6 +11,7 @@ hideCopyPage: true
 import { MainHeader } from '../app/components/StyledHeaders/MainHeader';
 import Center from '../app/components/Center/Center';
 import RoundedLinkButton from '../app/components/RoundedLinkButton/RoundedLinkButton';
+import AskAIButton from '../app/components/AskAIButton.js';
 import {
   LandingPageCard,
   CustomCardGrid,
@@ -59,28 +60,10 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
     you can adapt it to fit your unique idea.
   </span>
 
-  <RoundedLinkButton
-    text="Read Introduction"
-    href="/introduction/"
-    color="rgb(46,204,113)"
-  />
+  <AskAIButton variant="hero" />
 </Center>
 
-<CustomCardGrid header="Get Started" columns={2}>
-  <LandingPageCard
-    title="Install the Template"
-    description="Install the Sharetribe Web Template and start customizing."
-    href="introduction/getting-started-with-web-template/"
-    icon={DownloadIcon}
-    iconAltText="Visit the Dev Docs page for instructions on installing the Sharetribe Web Template"
-  />
-  <LandingPageCard
-    title="API Reference"
-    description="Explore Sharetribe's APIs, endpoints and schemas."
-    href="https://www.sharetribe.com/api-reference/"
-    icon={GitForkIcon}
-    iconAltText="Visit Sharetribe's API reference documentation"
-  />
+<CustomCardGrid header="Get started" columns={2}>
   <LandingPageCard
     title="Create an account"
     description="Create a free Sharetribe account and kick off development."
@@ -89,11 +72,25 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
     iconAltText="Visit the Sharetribe sign-up page"
   />
   <LandingPageCard
-    title="Migrate from another platform"
-    description="Migrate an existing marketplace to Sharetribe."
-    href="how-to/migrations/migrating-from-outside-sharetribe/"
-    icon={ArrowsLeftRightIcon}
-    iconAltText="Visit the Dev Docs page for instructions on migrating to Sharetribe"
+    title="Understand the architecture"
+    description="Explore how the Sharetribe platform is structured and how its components interact."
+    href="introduction"
+    icon={DownloadIcon}
+    iconAltText="Visit the Dev Docs page for instructions on installing the Sharetribe Web Template"
+  />
+  <LandingPageCard
+    title="Try out the SDKs"
+    description="Explore the JavaScript SDKs and start building with the Sharetribe API."
+    href="https://sharetribe.github.io/flex-sdk-js/"
+    icon={GitForkIcon}
+    iconAltText="Visit the Dev Docs page for instructions on installing the Sharetribe Web Template"
+  />
+  <LandingPageCard
+    title="Install the template"
+    description="Install the Sharetribe Web Template and start customizing."
+    href="introduction/getting-started-with-web-template/"
+    icon={DownloadIcon}
+    iconAltText="Visit the Dev Docs page for instructions on installing the Sharetribe Web Template"
   />
 </CustomCardGrid>
 
@@ -105,16 +102,28 @@ import UserCirclePlusIcon from './assets/UserCirclePlus.svg';
     iconAltText="Visit the Dev Docs directory for tutorials"
   />
   <LandingPageCard
-    title="Help center"
+    title="Help Center"
     description="Find answers to your non-technical questions"
     href="https://www.sharetribe.com/help/en/"
     iconAltText="Visit the Help Center"
   />
   <LandingPageCard
-    title="Developer blog"
-    description="Find guides written by and for our developer community"
+    title="Developer Blog"
+    description="Find guides written by and for the community of Sharetribe developers"
     href="https://www.sharetribe.com/developer-blog/"
     iconAltText="Visit the Developer Blog"
+  />
+  <LandingPageCard
+    title="API Reference"
+    description="Explore Sharetribe's APIs, endpoints and schemas."
+    href="https://www.sharetribe.com/api-reference/"
+    iconAltText="Visit Sharetribe's API reference documentation"
+  />
+  <LandingPageCard
+    title="Migrate from another platform"
+    description="Migrate an existing marketplace to Sharetribe."
+    href="how-to/migrations/migrating-from-outside-sharetribe/"
+    iconAltText="Visit the Dev Docs page for instructions on migrating to Sharetribe"
   />
 </CustomCardGrid>
 
