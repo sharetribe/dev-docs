@@ -44,7 +44,10 @@ authenticate properly. A trusted token can be obtained by exchanging a
 valid access token to a trusted one in the Authentication API by
 providing a client secret. The client secret is not to be exposed
 publicly, securing that privileged transitions can only be invoked by a
-trusted source, i.e. your own backend implementation.
+trusted source, i.e. your own backend implementation. Attempting to
+initiate or transition a transaction with a privileged transition with a
+non-trusted access token (either a valid anonymous token or a valid user
+access token) will throw a 403 Forbidden error.
 
 ![Authentication flow with a trusted access token](./auth-flow.png)
 
