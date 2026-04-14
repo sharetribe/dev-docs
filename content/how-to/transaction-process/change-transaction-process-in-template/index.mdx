@@ -218,6 +218,35 @@ should add (or remove) those. Transition names need to exactly match the
 transitions used in Marketplace API, since transitions are part of
 queried transaction entities.
 
+<Callout type="warning">
+
+**Keeping transition names unique across all your transaction
+processes.**
+
+Two parts of the Template rely on transition names without also checking
+which process a transaction belongs to:
+
+- `server/api-util/negotiation.js`: helper functions such as
+  `isIntentionToMakeOffer` check the transition name only. If a
+  different process has a transition that shares a name with a
+  transition from `default-negotiation`, offer-handling logic will
+  trigger incorrectly for that process.
+- `user.duck.js`: the inbox notification count makes two API queries
+  (one per user role) based on state names collected from all
+  registered  
+  processes. Duplicate state names across processes, where a "needs
+  attention" state in one process shares a name with a neutral state in
+  another, will cause inaccurate notification counts.
+
+If you modify either file to support a new process, guard against the
+above by checking the process name alongside the transition or state
+name.
+
+Note: transitions that work identically in every process (such as review
+transitions) can safely share a name across processes.
+
+</Callout>
+
 You can find the names of your transaction process transitions and
 states by viewing your process in Console > Build > Advanced >
 Transaction process visualiser.
