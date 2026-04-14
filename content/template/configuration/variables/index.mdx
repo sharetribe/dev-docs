@@ -275,7 +275,7 @@ extended data field using the following options:
       { option: 'titanium', label: 'Titanium' },
     ],
     filterConfig: {
-      indexForSearch: false,
+      showFilter: false,
       filterType: 'SelectSingleFilter',
       label: 'Frame material',
       group: 'primary',
@@ -303,18 +303,18 @@ page:
 ![Image of input field](./description.png)
 
 We will also be able to see the new extended data field on the search
-page and use it to filter listings. If we change the `indexForSearch`
-value to `true`, we will see a new filter component pop up, that can be
-used to filter listings by frame material:
+page and use it to filter listings. If we change the `showFilter` value
+to `true`, we will see a new filter component pop up, that can be used
+to filter listings by frame material:
 
 ![Filter component to filter listings with frame material](./filtercomponent.png)
 
 <Callout>
 
-If you do enable the `indexForSearch` variable, you must also set a
-search schema. Without setting a search schema for the extended data,
-the filter component will not work. Learn how to set a search schema for
-a extended data attribute in the
+If you do enable the `showFilter` variable, you must also set a search
+schema. Without setting a search schema for the extended data, the
+filter component will not work. Learn how to set a search schema for a
+extended data attribute in the
 [manage search schemas article](/how-to/search/manage-search-schemas-with-sharetribe-cli/).
 
 </Callout>
