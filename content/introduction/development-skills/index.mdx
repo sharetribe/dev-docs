@@ -54,17 +54,27 @@ template with code will likely require skills with the following tools:
 ## Development tooling
 
 While the Sharetribe Web Template uses Webpack, PostCSS, and various
-other tools behind the scene, knowledge of these technologies is not
-needed in usual customizations. Compared to a usual frontend project
-with a long list of dependencies and extensive Webpack configuration
-files, Sharetribe Web Template hides all this behind a
-[sharetribe-scripts](https://www.npmjs.com/package/sharetribe-scripts)
-NPM package.
+other tools, knowledge of these technologies is not needed in usual
+customizations. Sharetribe Web Template has a default Webpack setup
+(based on the now deprecated
+[Create React App](https://github.com/facebook/create-react-app)
+library) with server-side rendering, code-splitting, and CSS modules
+functionality. In most cases you do not need to make changes to this
+setup.
 
-`sharetribe-scripts` is a fork of the `react-scripts` package in the
-amazing [Create React App](https://github.com/facebook/create-react-app)
-tool. We have added server side rendering and CSS modules, but otherwise
-all the nice things from `create-react-app` are still there.
+The
+[config/README.md file](https://github.com/sharetribe/web-template/tree/main/config/README.md)
+in the root directory of the repository has more information on the
+webpack setup, in case you have a use case for modifying the
+configurations. These use cases might include
+
+The configurations defined in the `config/` directory are used in the
+following scripts (defined under the `scripts/` directory):
+
+- `scripts/build.js`
+- `scripts/build-server.js`
+- `scripts/start.js`
+- `scripts/test.js`
 
 ## Getting help
 

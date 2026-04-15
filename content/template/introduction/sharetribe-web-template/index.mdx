@@ -26,12 +26,13 @@ Access the
 ## Technical overview
 
 The Sharetribe Web Template is a React application built on top of a
-forked version of
-[Create React App (CRA)](https://create-react-app.dev/). The modified
-version of CRA adds support for server-side rendering (SSR) and CSS
-modules. The template also includes a Node.js server, which enables SSR
-and other essential features which require communicating with the
-Sharetribe APIs without allowing the client to modify the requests.
+vendored version of the now deprecated
+[Create React App (CRA)](https://create-react-app.dev/). In addition to
+the basic CRA setup, the template uses server-side rendering (SSR) and
+code splitting. The template also includes a Node.js server, which
+enables SSR and other essential features which require communicating
+with the Sharetribe APIs without allowing the client to modify the
+requests.
 
 The included Node.js server enables server-side rendering, which helps
 to improve search engine optimization and speed up the application's
