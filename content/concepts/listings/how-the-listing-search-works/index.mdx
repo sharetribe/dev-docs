@@ -148,9 +148,10 @@ sdk.listings.query({
 You would then index the attributes by adding a search schema according
 to the data type of the extended data attribute:
 
-- String values can be indexed for keyword search with **schemaType:
-  text**, or for **enum** search, i.e. searching with the attribute name
-  and exact values, using **schemaType: enum**
+- String values can be indexed for keyword search using **schemaType:
+  text** or **schemaType: shortText**, or for enum search, i.e.
+  searching with the attribute name and exact values, using
+  **schemaType: enum**
 - Arrays of strings can be indexed for multi-enum search, i.e. searching
   with the attribute name and exact values, using **schemaType:
   multi-enum**
