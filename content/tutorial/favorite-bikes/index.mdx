@@ -148,7 +148,7 @@ Finally, we will show this component in the order panel, right under the
 author information. Add the `{favoriteButton}` row under the `</div>`
 with _className_ `css.author`.
 
-```jsx filename="OrderPanel.js" {10} showLineNumbers{468}
+```jsx filename="OrderPanel.js" {16}
 <div className={css.author}>
   <AvatarSmall user={author} className={css.providerAvatar} />
   <span className={css.providerNameLinked}>
@@ -163,13 +163,10 @@ with _className_ `css.author`.
       values={{ name: authorDisplayName }}
     />
   </span>
-</div>;
-{
-  favoriteButton;
-}
-{
-  /* Add this row */
-}
+</div>
+{favoriteButton}
+
+{showPriceMissing ? (
 ```
 
 Now, you can see the button in the order panel. However, the button text
@@ -326,16 +323,18 @@ In addition, we need to import the Redux action that we will use to
 actually update the user’s profile. For that, we can use the
 _updateProfile_ action from _ProfileSettingsPage.duck.js_.
 
-```js filename="ListingPageCarousel.js" {9, 13} showLineNumbers{72}
+```js filename="ListingPageCarousel.js" {9, 14} showLineNumbers{40}
 import {
   LoadingPage,
   ErrorPage,
-  priceData,
-  listingImages,
   handleContactUser,
   handleSubmitInquiry,
+  handleNavigateToMakeOfferPage,
+  handleNavigateToRequestQuotePage,
   handleSubmit,
   handleToggleFavorites, // add this row to the existing './ListingPage.shared' import
+  priceForSchemaMaybe,
+  getDerivedRenderData,
 } from './ListingPage.shared';
 
 // Add this whole import statement
@@ -363,47 +362,62 @@ You can read more about Redux
 </details>
 
 We cannot call the _updateProfile_ Redux action directly as a function.
-Whenever we use Redux actions from a container, we need to use the
-[mapDispatchToProps](https://react-redux.js.org/using-react-redux/connect-mapdispatch)
-mapping to use the actions through props in the component.
+To dispatch Redux actions from a component, we use the
+[useDispatch](https://react-redux.js.org/api/hooks#usedispatch) hook.
 
-The _ListingPageCarousel_ component already has a _mapDispatchToProps_
-function, so we can add the _updateProfile_ action as a prop for the
-component there.
+In _ListingPageCarousel.js_, there are two components. The outer one,
+`ListingPage`, is responsible for wiring up Redux: it calls
+`useDispatch()` to get a reference to the store's dispatch function, and
+then creates a separate callback for each Redux action using React's
+[useCallback](https://react.dev/reference/react/useCallback) hook. Those
+callbacks are then passed as props to the inner `ListingPageComponent`,
+which does the actual rendering.
 
-Find the _mapDispatchToProps_ function in the component, and add the
-_onUpdateFavorites_ row below.
+We will add `onUpdateFavorites` in the same way. Find the `ListingPage`
+component — it starts after the `ListingPageComponent` definition — and
+add the new `useCallback` after the other existing ones.
 
-```jsx filename="ListingPageCarousel.js" {2} showLineNumbers{602}
-const mapDispatchToProps = (dispatch) => ({
-  onUpdateFavorites: (payload) => dispatch(updateProfile(payload)), // add this row
-  onManageDisableScrolling: (componentId, disableScrolling) =>
-    dispatch(manageDisableScrolling(componentId, disableScrolling)),
-  callSetInitialValues: (
-    setInitialValues,
-    values,
-    saveToSessionStorage
-  ) => dispatch(setInitialValues(values, saveToSessionStorage)),
-  onFetchTransactionLineItems: (params) =>
-    dispatch(fetchTransactionLineItems(params)), // for OrderPanel
-  onSendInquiry: (listing, message) =>
-    dispatch(sendInquiry(listing, message)),
-  onInitializeCardPaymentData: () =>
-    dispatch(initializeCardPaymentData()),
-  onFetchTimeSlots: (listingId, start, end, timeZone, options) =>
-    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)), // for OrderPanel
-});
+Add the new callback after the last existing `useCallback` in
+`ListingPage` (after the `onFetchTimeSlots` callback):
+
+```jsx filename="ListingPageCarousel.js" {7-8} showLineNumbers{440}
+const onFetchTimeSlots = useCallback(
+  (listingId, start, end, timeZone, options) =>
+    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)),
+  [dispatch]
+);
+
+const onUpdateFavorites = useCallback(
+  (payload) => dispatch(updateProfile(payload)),
+  [dispatch]
+);
+
+return (
+  <ListingPageAccessWrapper
+```
+
+Then pass it as a prop to `ListingPageAccessWrapper` inside the `return`
+of `ListingPage`, alongside the other existing props:
+
+```jsx filename="ListingPageCarousel.js" {3} showLineNumbers{451}
+return (
+  <ListingPageAccessWrapper
+    {...props}
+    onUpdateFavorites={onUpdateFavorites}
+    {/* ...all other existing props stay as they are */}
+  />
 ```
 
 We can give our prop a descriptive name, such as _onUpdateFavorites_,
 since in this component we are only using it for that purpose.
 
-Now, the _ListingPageCarousel_ props contains the _onUpdateFavorites_
-function that we can use. Let’s add it to the
+Now that the _ListingPage_ creates _onUpdateFavorites_ and passes it as
+a prop, _ListingPageCarousel_ props can receive and use it. Let’s add it
+to the
 [destructured](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 list in the beginning of the component.
 
-```jsx filename="ListingPageCarousel.js" {5} showLineNumbers{131}
+```jsx filename="ListingPageCarousel.js" {5} showLineNumbers{91}
     onInitializeCardPaymentData,
     config,
     routeConfiguration,
@@ -520,21 +534,31 @@ section, all rows start with import.
 
 Then, we create the component itself. We first use
 [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-to set our props into constants for ease of use.
+to get the container state into constants for ease of use.
 
 We also create a few other constants to then pass to the returned
 element. Some of those constants are simple values, others are more
 complex elements.
 
 ```js
-export const FavoriteListingsPageComponent = props => {
-  const { listings, pagination, queryInProgress,
-  queryFavoritesError, queryParams, scrollingDisabled, intl } = props;
+const FavoriteListingsPage = props => {
+  const intl = useIntl();
+
+  const {
+    currentPageResultIds,
+    pagination,
+    queryInProgress,
+    queryFavoritesError,
+    queryParams,
+  } = useSelector(state => state.FavoriteListingsPage);
+
+  const listings = useSelector(state => getListingsById(state, currentPageResultIds));
+  const scrollingDisabled = useSelector(state => isScrollingDisabled(state));
 
   const hasPaginationInfo = !!pagination && pagination.totalItems != null;
   const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
 
-    const loadingResults = (
+  const loadingResults = (
     <div className={css.messagePanel}>
       <H3 as="h2" className={css.heading}>
         <FormattedMessage id="FavoriteListingsPage.loadingFavoriteListings" />
@@ -635,48 +659,9 @@ than one page of listings.
 };
 ```
 
-After the return statement, we define the component's properties in more
-detail.
-
-Then, we define the
-[mapStateToProps](https://react-redux.js.org/using-react-redux/connect-mapstate)
-function to determine what data from the Redux store should be returned
-as props for the component.
+Finally, we export the component as the default export.
 
 ```js
-const mapStateToProps = (state) => {
-  const {
-    currentPageResultIds,
-    pagination,
-    queryInProgress,
-    queryFavoritesError,
-    queryParams,
-  } = state.FavoriteListingsPage;
-  const listings = getListingsById(state, currentPageResultIds);
-  return {
-    currentPageResultIds,
-    listings,
-    pagination,
-    queryInProgress,
-    queryFavoritesError,
-    queryParams,
-    scrollingDisabled: isScrollingDisabled(state),
-  };
-};
-```
-
-Finally, we compose and export our component. We need to compose it with
-both
-[injectIntl](https://formatjs.io/docs/react-intl/api/#injectintl-hoc),
-which allows us to use marketplace texts in the component, and Redux,
-which allows us to get data from the store as props.
-
-```js
-const FavoriteListingsPage = compose(
-  connect(mapStateToProps),
-  injectIntl
-)(FavoriteListingsPageComponent);
-
 export default FavoriteListingsPage;
 ```
 
@@ -738,7 +723,7 @@ const favoriteListingsSlice = createSlice({
         queryFavoriteListingsThunk.fulfilled,
         (state, action) => {
           state.currentPageResultIds = resultIds(action.payload.data);
-          state.pagination = action.payload.meta;
+          state.pagination = action.payload.data.meta;
           state.queryInProgress = false;
         }
       )
@@ -932,13 +917,7 @@ array with the following code:
 
 ```jsx filename="userNav.js"
 const tabs = [
-  {
-    text: <FormattedMessage id="UserNav.yourListings" />,
-    selected: currentPage === 'ManageListingsPage',
-    linkProps: {
-      name: 'ManageListingsPage',
-    },
-  },
+  ...manageListingsTabMaybe,
   {
     text: <FormattedMessage id="UserNav.favoriteListings" />,
     selected: currentPage === 'FavoriteListingsPage',
