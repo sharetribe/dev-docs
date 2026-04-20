@@ -101,9 +101,38 @@ Render, please read our detailed deployment guides for both
 
 Deploying your marketplace to production is a three-step process:
 
-1. [Set environment variables](#environment-variables)
-2. [Build the app](#building-the-app)
-3. [Run the node server](#starting-the-app)
+1. [Install dependencies](#install-dependencies)
+2. [Set environment variables](#environment-variables)
+3. [Build the app](#building-the-app)
+4. [Run the node server](#starting-the-app)
+
+### Install dependencies
+
+In your project root, install dependency libraries:
+
+```shell
+yarn install
+```
+
+<Callout>
+
+Note: In some hosting environments, you might already have environment
+variables set before _yarn install_ is called. If the NODE_ENV variable
+is set to "production", Yarn won't
+[install dev dependencies](https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false).
+This can cause issues because Sharetribe Web Template lists
+Webpack-related packages as dev dependencies since they are not used in
+the production runtime. To avoid errors from the build script, you can
+run the following command instead:
+
+```shell
+yarn install --production=false
+```
+
+For example, on Render.com, you can set the build command to this:
+![Build command on Render.com](./render.com-build-command.png)
+
+</Callout>
 
 ### Environment variables
 
