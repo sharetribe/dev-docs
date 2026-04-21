@@ -119,13 +119,32 @@ the repository you want to deploy.
 
 ### Configure settings and environment variables
 
-Give your web service a name. You do not need to touch any other
-settings (such as environment, branch, build command and start command),
-and select the free plan. Before clicking on "create web service", click
-on "Advanced" to enter the required environment variables.
+Give your web service a name.
 
-You can choose to enter the environment variables one-by-one through the
-browser interface:
+Find the Build command, and set it to this value:
+
+```
+yarn install --production=false; yarn build
+```
+
+![Render build command](./render-build-command-tutorial.png)
+
+You do not need to touch any other settings (such as environment,
+branch, and start command), and select the free plan. Before clicking on
+"create web service", click on "Advanced" to enter the required
+environment variables.
+
+There is one environment variable you need to add through the browser
+interface, related to Node version. Add the following key and value:
+
+```
+NODE_VERSION: 22.22.0
+```
+
+![Node_version environment variable](./render-env-variable-node-version.png)
+
+For the other environment variables, you can choose to enter them
+one-by-one through the browser interface:
 
 ![Render environment variables](./render-env-var-1.png)
 
