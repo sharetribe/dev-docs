@@ -441,7 +441,9 @@ we need to add a button for Github login to the AuthenticationPage.
   <FileTree.Folder name="src" defaultOpen>
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="AuthenticationPage" defaultOpen>
-        <FileTree.File name="AuthenticationPage.js" active />
+        <FileTree.Folder name="SocialLoginButtons" defaultOpen>
+          <FileTree.File name="SocialLoginButtons.js" active />
+        </FileTree.Folder>
       </FileTree.Folder>
     </FileTree.Folder>
   </FileTree.Folder>
@@ -457,11 +459,17 @@ Then, create a function _authWithGithub_ similar to _authWithGoogle_ and
 _authWithFacebook_, which adds the default URL parameters to the API
 call and then redirects user to the authentication endpoint.
 
-```jsx filename="AuthenticationPage.js"
+```jsx filename="SocialLoginButtons.js"
 const authWithGithub = () => {
   const { baseUrl, queryParams } = getDataForSSORoutes();
   window.location.href = `${baseUrl}/api/auth/github?${queryParams}`;
 };
+
+const githubAuthenticationMessage = isLogin ? (
+  <FormattedMessage id="AuthenticationPage.loginWithGithub" />
+) : (
+  <FormattedMessage id="AuthenticationPage.signupWithGithub" />
+);
 ```
 
 Then we can use the _SocialLoginButton_ component to show the option to
@@ -476,12 +484,12 @@ guidelines how to use them. You can download the Github logo from
   showGithubLogin ? (
     <div className={css.socialButtonWrapper}>
       <SocialLoginButton onClick={() => authWithGithub()}>
-        <span className={css.buttonIcon}>{GithubLogo}</span>
-        {isLogin ? (
-          <FormattedMessage id="AuthenticationPage.loginWithGithub" />
-        ) : (
-          <FormattedMessage id="AuthenticationPage.signupWithGithub" />
-        )}
+        <span className={css.buttonIcon}>
+          <GithubLogo ariaLabelledBy="github-authentication-msg" />
+        </span>
+        <span id="github-authentication-msg">
+          {githubAuthenticationMessage}
+        </span>
       </SocialLoginButton>
     </div>
   ) : null;

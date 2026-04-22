@@ -1,10 +1,9 @@
 import React from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
-import { propTypes } from '../../util/types';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
+import { getListingsById } from '../../ducks/marketplaceData.duck';
 
 import {
   H3,
@@ -19,18 +18,20 @@ import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 
 import css from './FavoriteListingsPage.module.css';
-import { getListingsById } from '../../ducks/marketplaceData.duck';
 
-export const FavoriteListingsPageComponent = props => {
+const FavoriteListingsPage = props => {
+  const intl = useIntl();
+
   const {
-    listings,
+    currentPageResultIds,
     pagination,
     queryInProgress,
     queryFavoritesError,
     queryParams,
-    scrollingDisabled,
-    intl,
-  } = props;
+  } = useSelector(state => state.FavoriteListingsPage);
+
+  const listings = useSelector(state => getListingsById(state, currentPageResultIds));
+  const scrollingDisabled = useSelector(state => isScrollingDisabled(state));
 
   const hasPaginationInfo = !!pagination && pagination.totalItems != null;
   const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -122,30 +123,5 @@ export const FavoriteListingsPageComponent = props => {
     </Page>
   );
 };
-
-const mapStateToProps = state => {
-  const {
-    currentPageResultIds,
-    pagination,
-    queryInProgress,
-    queryFavoritesError,
-    queryParams,
-  } = state.FavoriteListingsPage;
-  const listings = getListingsById(state, currentPageResultIds);
-  return {
-    currentPageResultIds,
-    listings,
-    pagination,
-    queryInProgress,
-    queryFavoritesError,
-    queryParams,
-    scrollingDisabled: isScrollingDisabled(state),
-  };
-};
-
-const FavoriteListingsPage = compose(
-  connect(mapStateToProps),
-  injectIntl
-)(FavoriteListingsPageComponent);
 
 export default FavoriteListingsPage;
