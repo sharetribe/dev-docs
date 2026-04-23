@@ -1,0 +1,161 @@
+---
+title: File lifecycle in Sharetribe
+sidebarTitle: File lifecycle
+description:
+  This article describes the lifecycle of files on a Sharetribe
+  marketplace
+---
+
+import { Steps } from 'nextra/components';
+
+# File lifecycle
+
+Sharetribe has endpoints and mechanisms for uploading and downloading
+digital files. Uploading and downloading files are both multi-step
+operations, and there are a number of different entities and states
+involved.
+
+## Uploading a file
+
+<Steps>
+
+### SDK: Retrieve file metadata
+
+The SDK has a helper function for retrieving the attributes of the file
+metadata that are needed for uploading the file.
+
+```js
+const metadata = await sdkFile.metadata(file);
+```
+
+If you are using the APIs directly, you'll need to parse the necessary
+metadata information from the file:
+
+```js
+const metadata = {
+  name: 'File to be uploaded.pdf',
+  mimeType: 'application/pdf',
+  size: 10697,
+};
+```
+
+### Create an ownFile resource
+
+With the metadata information, you can create an `ownFile` resource in
+the Sharetribe backend with `ownFiles.create`.
+
+```js
+const ownFileResource = await sdk.ownFiles.create({ ...metadata }).data;
+```
+
+This step also validates that the file mime type is supported.
+
+### Create a file upload URL
+
+The id of the `ownFile` resource is then used to create a signed file
+upload URL.
+
+```js
+const fileId = ownFileResource.data.id;
+const fileUploadDetails = await sdk.fileUploads.create({
+  fileId,
+});
+```
+
+### Upload the file to storage with the file upload URL
+
+The actual file is uploaded directly to storage with the URL and other
+details from the response, and the upload does not use Sharetribe APIs.
+The SDK has another helper function to upload the file.
+
+When using the SDK, you can also pass in an upload progress tracking
+callback to display the progress to the user.
+
+```js
+const {
+  method = 'PUT',
+  url,
+  headers = {},
+} = fileUploadDetails?.data?.data?.attributes;
+
+const onUploadProgress = (progressEvent) => {
+  const loaded = progressEvent?.loaded || 0;
+  const total = progressEvent?.total || file.size;
+  const progress = total
+    ? Math.min(100, Math.round((loaded / total) * 100))
+    : null;
+  console.log(`progress ${progress} %`);
+};
+
+sdkFile.upload({
+  method,
+  url,
+  headers,
+  file,
+  onUploadProgress,
+});
+```
+
+</Steps>
+
+The file id of the `ownFile` resource is then used to attach the file to
+another resource, e.g. to a message:
+
+```js
+sdk.messages.send({
+  transactionId: '6985dfd3-34bc-4bc8-806f-03a0f29e056d',
+  content: 'This is a message with a file',
+  publicFileAttachments: [fileId],
+});
+```
+
+After the file is attached to a resource, it is visible according to the
+scope of the fileAttachment. If a file is uploaded but is never attached
+to another resource, it is eventually deleted from storage and
+Sharetribe backend.
+
+## File states
+
+Both `ownFile` and `file` have the same states:
+
+- pendingUpload
+- pendingVerification
+- available
+- verificationFailed
+
+A download URL is only generated for files in the "available" state.
+
+## Downloading a file
+
+To download a file, the user makes a POST request for a short-lived
+download URL for the file from Sharetribe API, and uses that generated
+URL to fetch the file from storage.
+
+There are two different download endpoints that use different ids:
+
+- own_file_downloads/create (sdk.ownFileDownloads.create) for ownFile
+  resources, where the parameter is the `file` id
+- file_downloads/create (sdk.fileDownloads.create) for file resources,
+  where the parameter is the `fileAttachment` id
+
+```js
+const downloadDetails = isOwnFile
+  ? sdk.ownFileDownloads.create({ fileId }).data?.data
+  : sdk.fileDownloads.create({ fileAttachmentId }).data?.data;
+
+const { url } = downloadDetails?.attributes;
+```
+
+## Deleting a file
+
+There is no file deletion endpoint in either Integration API or
+Marketplace API. If you've uploaded a file but you have not yet attached
+it to a message, leaving the file unattached will result in it being
+eventually deleted.
+
+An operator can delete a file attachment to disconnect a resource from a
+file, or they can delete the file itself so that all resources linked to
+the file lose access. In the first release, a single file is only
+attached to a single message at a time, so when an operator deletes a
+file associated with a message, both the `fileAttachment` and the `file`
+are deleted.
