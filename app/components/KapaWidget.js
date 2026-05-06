@@ -34,6 +34,7 @@ export default function KapaWidget() {
         'Allow tracking and use AI assistant',
       'data-consent-screen-reject-button-text': 'No, thanks',
       'data-search-keyboard-nav-enabled': 'true',
+      'data-view-mode': 'sidebar',
     };
     Object.entries(attrs).forEach(([key, value]) =>
       script.setAttribute(key, value)
