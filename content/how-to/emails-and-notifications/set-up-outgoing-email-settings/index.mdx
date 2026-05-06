@@ -6,7 +6,7 @@ description:
   your Live marketplace.
 ---
 
-import { Steps, Cards } from 'nextra/components';
+import { Steps, Cards, Callout } from 'nextra/components';
 
 # Set up outgoing email settings
 
@@ -85,6 +85,12 @@ alignment) or `adkim=s` (strict DKIM alignment).
 
 ## Using your own SendGrid account
 
+<Callout type="info">
+  If you have already set up your outgoing email settings using the
+  managed setup and want to switch to using your own SendGrid account,
+  please contact our [support](mailto:hello@sharetribe.com).
+</Callout>
+
 In addition to using the managed email sending, you have the option to
 choose to use your own SendGrid account by integrating it with
 Sharetribe. You might want to do this because:
@@ -96,6 +102,9 @@ Sharetribe. You might want to do this because:
 - You are also using SendGrid for your newsletters and other marketing
   emails, and want to have all your email-related data in one place.
 - You want to use your own IP address for email sending and reputation.
+- You want to verify user email addresses programmatically, using the
+  [`users/verify_email`](https://www.sharetribe.com/api-reference/integration.html#verify-email-address)
+  Integration API endpoint.
 
 If you'd prefer to get access to such features and statistics, this is
 possible by connecting your own SendGrid account to Sharetribe. Just
