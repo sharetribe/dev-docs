@@ -104,12 +104,18 @@ Sharetribe. You might want to do this because:
 - You want to use your own IP address for email sending and reputation.
 - You want to verify user email addresses programmatically, using the
   [`users/verify_email`](https://www.sharetribe.com/api-reference/integration.html#verify-email-address)
-  Integration API endpoint.
+  Integration API endpoint (you can use this endpoint in `dev` and
+  `test` without your own SendGrid account).
 
 If you'd prefer to get access to such features and statistics, this is
 possible by connecting your own SendGrid account to Sharetribe. Just
 remember that doing this means you'd be subject to SendGrid's standard
 pricing for all outgoing emails.
+
+<Callout type="info">
+  You can only configure your own SendGrid account in a `live`
+  environment.
+</Callout>
 
 Follow the steps below to set up your own SendGrid account for email
 sending:
