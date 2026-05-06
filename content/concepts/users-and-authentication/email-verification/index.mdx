@@ -50,7 +50,7 @@ If any notifications were sent to the user's email address while the
 address was unverified, those notifications will not be sent
 retroactively after the user verifies their email address.
 
-## End-user email address verification
+## End-user email verification
 
 The user can verify their email by making an API call to the
 [current_user/verify_email](https://www.sharetribe.com/api-reference/marketplace.html#verify-email-address)
@@ -69,7 +69,7 @@ notification in Console. Read more on how to do that:
 
 - [Built-in email notifications](/concepts/messages-notifications/email-notifications/#built-in-email-notifications)
 
-## Operator email verification steps
+## Operator email verification
 
 An operator can also verify a user's email in Console, if they are
 confident the email address belongs to the user. This is equivalent to
@@ -85,6 +85,24 @@ Console
   It is imperative to make sure that the operator only verifies a user's
   email when the user in question has actively provided the verification
   outside the Sharetribe platform.
+</Callout>
+
+## Integration API email verification
+
+You can also verify a user's email programmatically using the
+Integration API
+[`users/verify_email`](https://www.sharetribe.com/api-reference/integration.html#verify-email-address)
+endpoint. This bypasses built-in email verification, and therefore, you
+should only use it if you are able to verify the user's email using
+other means. This is equivalent to the end user verifying their own
+email address.
+
+<Callout type="warning">
+  In `live` marketplace environments, this endpoint is only available to
+  marketplaces that use their own [SendGrid account for outgoing
+  email](/how-to/emails-and-notifications/set-up-outgoing-email-settings/#using-your-own-sendgrid-account).
+  It is available without this restriction in `dev` and `test`
+  environments.
 </Callout>
 
 ## SSO email verification
