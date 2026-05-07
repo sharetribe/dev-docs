@@ -34,10 +34,34 @@ export default function KapaWidget() {
         'Allow tracking and use AI assistant',
       'data-consent-screen-reject-button-text': 'No, thanks',
       'data-search-keyboard-nav-enabled': 'true',
+      'data-view-mode': 'sidebar',
+      'data-color-scheme': 'light',
+      'data-color-scheme-selector': '.dark',
     };
     Object.entries(attrs).forEach(([key, value]) =>
       script.setAttribute(key, value)
     );
+    script.onload = () => {
+      // Open the widget automatically if the URL contains ?ask.
+      // Intended for support links shared when the team is offline.
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('ask')) return;
+
+      // Kapa initializes asynchronously after the script loads, so poll
+      // until window.Kapa.open is available.
+      const maxWaitMs = 2000;
+      const intervalMs = 100;
+      const start = Date.now();
+      const tryOpen = () => {
+        if (typeof window.Kapa?.open === 'function') {
+          const query = params.get('ask');
+          window.Kapa.open(query ? { query } : undefined);
+        } else if (Date.now() - start < maxWaitMs) {
+          setTimeout(tryOpen, intervalMs);
+        }
+      };
+      tryOpen();
+    };
     document.head.appendChild(script);
     return () => {
       document.head.removeChild(script);
