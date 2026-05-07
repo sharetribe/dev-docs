@@ -52,7 +52,8 @@ export default function KapaWidget() {
       const start = Date.now();
       const tryOpen = () => {
         if (typeof window.Kapa?.open === 'function') {
-          window.Kapa.open();
+          const query = params.get('ask');
+          window.Kapa.open(query ? { query } : undefined);
         } else if (Date.now() - start < maxWaitMs) {
           setTimeout(tryOpen, intervalMs);
         }
