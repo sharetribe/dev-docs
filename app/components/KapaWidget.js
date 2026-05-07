@@ -35,6 +35,8 @@ export default function KapaWidget() {
       'data-consent-screen-reject-button-text': 'No, thanks',
       'data-search-keyboard-nav-enabled': 'true',
       'data-view-mode': 'sidebar',
+      'data-color-scheme': 'light',
+      'data-color-scheme-selector': '.dark',
     };
     Object.entries(attrs).forEach(([key, value]) =>
       script.setAttribute(key, value)
