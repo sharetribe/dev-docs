@@ -40,7 +40,7 @@ be set to `time-full` or `time-partial`. Queries using this
 By default, the template will display the first 24 results when using
 the date filter (and as pagination is not supported, the results will be
 limited to 24). This value can be modified in
-[SearchPage.duck.js file](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L22),
+[SearchPage.duck.js file](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L23),
 so you can allow displaying up to a 100 results.
 
 ![Marketplace payment flow](./dates-query.png)
@@ -99,7 +99,7 @@ availability on certain dates. The date search cannot be restricted to
 specific time zones. This means that to cover listings from all possible
 time zones, the template prolongs the start and end times before sending
 them to the Sharetribe API. See the relevant code
-[in SearchPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L180-L181).
+[in SearchPage.duck.js](https://github.com/sharetribe/web-template/blob/main/src/containers/SearchPage/SearchPage.duck.js#L181-L182).
 
 To be exact, the start time is moved 14 hours earlier, and the end time
 is moved 12 hours later. This means that the availability search results
