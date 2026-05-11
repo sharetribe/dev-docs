@@ -11,43 +11,25 @@ description:
 Sharetribe supports uploading and downloading files and attaching them
 to different marketplace resources.
 
-## Visibility
+The file information and relationships to other resources is stored in
+the Sharetribe backend and available through the Sharetribe APIs. The
+file entities themselves are stored in a third-party storage, and you
+need to call the Sharetribe APIs to request unique signed upload and
+download URLs to access the actual file entities.
 
-A file is first uploaded by creating an `ownFile` resource, which is
-visible to the creator of the resource. An `ownFile` can then be
-attached to another resource – in the first release, to a message via
-the `message.publicFileAttachments` attribute.
-
-Once a file has been attached to another resource, it is visible as a
-`file` resource according to the scope of the corresponding
-fileAttachments attribute:
-
-- `publicFileAttachments` are visible to all users who have access to
-  the resource in question
-- `protectedFileAttachments` are visible to the user who created the
-  resource, and additionally the file can be revealed in a transaction
-  to the other transaction participant
-- `privateFileAttachments` are visible only to the user who created the
-  resource.
-
-You can review the
-[API reference](https://www.sharetribe.com/api-reference/) to see which
-resources have which scopes of file attachments available.
-
-In addition, operators have visibility to files and file attachments in
-Console. For example, files attached to messages are visible in the
-Console transaction details.
+![Files architecture in Sharetribe](./files-architecture.png)
 
 ## Permissions
 
 Uploading and downloading files is enabled by default. Operators can
 disable uploading and downloading files across the marketplace in Access
-control.
+control. When uploads and downloads are disabled in Console > General >
+Access control,
+[file upload and download endpoints](/concepts/users-and-authentication/user-access-control-in-sharetribe/#disabling-file-uploads-and-downloads)
+will throw a 403 Forbidden error.
 
 In addition, you can use for instance listing types to enable or disable
-specific use cases for files in your marketplace. The first file related
-Sharetribe Web Template release makes it possible to enable attaching
-files to messages based on listing type.
+specific use cases for files in your marketplace, if files are enabled.
 
 ## File and FileAttachment
 
@@ -58,12 +40,13 @@ different things:
 - A `fileAttachment` is a file's connection to another resource, such as
   a message.
 
-A `fileAttachment` is then a related resource of another resource, for
-example a message. In this structure, it is possible for a `file` to
-have `fileAttachment` links to multiple different resources.
+A `file` is a related resource to a `fileAttachment`, and a
+`fileAttachment` is a related resource of another resource, for example
+a message. In this structure, it is possible for a `file` to have
+`fileAttachment` links to multiple different resources.
 
 When querying the resource, you'll need to include both the file
-attachments resource and the nested file relationship if you want to
+attachments relationship and the nested file relationship if you want to
 retrieve both.
 
 ```js
@@ -152,10 +135,10 @@ const messages = await sdk.messages.query({
 
 An operator can delete a file attachment to disconnect a resource from a
 file, or they can delete the file itself so that all resources linked to
-the file lose access. In the first release, a single file is only
-attached to a single message at a time, so when an operator deletes a
-file associated with a message, both the `fileAttachment` and the `file`
-are deleted.
+the file lose access. When attaching files to messages, a single file is
+only attached to a single message at a time, so when an operator deletes
+a file associated with a message, both the `fileAttachment` and the
+`file` are deleted.
 
 ## ownFile and file
 
@@ -222,6 +205,32 @@ const ownFile = await sdk.ownFiles.show({ id: fileId }).data.data;
   }
 }
 ```
+
+## Visibility
+
+A file is first uploaded by creating an `ownFile` resource, which is
+visible to the creator of the resource. An `ownFile` can then be
+attached to another resource.
+
+Once a file has been attached to another resource, it becomes also
+visible as a `file` resource according to the scope of the corresponding
+fileAttachments attribute:
+
+- `publicFileAttachments` are visible to all users who have access to
+  the resource in question
+- `protectedFileAttachments` are visible to the user who created the
+  resource, and additionally the file can be revealed in a transaction
+  to the other transaction participant
+- `privateFileAttachments` are visible only to the user who created the
+  resource.
+
+You can review the
+[API reference](https://www.sharetribe.com/api-reference/) to see which
+resources have which scopes of file attachments available.
+
+In addition, operators have visibility to files and file attachments in
+Console. For example, files attached to messages are visible in the
+Console transaction details.
 
 ## File storage
 
@@ -295,9 +304,6 @@ valid.
 
 ## Security
 
-(question being answered: how does Sharetribe make sure attackers don't
-use files for fraud)
-
 When a file is uploaded, the Sharetribe backend runs a security
 verification to ensure that the file is safe to handle and distribute,
 for example that it does not have malware. In addition, the backend
@@ -309,4 +315,4 @@ they have not yet been verified. The Sharetribe backend processes the
 verification asynchronously, and the file becomes available if the
 verification succeeds. If you want to show the file as available
 immediately when verification succeeds, your client will need to poll
-the file to determine when it becomes available
+the file to determine when it becomes available.

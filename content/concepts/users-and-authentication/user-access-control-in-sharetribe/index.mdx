@@ -44,6 +44,12 @@ See which endpoints are affected by this setting
 Read more about this feature in the
 [Help Center](https://www.sharetribe.com/help/en/articles/9503164-make-marketplace-private).
 
+## Disable file uploads and downloads
+
+By default, Sharetribe marketplaces allow uploading and downloading
+files and using them as file attachments on other resources. You can
+also disable uploading and downloading files on a marketplace level.
+
 ## Approve users who want to join
 
 User approval means that when a user signs up, they need to be approved
@@ -161,6 +167,19 @@ endpoints:
 When this setting is toggled, these endpoints will return a 403
 Forbidden response, indicating that access is denied due to the
 marketplace's private status.
+
+### Disabling file uploads and downloads
+
+Toggling this setting on prevents users from uploading and downloading
+files to and from Sharetribe storage. This selection will restrict the
+following endpoints:
+
+- `POST /file_uploads/create`
+- `POST /file_downloads/create`
+
+In other words, endpoints showing file or file attachment information
+are not restricted, only endpoints that create signed URLs to Sharetribe
+file storage to upload or download a file entity.
 
 ### Approve users who want to join
 

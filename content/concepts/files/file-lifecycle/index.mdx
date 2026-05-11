@@ -19,17 +19,24 @@ involved.
 
 <Steps>
 
-### SDK: Retrieve file metadata
+### Read file metadata
 
-The SDK has a helper function for retrieving the attributes of the file
+Before we make any API calls, we need to get the metadata of the file in
+the local file system.
+
+The SDK has a helper function for parsing the attributes of the file
 metadata that are needed for uploading the file.
 
 ```js
+import * as sharetribeSdk from 'sharetribe-flex-sdk';
+
+const { file: sdkFile } = sharetribeSdk;
+
 const metadata = await sdkFile.metadata(file);
 ```
 
 If you are using the APIs directly, you'll need to parse the necessary
-metadata information from the file:
+metadata information from the File object:
 
 ```js
 const metadata = {
@@ -60,6 +67,34 @@ const fileId = ownFileResource.data.id;
 const fileUploadDetails = await sdk.fileUploads.create({
   fileId,
 });
+```
+
+```json
+{
+  "fileUploadDetails": {
+    "status": 200,
+    "statusText": "",
+    "data": {
+      "data": {
+        "id": {
+          "uuid": "63abdec4-85e7-4157-8e99-2e2c7465d8be"
+        },
+        "type": "fileUpload",
+        "attributes": {
+          "fileId": {
+            "uuid": "69fd8859-8380-49c0-ab7e-0ee502e40811"
+          },
+          "url": "https://unique-signed-sharetribe-upload-url.com",
+          "headers": {
+            "Content-Type": "application/pdf"
+          },
+          "method": "PUT",
+          "expiresAt": "2026-05-08T08:16:30.988Z"
+        }
+      }
+    }
+  }
+}
 ```
 
 ### Upload the file to storage with the file upload URL
@@ -96,7 +131,7 @@ sdkFile.upload({
 });
 ```
 
-</Steps>
+### Attach the file to a resource
 
 The file id of the `ownFile` resource is then used to attach the file to
 another resource, e.g. to a message:
@@ -109,21 +144,20 @@ sdk.messages.send({
 });
 ```
 
-After the file is attached to a resource, it is visible according to the
-scope of the fileAttachment. If a file is uploaded but is never attached
-to another resource, it is eventually deleted from storage and
-Sharetribe backend.
-
-## File states
-
-Both `ownFile` and `file` have the same states:
+The file resource (`file` or `ownFile`) can be in one of several states:
 
 - pendingUpload
 - pendingVerification
 - available
 - verificationFailed
 
-A download URL is only generated for files in the "available" state.
+Depending on your use case, you may only want to attach files that are
+available, or then allow attaching files that have completed upload.
+
+</Steps>
+
+After the file is attached to a resource, it is visible according to the
+scope of the `fileAttachment`.
 
 ## Downloading a file
 
@@ -131,12 +165,14 @@ To download a file, the user makes a POST request for a short-lived
 download URL for the file from Sharetribe API, and uses that generated
 URL to fetch the file from storage.
 
+Download links are only created for files in the `available` state.
+
 There are two different download endpoints that use different ids:
 
-- own_file_downloads/create (sdk.ownFileDownloads.create) for ownFile
-  resources, where the parameter is the `file` id
-- file_downloads/create (sdk.fileDownloads.create) for file resources,
-  where the parameter is the `fileAttachment` id
+- sdk.ownFileDownloads.create for ownFile resources, where the parameter
+  is the `file` id
+- sdk.fileDownloads.create for file resources, where the parameter is
+  the `fileAttachment` id
 
 ```js
 const downloadDetails = isOwnFile
@@ -148,14 +184,12 @@ const { url } = downloadDetails?.attributes;
 
 ## Deleting a file
 
+An operator can delete a file in Console. When attaching files to a
+message, a single file is only attached to a single message at a time,
+so when an operator deletes a file associated with a message, both the
+`fileAttachment` and the `file` are deleted.
+
 There is no file deletion endpoint in either Integration API or
 Marketplace API. If you've uploaded a file but you have not yet attached
 it to a message, leaving the file unattached will result in it being
 eventually deleted.
-
-An operator can delete a file attachment to disconnect a resource from a
-file, or they can delete the file itself so that all resources linked to
-the file lose access. In the first release, a single file is only
-attached to a single message at a time, so when an operator deletes a
-file associated with a message, both the `fileAttachment` and the `file`
-are deleted.
