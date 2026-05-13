@@ -6,7 +6,7 @@ description:
   marketplace
 ---
 
-import { Steps } from 'nextra/components';
+import { Callout, Steps } from 'nextra/components';
 
 # File lifecycle in Sharetribe
 
@@ -16,6 +16,19 @@ operations, and there are a number of different entities and states
 involved.
 
 ## Uploading a file
+
+<Callout>
+
+Files can be uploaded in two sequences. The sequence described here is
+to first create the **ownFile** resource, and then create the
+**fileUpload** resource and upload details with the file id of the
+**ownFile**.
+
+It is also possible to first create the **fileUpload** resource and
+upload the file, and then create the **ownFile** resource with the id of
+the **fileUpload** resource.
+
+</Callout>
 
 <Steps>
 
@@ -32,7 +45,7 @@ import * as sharetribeSdk from 'sharetribe-flex-sdk';
 
 const { file: sdkFile } = sharetribeSdk;
 
-const metadata = await sdkFile.metadata(file);
+const metadata = sdkFile.metadata(file);
 ```
 
 If you are using the APIs directly, you'll need to parse the necessary

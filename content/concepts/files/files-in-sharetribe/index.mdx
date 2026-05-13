@@ -17,6 +17,15 @@ file entities themselves are stored in a third-party storage, and you
 need to call the Sharetribe APIs to request unique signed upload and
 download URLs to access the actual file entities.
 
+- Call Sharetribe APIs to
+  - create a file resource
+  - retrieve file information
+  - create upload and download URLs for a file resource
+  - manage resources with file attachments
+- Call Sharetribe storage to
+  - upload file using a short-lived upload URL
+  - download file using a short-lived download URL
+
 ![Files architecture in Sharetribe](./files-architecture.png)
 
 ## Permissions
@@ -30,6 +39,11 @@ will throw a 403 Forbidden error.
 
 In addition, you can use for instance listing types to enable or disable
 specific use cases for files in your marketplace, if files are enabled.
+
+For example, to view and use file attachment capabilities in transaction
+messages when using the default Sharetribe Web Template, you'll need to
+double check that files are enabled both on the marketplace level and in
+the listing type of the transaction's listing.
 
 ## File and FileAttachment
 
@@ -140,17 +154,10 @@ only attached to a single message at a time, so when an operator deletes
 a file associated with a message, both the `fileAttachment` and the
 `file` are deleted.
 
-## ownFile and file
+## file and ownFile
 
-A `file` can have multiple states:
-
-- pendingUpload
-- pendingVerification
-- available
-- verificationFailed.
-
-File resources are immutable, so updating an existing file resource is
-not possible.
+The digital file resource can be represented by two resources: `file`
+and `ownFile`.
 
 To fetch a public `file` resource, you'll need to use the id of the
 associated `fileAttachment`, as the `fileAttachment` resource contains
@@ -206,6 +213,16 @@ const ownFile = await sdk.ownFiles.show({ id: fileId }).data.data;
 }
 ```
 
+A `file` can be in one of several states:
+
+- pendingUpload
+- pendingVerification
+- available
+- verificationFailed.
+
+Both `file` and `ownFile` resources are immutable, so updating an
+existing file resource is not possible.
+
 ## Visibility
 
 A file is first uploaded by creating an `ownFile` resource, which is
@@ -223,6 +240,10 @@ fileAttachments attribute:
   to the other transaction participant
 - `privateFileAttachments` are visible only to the user who created the
   resource.
+
+For example, files attached to messages are visible to both participants
+of the transaction in question, because they are attached via the
+`publicFileAttachments` relationship of the message.
 
 You can review the
 [API reference](https://www.sharetribe.com/api-reference/) to see which
