@@ -46,6 +46,23 @@
           "url": "https://www.npmjs.com/package/@vansite/ts-sharetribe-flex-sdk"
         }
       ]
+    },
+    {
+      "title": "n8n node for Sharetribe",
+      "description": "A node for n8n, (Zapier alternative), to use the full Sharetribe Integration API within automated workflows.",
+      "username": "Greg Long",
+      "userProfileUrl": "https://tribebuilder.dev",
+      "href": "https://n8n.partnerlinks.io/n8n-nodes-sharetribe",
+      "additionalLinks": [
+        {
+          "label": "n8n",
+          "url": "https://n8n.partnerlinks.io/n8n-nodes-sharetribe"
+        },
+        {
+          "label": "npm",
+          "url": "https://www.npmjs.com/package/n8n-nodes-sharetribe"
+        }
+      ]
     }
   ]
 }
