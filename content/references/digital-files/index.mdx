@@ -6,27 +6,26 @@ description: Reference documentation for digital files management.
 
 # Digital files management
 
-The digital files management features of Sharetribe allow listing
-authors to upload and download digital files and attach them to other
-resources. There are three key concepts related to digital files
-management:
+With Sharetribe's digital files management features, listing authors can
+upload and download digital files and attach them to other resources.
+There are three key concepts related to digital files management:
 
-- **file** is the Sharetribe representation of the uploaded digital file
+- `file` is the Sharetribe representation of the uploaded digital file
   item.
-- **ownFile** is the Sharetribe representation of the uploaded digital
+- `ownFile` is the Sharetribe representation of the uploaded digital
   file item visible to the author of the upload.
-- A **file attachment** is the association of a **file** to another
-  marketplace resource, such as a message.
+- `fileAttachment` is the association of a `file` to another marketplace
+  resource, such as a message.
 
 The actual digital file entity is uploaded to and downloaded from
 Sharetribe storage with a direct URL, not through the Sharetribe APIs.
 The URLs are managed through three other resource types:
 
-- **fileUpload** contains the URL and other details for uploading a file
+- `fileUpload` contains the URL and other details for uploading a file
   directly to storage.
-- **fileDownload** contains the URL for downloading a file directly from
+- `fileDownload` contains the URL for downloading a file directly from
   storage.
-- **ownFileDownload** contains the URL for downloading a user's own
+- `ownFileDownload` contains the URL for downloading a user's own
   uploaded file directly from storage.
 
 ## File states
@@ -45,22 +44,22 @@ state.
 
 ## File attachment scopes
 
-A **file** resource can be associated with another resource by adding it
+A `file` resource can be associated with another resource by adding it
 to the other resource's file attachments. The scope of the file
 attachment determines the visibility of the file:
 
-- **publicFileAttachments** are visible to all users who have access to
+- `publicFileAttachments` are visible to all users who have access to
   the resource in question
-- **protectedFileAttachments** are visible to the user who created the
+- `protectedFileAttachments` are visible to the user who created the
   resource, and additionally the file can be revealed in a transaction
   to the other transaction participant
-- **privateFileAttachments** are visible only to the user who created
-  the resource.
+- `privateFileAttachments` are visible only to the user who created the
+  resource.
 
 The [API reference](https://www.sharetribe.com/api-reference/) details
 which resources have which scopes of file attachments available.
 
 ## Further reading
 
-- Marketplace API reference
-- Integration API reference
+- [Marketplace API reference](https://www.sharetribe.com/api-reference/marketplace.html)
+- [Integration API reference](https://www.sharetribe.com/api-reference/integration.html)

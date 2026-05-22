@@ -11,7 +11,7 @@ description:
 Sharetribe supports uploading and downloading files and attaching them
 to different marketplace resources.
 
-The file information and relationships to other resources is stored in
+The file information and relationships to other resources are stored in
 the Sharetribe backend and available through the Sharetribe APIs. The
 file entities themselves are stored in a third-party storage, and you
 need to call the Sharetribe APIs to request unique signed upload and
@@ -37,12 +37,13 @@ Access control,
 [file upload and download endpoints](/concepts/users-and-authentication/user-access-control-in-sharetribe/#disabling-file-uploads-and-downloads)
 will throw a 403 Forbidden error.
 
-In addition, you can use for instance listing types to enable or disable
-specific use cases for files in your marketplace, if files are enabled.
+In addition, you can use listing types or user types to enable or
+disable specific use cases for files in your marketplace, if files are
+enabled.
 
 For example, to view and use file attachment capabilities in transaction
 messages when using the default Sharetribe Web Template, you'll need to
-double check that files are enabled both on the marketplace level and in
+double check that files are enabled both through access control and in
 the listing type of the transaction's listing.
 
 ## File and FileAttachment
@@ -147,12 +148,10 @@ const messages = await sdk.messages.query({
 }
 ```
 
-An operator can delete a file attachment to disconnect a resource from a
-file, or they can delete the file itself so that all resources linked to
-the file lose access. When attaching files to messages, a single file is
-only attached to a single message at a time, so when an operator deletes
-a file associated with a message, both the `fileAttachment` and the
-`file` are deleted.
+An operator can delete a file in Console. When attaching files to
+messages, a single file is only attached to a single message at a time,
+so when an operator deletes a file associated with a message, both the
+`fileAttachment` and the `file` are deleted.
 
 ## file and ownFile
 
@@ -161,8 +160,8 @@ and `ownFile`.
 
 To fetch a public `file` resource, you'll need to use the id of the
 associated `fileAttachment`, as the `fileAttachment` resource contains
-the scope information that informs whether the API caller should have
-access to the resource.
+the scope information that informs whether the API caller has access to
+the resource.
 
 ```js
 const file = await sdk.files.show({ fileAttachmentId }).data.data;
@@ -184,13 +183,12 @@ const file = await sdk.files.show({ fileAttachmentId }).data.data;
 }
 ```
 
-There's also an `ownFile` resource, which is the author's expanded
-version of the file. In addition to the public attributes, the
-`ownFile`resource also shows when the resource was created and when the
-state was updated.
+There's also an `ownFile` resource, which is the author's version of the
+file. In addition to the public attributes, the `ownFile` resource shows
+when the resource was created and when the state was updated.
 
-To fetch an `ownFile`resource, you'll need to use the id of the `file`
-resource, not the file attachment resource.
+To fetch an `ownFile` resource, you'll need to use the id of the `file`
+resource, not the `fileAttachment` resource.
 
 ```js
 const ownFile = await sdk.ownFiles.show({ id: fileId }).data.data;
@@ -218,7 +216,7 @@ A `file` can be in one of several states:
 - pendingUpload
 - pendingVerification
 - available
-- verificationFailed.
+- verificationFailed
 
 Both `file` and `ownFile` resources are immutable, so updating an
 existing file resource is not possible.
@@ -329,7 +327,8 @@ When a file is uploaded, the Sharetribe backend runs a security
 verification to ensure that the file is safe to handle and distribute,
 for example that it does not have malware. In addition, the backend
 verifies that the file mime type is acceptable and the size is less than
-1GB.
+1GB. Blocked mime types include potentially harmful types such as shell
+scripts, executables, and disk images.
 
 Files can be attached to resources once they've been uploaded, even if
 they have not yet been verified. The Sharetribe backend processes the

@@ -34,8 +34,8 @@ the **fileUpload** resource.
 
 ### Read file metadata
 
-Before we make any API calls, we need to get the metadata of the file in
-the local file system.
+Before you make any API calls, you need to get the metadata of the file
+in the local file system.
 
 The SDK has a helper function for parsing the attributes of the file
 metadata that are needed for uploading the file.
@@ -49,7 +49,7 @@ const metadata = sdkFile.metadata(file);
 ```
 
 If you are using the APIs directly, you'll need to parse the necessary
-metadata information from the File object:
+metadata information from the `File` object:
 
 ```js
 const metadata = {
@@ -68,7 +68,9 @@ the Sharetribe backend with `ownFiles.create`.
 const ownFileResource = await sdk.ownFiles.create({ ...metadata }).data;
 ```
 
-This step also validates that the file mime type is supported.
+This step also validates that the file mime type is supported. Blocked
+mime types include potentially harmful types such as shell scripts,
+executables, and disk images.
 
 ### Create a file upload URL
 
@@ -164,8 +166,9 @@ The file resource (`file` or `ownFile`) can be in one of several states:
 - available
 - verificationFailed
 
-Depending on your use case, you may only want to attach files that are
-available, or then allow attaching files that have completed upload.
+Depending on your use case, you may want to allow attaching files that
+have completed upload but still verifying, or only allow attaching files
+that are available.
 
 </Steps>
 
