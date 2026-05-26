@@ -13,9 +13,10 @@ to different marketplace resources.
 
 The file information and relationships to other resources are stored in
 the Sharetribe backend and available through the Sharetribe APIs. The
-file entities themselves are stored in a third-party storage, and you
-need to call the Sharetribe APIs to request unique signed upload and
-download URLs to access the actual file entities.
+file entities themselves are stored in a third-party storage separate
+from the Sharetribe APIs, and you need to call the Sharetribe APIs to
+request unique signed upload and download URLs to access the actual file
+entities.
 
 - Call Sharetribe APIs to
   - create a file resource
@@ -251,14 +252,15 @@ In addition, operators have visibility to files and file attachments in
 Console. For example, files attached to messages are visible in the
 Console transaction details.
 
-## File storage
+## Sharetribe storage for files
 
-Files are both uploaded to and downloaded from storage directly using
-pre-signed URLs – not using Sharetribe API endpoints.
+Files are both uploaded to and downloaded from Sharetribe storage
+directly using pre-signed URLs – not using Sharetribe API endpoints.
 
 For uploads, this means that a user first creates the file resource in
 Sharetribe, and then fetches a time-limited signed URL connected to that
-specific file resource that allows uploading the file to storage.
+specific file resource that allows uploading the file to Sharetribe
+storage.
 
 ```js
 const uploadDetails = sdk.fileUploads.create({ fileId }).data.data;
@@ -286,8 +288,9 @@ const uploadDetails = sdk.fileUploads.create({ fileId }).data.data;
 
 For downloads, the user makes a POST request for a short-lived download
 URL for the file from Sharetribe API, and uses that generated URL to
-fetch the file from storage. There are two different download endpoints
-that use different ids, similarly to how files/show and own_files/show:
+fetch the file from Sharetribe storage. There are two different download
+endpoints that use different ids, similarly to how files/show and
+own_files/show:
 
 - own_file_downloads/create (sdk.ownFileDownloads.create) for ownFile
   resources, where the parameter is the `file` id

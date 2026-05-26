@@ -112,11 +112,11 @@ const fileUploadDetails = await sdk.fileUploads.create({
 }
 ```
 
-### Upload the file to storage with the file upload URL
+### Upload the file to Sharetribe storage with the file upload URL
 
-The actual file is uploaded directly to storage with the URL and other
-details from the response, and the upload does not use Sharetribe APIs.
-The SDK has another helper function to upload the file.
+The actual file is uploaded directly to Sharetribe storage with the URL
+and other details from the response, and the upload does not use
+Sharetribe APIs. The SDK has another helper function to upload the file.
 
 When using the SDK, you can also pass in an upload progress tracking
 callback to display the progress to the user.
@@ -179,7 +179,7 @@ scope of the `fileAttachment`.
 
 To download a file, the user makes a POST request for a short-lived
 download URL for the file from Sharetribe API, and uses that generated
-URL to fetch the file from storage.
+URL to fetch the file from Sharetribe storage.
 
 Download links are only created for files in the `available` state.
 
