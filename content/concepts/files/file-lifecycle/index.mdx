@@ -1,0 +1,211 @@
+---
+title: File lifecycle in Sharetribe
+sidebarTitle: File lifecycle
+description:
+  This article describes the lifecycle of files on a Sharetribe
+  marketplace
+---
+
+import { Callout, Steps } from 'nextra/components';
+
+# File lifecycle in Sharetribe
+
+Sharetribe has endpoints and mechanisms for uploading and downloading
+digital files. Uploading and downloading files are both multi-step
+operations, and there are a number of different entities and states
+involved.
+
+## Uploading a file
+
+<Callout>
+
+Files can be uploaded in two sequences. The sequence described here is
+to first create the **ownFile** resource, and then create the
+**fileUpload** resource and upload details with the file id of the
+**ownFile**.
+
+It is also possible to first create the **fileUpload** resource and
+upload the file, and then create the **ownFile** resource with the id of
+the **fileUpload** resource.
+
+</Callout>
+
+<Steps>
+
+### Read file metadata
+
+Before you make any API calls, you need to get the metadata of the file
+in the local file system.
+
+The SDK has a helper function for parsing the attributes of the file
+metadata that are needed for uploading the file.
+
+```js
+import * as sharetribeSdk from 'sharetribe-flex-sdk';
+
+const { file: sdkFile } = sharetribeSdk;
+
+const metadata = sdkFile.metadata(file);
+```
+
+If you are using the APIs directly, you'll need to parse the necessary
+metadata information from the `File` object:
+
+```js
+const metadata = {
+  name: 'File to be uploaded.pdf',
+  mimeType: 'application/pdf',
+  size: 10697,
+};
+```
+
+### Create an ownFile resource
+
+With the metadata information, you can create an `ownFile` resource in
+the Sharetribe backend with `ownFiles.create`.
+
+```js
+const ownFileResource = await sdk.ownFiles.create({ ...metadata }).data;
+```
+
+This step also validates that the file mime type is supported. Blocked
+mime types include potentially harmful types such as shell scripts,
+executables, and disk images.
+
+### Create a file upload URL
+
+The id of the `ownFile` resource is then used to create a signed file
+upload URL.
+
+```js
+const fileId = ownFileResource.data.id;
+const fileUploadDetails = await sdk.fileUploads.create({
+  fileId,
+});
+```
+
+```json
+{
+  "fileUploadDetails": {
+    "status": 200,
+    "statusText": "",
+    "data": {
+      "data": {
+        "id": {
+          "uuid": "63abdec4-85e7-4157-8e99-2e2c7465d8be"
+        },
+        "type": "fileUpload",
+        "attributes": {
+          "fileId": {
+            "uuid": "69fd8859-8380-49c0-ab7e-0ee502e40811"
+          },
+          "url": "https://unique-signed-sharetribe-upload-url.com",
+          "headers": {
+            "Content-Type": "application/pdf"
+          },
+          "method": "PUT",
+          "expiresAt": "2026-05-08T08:16:30.988Z"
+        }
+      }
+    }
+  }
+}
+```
+
+### Upload the file to Sharetribe storage with the file upload URL
+
+The actual file is uploaded directly to Sharetribe storage with the URL
+and other details from the response, and the upload does not use
+Sharetribe APIs. The SDK has another helper function to upload the file.
+
+When using the SDK, you can also pass in an upload progress tracking
+callback to display the progress to the user.
+
+```js
+const {
+  method = 'PUT',
+  url,
+  headers = {},
+} = fileUploadDetails?.data?.data?.attributes;
+
+const onUploadProgress = (progressEvent) => {
+  const loaded = progressEvent?.loaded || 0;
+  const total = progressEvent?.total || file.size;
+  const progress = total
+    ? Math.min(100, Math.round((loaded / total) * 100))
+    : null;
+  console.log(`progress ${progress} %`);
+};
+
+sdkFile.upload({
+  method,
+  url,
+  headers,
+  file,
+  onUploadProgress,
+});
+```
+
+### Attach the file to a resource
+
+The file id of the `ownFile` resource is then used to attach the file to
+another resource, e.g. to a message:
+
+```js
+sdk.messages.send({
+  transactionId: '6985dfd3-34bc-4bc8-806f-03a0f29e056d',
+  content: 'This is a message with a file',
+  publicFileAttachments: [fileId],
+});
+```
+
+The file resource (`file` or `ownFile`) can be in one of several states:
+
+- pendingUpload
+- pendingVerification
+- available
+- verificationFailed
+
+Depending on your use case, you may want to allow attaching files that
+have completed upload but still verifying, or only allow attaching files
+that are available.
+
+</Steps>
+
+After the file is attached to a resource, it is visible according to the
+scope of the `fileAttachment`.
+
+## Downloading a file
+
+To download a file, the user makes a POST request for a short-lived
+download URL for the file from Sharetribe API, and uses that generated
+URL to fetch the file from Sharetribe storage.
+
+Download links are only created for files in the `available` state.
+
+There are two different download endpoints that use different ids:
+
+- sdk.ownFileDownloads.create for ownFile resources, where the parameter
+  is the `file` id
+- sdk.fileDownloads.create for file resources, where the parameter is
+  the `fileAttachment` id
+
+```js
+const downloadDetails = isOwnFile
+  ? sdk.ownFileDownloads.create({ fileId }).data?.data
+  : sdk.fileDownloads.create({ fileAttachmentId }).data?.data;
+
+const { url } = downloadDetails?.attributes;
+```
+
+## Deleting a file
+
+An operator can delete a file in Console. When attaching files to a
+message, a single file is only attached to a single message at a time,
+so when an operator deletes a file associated with a message, both the
+`fileAttachment` and the `file` are deleted.
+
+There is no file deletion endpoint in either Integration API or
+Marketplace API. If you've uploaded a file but you have not yet attached
+it to a message, leaving the file unattached will result in it being
+eventually deleted.
