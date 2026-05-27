@@ -1,7 +1,6 @@
 ---
-title:
-  How to integrate Payment Request Button for Apple Pay and Google Pay
-sidebarTitle: Add Payment Request Button
+title: How to integrate Apple Pay and Google Pay
+sidebarTitle: Add Apple Pay and Google Pay
 description:
   This guide shows you how to integrate the Payment Request Button to
   use Google Pay or Apple Pay on your Sharetribe Web Template checkout
@@ -22,31 +21,37 @@ Payment Request Button on your Sharetribe Web Template checkout page.
 Stripe's own documentation recommends using
 [Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element)
 or [Payment Element](https://docs.stripe.com/payments/payment-element)
-in new integrations. However, neither of those elements is directly
+in new integrations. However, neither of those elements is easily
 compatible with the Sharetribe Stripe default integration:
 
-- The Express Checkout Element does not support manual capture, and the
-  Sharetribe backend creates payment intents with
+- The Express Checkout Element does not directly support
+  [manual capture](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method),
+  and the Sharetribe backend creates payment intents with
   `capture_method: manual` to support preauthorizing the funds while a
   transaction is waiting for the provider to accept or decline.
-- The PaymentElement collects payment details through Stripe Elements
-  using automatic payment methods. The Sharetribe backend creates the
-  payment intent with a `payment_method_types` parameter that defines
-  what payment method types are allowed to complete the payment intent.
-  The confirm function stripe.confirmPayment expects the Payment Element
-  to set the payment methods instead of the payment intent, so it is
-  incompatible with Sharetribe-created payment intents.
+- The Payment Element collects payment details through Stripe Elements
+  using automatic payment methods i.e. with a Payment Element internal
+  logic. The Sharetribe backend creates the payment intent with a
+  `payment_method_types` parameter that defines what payment method
+  types are allowed to complete the payment intent. The confirm function
+  stripe.confirmPayment expects the Payment Element to set the payment
+  methods instead of the payment intent, so it is incompatible with
+  Sharetribe-created payment intents.
 
-The Payment Request Button works with manual capture, so it avoids the
-issue with Express Checkout Element. In addition, it uses the same
+The
+[Payment Request Button](https://docs.stripe.com/stripe-js/elements/payment-request-button)
+is a Stripe Element for displaying wallet payment methods that avoids
+these pitfalls. It works with manual capture, so it avoids the issue
+with Express Checkout Element. In addition, it uses the same
 `stripe.confirmCardPayment` function as the default card payment flow,
 so it does not have the same confirm issue as the Payment Element.
 
 In this guide, we'll add Payment Request Button to
-CheckoutPageWithPayment. You will notice that a lot of the structures
-for Payment Request Button parallel the existing structures for card
-payments, so being familiar with the existing card payment flow is
-useful but not required.
+CheckoutPageWithPayment.
+
+You will notice that a lot of the structures for Payment Request Button
+parallel the existing structures for card payments, so being familiar
+with the existing card payment flow is useful but not required.
 
 ### Prerequisites
 
@@ -55,16 +60,25 @@ following steps to prepare.
 
 <Steps>
 
-#### Register your domain
-
-Register your domain with Stripe in both sandbox and live mode
-[according to these instructions](https://docs.stripe.com/payments/payment-methods/pmd-registration).
-The button will not appear on unregistered domains. -
-
 #### Serve your application over HTTPS.
 
 The Payment Request Button does not mount over plain HTTP. For local
 development, use a tunnel such as [ngrok](https://ngrok.com/).
+
+<Callout type="info">
+
+When you're using the `yarn run dev-server` command to run the template,
+this command overwrites the `REACT_APP_MARKETPLACE_ROOT_URL` specified
+in the .env file. Ensure you update the command to match the URL where
+your site is being served through Ngrok.
+
+</Callout>
+
+#### Register your domain
+
+Register your domain with Stripe in both sandbox and live mode
+[according to these instructions](https://docs.stripe.com/payments/payment-methods/pmd-registration).
+The button will not appear on unregistered domains.
 
 #### Add a card to a wallet on the device and browser you will test with
 
@@ -91,7 +105,7 @@ First, add your country code in your .env file as
 `REACT_APP_STRIPE_COUNTRY`:
 
 ```shell filename=".env"
-REACT_APP_STRIPE_COUNTRY = 'DE';
+REACT_APP_STRIPE_COUNTRY=DE;
 ```
 
 Add that as an export in `src/config/configStripe.js`. Include a
@@ -590,17 +604,23 @@ rather than a Stripe Element, so it does not have `.unmount()`. Instead,
 unregister the `paymentmethod` listener with `.off()`, which is the
 mirror of the `.on()` call in `initializePRButton`.
 
-```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
-componentWillUnmount() {
-  if (this.prButton) {
-    this.prButton.unmount();
-    this.prButton = null;
+```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
+  componentWillUnmount() {
+    if (this.card) {
+      this.card.removeEventListener('change', this.handleCardValueChange);
+      this.card.unmount();
+      this.card = null;
+    }
++
++   if (this.prButton) {
++     this.prButton.unmount();
++     this.prButton = null;
++   }
++   if (this.pr) {
++     this.pr.off('paymentmethod', this.handlePRBPaymentMethod);
++     this.pr = null;
++   }
   }
-  if (this.pr) {
-    this.pr.off('paymentmethod', this.handlePRBPaymentMethod);
-    this.pr = null;
-  }
-}
 ```
 
 #### Render the Payment Request Button button in `paymentForm()`
@@ -630,29 +650,28 @@ place the wallet button above the card form. If your marketplace uses
 transaction fields, you'll need to rework the layout so that transaction
 fields appear above the payment method elements.
 
-```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
+```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 const { prCanMakePayment } = this.state;
 const showPaymentRequestButton = !askShippingDetails;
 
 return hasStripeKey ? (
   <Form className={classes} onSubmit={handleSubmit} enforcePagePreloadFor="OrderDetailsPage">
-    {showPaymentRequestButton ? (
-      <div className={css.paymentRequestButtonSection}>
-        <div
-          ref={this.handlePRButtonRef}
-          id={`${formId}-prb`}
-          className={classNames(cardClasses)}
-        />
-        {prCanMakePayment ? (
-          <div className={css.paymentRequestDivider}>
-            <span className={css.paymentRequestDividerText}>
-              <FormattedMessage id="StripePaymentForm.orPayWithCard" />
-            </span>
-          </div>
-        ) : null}
-      </div>
-    ) : null}
-
++   {showPaymentRequestButton ? (
++     <div className={css.paymentRequestButtonSection}>
++       <div
++         ref={this.handlePRButtonRef}
++         id={`${formId}-prb`}
++         className={classNames(cardClasses)}
++       />
++       {prCanMakePayment ? (
++         <div className={css.paymentRequestDivider}>
++           <span className={css.paymentRequestDividerText}>
++             <FormattedMessage id="StripePaymentForm.orPayWithCard" />
++           </span>
++         </div>
++       ) : null}
++     </div>
++   ) : null}+
     <LocationOrShippingDetails ... />
     {/* ...rest of form */}
   </Form>
@@ -695,7 +714,7 @@ Add the CSS for the new elements to `StripePaymentForm.module.css`:
 And add the translation key to `src/translations/en.json`:
 
 ```json filename="src/translations/en.json"
-"StripePaymentForm.orPayWithCard": "Or pay with card"
+"StripePaymentForm.orPayWithCard": "or pay with card",
 ```
 
 #### Destructure new props in `render()`
@@ -710,13 +729,13 @@ and `onPRBPaymentMethod` is consumed by `handlePRBPaymentMethod`.
 Destructure all three alongside `onSubmit` so they are excluded from
 `...rest`.
 
-```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
+```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 render() {
   const {
     onSubmit,
-    payinTotal,
-    stripeCountry,
-    onPRBPaymentMethod,
++   payinTotal,
++   stripeCountry,
++   onPRBPaymentMethod,
     ...rest
   } = this.props;
   // ...
@@ -967,3 +986,5 @@ from `config.stripe.country`, the value we added earlier in this guide.
 And that's it! With these steps, you have added Payment Request Button
 to your checkout page and enabled your customers to use Apple Pay or
 Google Pay.
+
+![Payment Request Button showing Google Pay](./google-pay-prb.png)
