@@ -112,7 +112,6 @@ const messages = await sdk.messages.query({
       "attributes": {
         "name": "File to be uploaded.pdf",
         "state": "available",
-        "mimeType": "application/pdf",
         "size": 10697,
         "deleted": false
       }
@@ -177,7 +176,6 @@ const file = await sdk.files.show({ fileAttachmentId }).data.data;
   "attributes": {
     "name": "File to be uploaded.pdf",
     "state": "available",
-    "mimeType": "application/pdf",
     "size": 10697,
     "deleted": false
   }
@@ -203,7 +201,6 @@ const ownFile = await sdk.ownFiles.show({ id: fileId }).data.data;
   "type": "ownFile",
   "attributes": {
     "name": "File to be uploaded.pdf",
-    "mimeType": "application/pdf",
     "size": 10697,
     "state": "available",
     "createdAt": "2026-05-08T06:53:13.091Z",
