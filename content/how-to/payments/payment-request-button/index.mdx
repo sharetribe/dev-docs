@@ -92,6 +92,22 @@ possible to add a Stripe test card in your Apple Wallet. This means that
 you will need to develop the feature with another browser and then test
 with Safari once you are using Live keys.
 
+#### Add a server endpoint to fetch the provider's Stripe Connect account
+
+The payment request initialisation requires the Stripe Connect account
+id that matches the on_behalf_of account in the Payment Intent. The
+Marketplace API does not expose the attribute at the moment, so you will
+need to add a server-side endpoint that
+
+- verifies the request is coming from an authenticated marketplace user
+- calls the Integration API users.show with the provider's id
+- and then returns the provider's Stripe Connect account id to the
+  client.
+
+You'd then need to pass on the Stripe Connect account as a prop to the
+StripePaymentForm component, where the payment request is initialised.
+This implementation expects the attribute as `providerStripeAccountId`.
+
 </Steps>
 
 ## Add Payment Request Button
@@ -458,11 +474,11 @@ This function will do 4 things:
 
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 initializePRButton(element) {
-  const { payinTotal, stripeCountry } = this.props;
+  const { payinTotal, stripeCountry, providerStripeAccountId } = this.props;
   // if given, "element" is the DOM node from "ref"
   const container = element || this.prContainer;
 
-  if (!payinTotal || !this.stripe || this.pr) {
+  if (!payinTotal || !this.stripe || this.pr || providerStripeAccountId) {
     return
   };
 
@@ -476,6 +492,7 @@ initializePRButton(element) {
       amount: payinTotal.amount,
     },
     requestPayerEmail: true,
+    onBehalfOf: providerStripeAccountId,
   });
 
   // pr.canMakePayment() checks to make sure that the user has an active payment method –
