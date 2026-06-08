@@ -4,6 +4,7 @@ import { getPageMap } from 'nextra/page-map';
 import localFont from 'next/font/local';
 // Components
 import Logo from './components/Logo.js';
+import PrideLogo from './components/PrideLogo.js';
 import SlackIcon from './components/SlackIcon.js';
 import AskAIButton from './components/AskAIButton.js';
 import KapaWidget from './components/KapaWidget.js';
@@ -63,7 +64,7 @@ const banner = (
 );
 const navbar = (
   <Navbar
-    logo={<Logo />}
+    logo={<PrideLogo />}
     chatLink="https://www.sharetribe.com/dev-slack"
     chatIcon={<SlackIcon />}
     projectLink="https://www.github.com/sharetribe/web-template"

@@ -83,3 +83,23 @@ This structure allows you to simply add new `.mdx` files to the `content/` direc
 ## Deployment
 
 The site automatically deploys to Vercel when changes are pushed to the main branch.
+
+## Updating the logo to support Pride
+
+There currently isn't a straightforward way for utilizing multiple favicons, other than naming them in a specific way - [see Next.js docs](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons#apple-icon):
+
+> You can set multiple icons by adding a number suffix to the file name. For example, icon1.png, icon2.png, etc. Numbered files will sort lexically.
+
+Until a better solution is implemented (here or from Next.js), the icons are just renamed so that whichever is set to `icon.png` will be the active favicon.
+
+### Enabling Pride logos
+
+- Change [line 67](https://github.com/sharetribe/dev-docs/blob/main/app/layout.jsx#L67) of `layout.jsx` to: `logo={<PrideLogo />}`
+- Rename `icon.png` → `sharetribe-icon.png`
+- Rename `pride-icon.png` → `icon.png`
+
+### Reverting to standard logos
+
+- Change [line 67](https://github.com/sharetribe/dev-docs/blob/main/app/layout.jsx#L67) of `layout.jsx` to: `logo={<Logo />}`
+- Rename `icon.png` → `pride-icon.png`
+- Rename `sharetribe-icon.png` → `icon.png`
