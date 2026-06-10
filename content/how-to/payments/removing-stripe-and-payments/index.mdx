@@ -458,14 +458,19 @@ export const processCheckoutWithoutPayment = (
   </FileTree.Folder>
 </FileTree>
 
-```jsx filename="CheckoutPage.js"
-if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
-  // Fetch speculateTransition for transactions that include bookings or purchases
-  loadInitialData({
-    pageData: data || {},
-    fetchSpeculatedTransaction,
-    config,
-  });
+```diff filename="CheckoutPage.js"
+// Do not fetch extra data if user is not active (E.g. they are in pending-approval state.)
+if (isUserAuthorized(currentUser)) {
+  // This is for processes using payments with Stripe integration
+  if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
+    // Fetch StripeCustomer and speculateTransition for transactions that include Stripe payments
+    loadInitialDataForStripePayments({
+      pageData: data || {},
+      fetchSpeculatedTransaction,
+-      fetchStripeCustomer,
+      config,
+    });
+  }
 }
 ```
 
@@ -543,13 +548,13 @@ In `routeConfiguration.js`, remove references to `StripePayoutPage` and
 </FileTree>
 
 ```diff filename="routeConfiguration.js"
--export const ACCOUNT_SETTINGS_PAGES = [
--  'ContactDetailsPage',
--  'PasswordChangePage',
+ export const ACCOUNT_SETTINGS_PAGES = [
+   'ContactDetailsPage',
+   'PasswordChangePage',
 -  'StripePayoutPage',
 -  'PaymentMethodsPage',
--];
-+export const ACCOUNT_SETTINGS_PAGES = ['ContactDetailsPage', 'PasswordChangePage'];
+   'ManageAccountPage'
+ ];
 
 return [
   /* ... */
@@ -625,9 +630,6 @@ Stripe related components:
 - PaymentMethodsForm
 - StripePaymentForm
 - StripeConnectAccountForm
-
-You can also remove Stripe script form
-[public/index.html](https://github.com/sharetribe/web-template/blob/main/public/index.html#L171).
 
 </Steps>
 
