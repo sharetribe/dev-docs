@@ -52,7 +52,7 @@ missing from the Sharetribe Console marketplace text asset.
 Once you have the marketplace text file in place:
 
 1. Comment out, or remove, the `messagesInLocale` definition in the
-   [Template file src/app.js](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L71).
+   [Template file src/app.js](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js).
 
 2. Point `messagesInLocale` to correct `.json` file, for example:
 
@@ -61,12 +61,12 @@ import messagesInLocale from './translations/fr.json';`
 ```
 
 3. If you are using a locale not currently supported in Console while
-   working with moment library, you can either:
-   - Add you preferred locale to
-     [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
-   - Stop using the
-     [MomentLocaleLoader](https://github.com/sharetribe/web-template/blob/e014ddc6834a2cf1c46a514458f26656c3ce9882/src/app.js#L107)
-     and instead import the locale directly in `app.js, e.g.
+   working with moment library, you can modify
+   [app.js](https://github.com/sharetribe/web-template/blob/main/src/app.js)
+   to either:
+   - Add you preferred locale to MomentLocaleLoader
+   - Stop using the MomentLocaleLoader and instead import the locale
+     directly in `app.js`, e.g.
 
    ```js filename="src/app.js"
    import 'moment/locale/fr';

@@ -514,15 +514,10 @@ initializePRButton(element) {
 }
 ```
 
-#### Update `componentDidMount`
+#### Update `handleStripeJsLoadedEvent`
 
-Now that `initializePRButton` is defined, add a call to it inside
-`componentDidMount`. This handles the case where `payinTotal` is already
-available at mount time — for example, when a customer returns to the
-checkout page after an inquiry.
-
-Add the following block inside `componentDidMount`, after `this.stripe`
-is initialized and after the `initializeStripeElement()` call:
+Add the following block at the end of `handleStripeJsLoadedEvent`, after
+the `initializeStripeElement()` call:
 
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 const { payinTotal } = this.props;
@@ -575,16 +570,17 @@ handlePRBPaymentMethod(ev) {
 
 #### Add `componentDidUpdate` for deferred Payment Request Button initialization
 
-The card element is initialized in `componentDidMount` because the
-Stripe publishable key is always available by mount time. `payinTotal`
-is different: it comes from the speculative transaction call, which is
-often still in flight when `componentDidMount` runs. When `payinTotal`
-is `null` at mount, `initializePRButton` returns early and the button is
-never shown.
+The card element is initialized in `handleStripeJsLoadedEvent` because
+the Stripe publishable key is always available by the time it runs.
+`payinTotal` is different: it comes from the speculative transaction
+call, which is often still in flight when Stripe initializes. When
+`payinTotal` is `null` at that point, `initializePRButton` returns early
+and the button is never shown.
 
 The way `componentDidUpdate` solves this is by watching for the moment
-`payinTotal` first becomes available. The `!this.pr` check prevents a a
-duplicate initialize in case `componentDidMount` already succeeded.
+`payinTotal` first becomes available. The `!this.pr` check prevents a
+duplicate initialize in case `handleStripeJsLoadedEvent` already
+succeeded.
 
 Updating `payinTotal` on the checkout page is not something the
 Sharetribe Web Template supports by default. If this is something that
@@ -623,6 +619,7 @@ mirror of the `.on()` call in `initializePRButton`.
 
 ```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
   componentWillUnmount() {
+    window.removeEventListener(STRIPE_JS_LOADED_EVENT, this.handleStripeJsLoadedEvent);
     if (this.card) {
       this.card.removeEventListener('change', this.handleCardValueChange);
       this.card.unmount();
