@@ -11,16 +11,16 @@ import { Tabs } from 'nextra/components';
 # Build with AI
 
 Sharetribe provides an AI assistant in our developer documentation. You
-can use the related MCP to connect our documentation to your AI coding
-assistant
+can use the related MCP server to connect our documentation to your AI
+coding assistant.
 
-In this guide, you will learn how to connect the developer documentation
-MCP to your coding assistant
+In this guide, you will learn how to connect the documentation MCP
+server to your coding assistant.
 
-## Sharetribe developer documentation MCP
+## Documentation MCP server
 
-The developer documentation MCP uses information from the same sources
-as the documentation AI assistant
+The documentation MCP server uses information from the same sources as
+the documentation AI assistant.
 
 - Dev Docs
 - API and SDK references
@@ -29,24 +29,28 @@ as the documentation AI assistant
   Integration API examples
 - selected articles from the Sharetribe Help Center
 
-### MCP tool
+### Available tools
 
-The developer documentation MCP offers one MCP tool:
+The MCP server exposes one tool:
 
 ```
 search_sharetribe_knowledge_sources
 ```
 
 This tool initiates a search of the information sources listed above,
-and returns the most relevant content for the query.
+and returns the most relevant content for the query. Results are
+returned as a structured list of objects with:
+
+- `source_url` – the URL of the original source.
+- `content` – the chunk content in Markdown.
 
 ### Setup
 
 When you open the Sharetribe developer docs AI assistant, you can see a
 button in the top right corner with the text "Use MCP". Clicking this
-button will show you shortcuts to add the documentation MCP to Cursor,
-VS Code, and Claude Code, as well as copy the MCP URL
-`https://sharetribe.mcp.kapa.ai` to use the MCP in other tools.
+button will show you shortcuts to add the documentation MCP server to
+Cursor, VS Code, and Claude Code, as well as copy the MCP server URL
+`https://sharetribe.mcp.kapa.ai` to use the MCP server in other tools.
 
 ![MCP setup shortcuts](./docs-use-mcp.png)
 
@@ -173,5 +177,5 @@ Most clients accept the standard MCP JSON configuration format:
 </Tabs>
 {/* // prettier-ignore */}
 
-And that's it! You're ready to use the Sharetribe developer
-documentation MCP to speed up your AI assisted development!
+And that's it! You're ready to use the Sharetribe documentation MCP
+server to speed up your AI assisted development!
