@@ -63,15 +63,15 @@ You need to remove at least the following actions:
 - `:action/stripe-refund-payment`
 
 If you are using the template default processes with strong customer
-authentication (e.g. `default-booking`, `default-purchase`,
-`default-negotiation`) you need to remove confirming the payment.
-Otherwise, the transaction will get stuck. The simplest way to do this
-is to remove `pending-payment` and `expire-payment` states and point
-`request-payment` and `request-payment-after-inquiry`, or
+authentication (`default-booking`, `default-purchase`,
+`default-negotiation`, `default-download`) you need to remove confirming
+the payment. Otherwise, the transaction will get stuck. The simplest way
+to do this is to remove `pending-payment` and `expire-payment` states
+and point `request-payment` and `request-payment-after-inquiry`, or
 `request-payment-to-accept-offer`, directly to the following state:
 
 - `preauthorized` in `default-booking`
-- `purchased` in `default-purchase`
+- `purchased` in `default-purchase` and `default-download`
 - `offer-accepted` in `default-negotiation`
 
 When you are building the transaction process for your marketplace, it
