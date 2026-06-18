@@ -27,9 +27,10 @@ payment). In the default-booking process, a preauthorization is created:
 the money is reserved, but not yet moved to Stripe. When a provider
 accepts the request, the preauthorization is captured (i.e. the payment
 is charged from the card and money moved to Stripe and held on the
-connected account of the provider until payout). In the default-purchase
-and default-negotiation processes, the payment is created and captured
-immediately. The actual payout happens when the transaction completes.
+connected account of the provider until payout). In the
+**default-purchase**, **default-download** and **default-negotiation**
+processes, the payment is created and captured immediately. The actual
+payout happens when the transaction completes.
 
 A payment card also needs to be saved for off-session payments if those
 are in use. They are automatic one-time payments that happen when the
