@@ -95,11 +95,11 @@ Until a better solution is implemented (here or from Next.js), the icons are jus
 ### Enabling Pride logos
 
 - Change [line 67](https://github.com/sharetribe/dev-docs/blob/main/app/layout.jsx#L67) of `layout.jsx` to: `logo={<PrideLogo />}`
-- Rename `icon.png` → `sharetribe-icon.png`
-- Rename `pride-icon.png` → `icon.png`
+- Rename `/app/icon.png` → `/app/sharetribe-icon.png`
+- Rename `/app/pride-icon.png` → `/app/icon.png`
 
 ### Reverting to standard logos
 
 - Change [line 67](https://github.com/sharetribe/dev-docs/blob/main/app/layout.jsx#L67) of `layout.jsx` to: `logo={<Logo />}`
-- Rename `icon.png` → `pride-icon.png`
-- Rename `sharetribe-icon.png` → `icon.png`
+- Rename `/app/icon.png` → `/app/pride-icon.png`
+- Rename `/app/sharetribe-icon.png` → `/app/icon.png`

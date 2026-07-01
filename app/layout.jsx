@@ -64,7 +64,7 @@ const banner = (
 );
 const navbar = (
   <Navbar
-    logo={<PrideLogo />}
+    logo={<Logo />}
     chatLink="https://www.sharetribe.com/dev-slack"
     chatIcon={<SlackIcon />}
     projectLink="https://www.github.com/sharetribe/web-template"
