@@ -380,6 +380,7 @@ to review.
       <FileTree.Folder name="InboxPage" defaultOpen>
         <FileTree.File name="InboxPage.stateData.js" />
         <FileTree.File name="InboxPage.stateDataBooking.js" />
+        <FileTree.File name="InboxPage.stateDataDownload.js" />
         <FileTree.File name="InboxPage.stateDataInquiry.js" />
         <FileTree.File name="InboxPage.stateDataNegotiation.js" />
         <FileTree.File name="InboxPage.stateDataPurchase.js" />
@@ -387,6 +388,7 @@ to review.
       <FileTree.Folder name="TransactionPage" defaultOpen>
         <FileTree.File name="TransactionPage.stateData.js" />
         <FileTree.File name="TransactionPage.stateDataBooking.js" />
+        <FileTree.File name="TransactionPage.stateDataDownload.js" />
         <FileTree.File name="TransactionPage.stateDataInquiry.js" />
         <FileTree.File name="TransactionPage.stateDataNegotiation.js" />
         <FileTree.File name="TransactionPage.stateDataPurchase.js" />
@@ -483,6 +485,8 @@ export const getStateData = (params) => {
   /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
+  } else if (processName === DOWNLOAD_PROCESS_NAME) {
+    return getStateDataForDownloadProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
@@ -573,6 +577,8 @@ export const getStateData = params => {
   /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
+  } else if (processName === DOWNLOAD_PROCESS_NAME) {
+    return getStateDataForDownloadProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
