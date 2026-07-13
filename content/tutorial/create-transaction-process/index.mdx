@@ -504,6 +504,7 @@ Let's first import the new process and export its name as a constant.
   import * as bookingProcess from './transactionProcessBooking';
   import * as inquiryProcess from './transactionProcessInquiry';
   import * as negotiationProcess from './transactionProcessNegotiation';
+  import * as downloadProcess from './transactionProcessDownload';
 + import * as instantProcess from './transactionProcessInstantBooking';
 
   export const ITEM = 'item';
@@ -514,6 +515,7 @@ Let's first import the new process and export its name as a constant.
   export const INQUIRY = 'inquiry';
   export const OFFER = 'offer'; // The unitType 'offer' means that provider created the listing on default-negotiation process
   export const REQUEST = 'request'; // The unitType 'request' means that customer created the listing on default-negotiation process
+  export const FILE = 'file';
 
 
   // Then names of supported processes
@@ -521,6 +523,7 @@ Let's first import the new process and export its name as a constant.
   export const BOOKING_PROCESS_NAME = 'default-booking';
   export const INQUIRY_PROCESS_NAME = 'default-inquiry';
   export const NEGOTIATION_PROCESS_NAME = 'default-negotiation';
+  export const DOWNLOAD_PROCESS_NAME = 'default-download';
 + export const INSTANT_PROCESS_NAME = 'biketribe-instant-booking';
 
 ```
@@ -556,6 +559,12 @@ const PROCESSES = [
     alias: `${NEGOTIATION_PROCESS_NAME}/release-1`,
     process: negotiationProcess,
     unitTypes: [OFFER, REQUEST],
+  },
+  {
+    name: DOWNLOAD_PROCESS_NAME,
+    alias: `${DOWNLOAD_PROCESS_NAME}/release-1`,
+    process: downloadProcess,
+    unitTypes: [FILE],
   },
 + {
 +   name: INSTANT_PROCESS_NAME,
@@ -623,6 +632,7 @@ import {
   INQUIRY_PROCESS_NAME,
   PURCHASE_PROCESS_NAME,
   NEGOTIATION_PROCESS_NAME,
+  DOWNLOAD_PROCESS_NAME,
   resolveLatestProcessName,
   getProcess,
 } from '../../transactions/transaction';
@@ -631,6 +641,8 @@ import {
 ```jsx
 if (processName === PURCHASE_PROCESS_NAME) {
   return getStateDataForPurchaseProcess(params, processInfo());
+} else if (processName === DOWNLOAD_PROCESS_NAME) {
+  return getStateDataForDownloadProcess(params, processInfo());
 } else if (isBookingProcess(processName)) {
   return getStateDataForBookingProcess(params, processInfo());
 } else if (processName === INQUIRY_PROCESS_NAME) {

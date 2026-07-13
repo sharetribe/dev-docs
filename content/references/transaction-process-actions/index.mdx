@@ -1109,6 +1109,24 @@ requires that the transition is made from a trusted context.
 
 **Configuration options**: -
 
+### Files
+
+#### :action/reveal-listing-protected-files
+
+Copy protected file attachments from the transaction's listing to the
+transaction itself.
+
+When the action runs during a transition, it reads all non-deleted
+fileAttachment entities with :fileAttachment.scope/protected on the
+transaction's listing and creates matching fileAttachment entities
+attached to the transaction.
+
+**Preconditions**: -
+
+**Parameters**: -
+
+**Configuration options**: -
+
 ### Stripe integration
 
 #### `:action/stripe-create-payment-intent`

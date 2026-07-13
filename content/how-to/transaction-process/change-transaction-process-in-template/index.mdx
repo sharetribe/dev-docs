@@ -10,11 +10,12 @@ import { Callout, FileTree } from 'nextra/components';
 
 # Change transaction process in Sharetribe Web Template
 
-Sharetribe Web Template defines four transaction processes by default:
+Sharetribe Web Template defines five transaction processes by default:
 
 - daily, nightly, hourly, and fixed bookings use the **default-booking**
   process,
-- product sales use the **default-purchase** process
+- product sales use the **default-purchase** process,
+- digital download sales use the **default-download** process,
 - price negotiations use the **default-negotiation** process, and
 - inquiries use the **default-inquiry** process.
 
@@ -118,6 +119,7 @@ and handles these unit types by default:
 - **day**, **night**, **hour**, and **fixed** for the
   **default-booking** process
 - **item** for the **default-purchase** process
+- **file** for the **default-download** process
 - **inquiry** for the **default-inquiry** process
 - **request** and **offer** for the **default-negotiation** process.
 
@@ -150,6 +152,7 @@ export const PURCHASE_PROCESS_NAME = 'default-purchase';
 export const BOOKING_PROCESS_NAME = 'default-booking';
 export const INQUIRY_PROCESS_NAME = 'default-inquiry';
 export const NEGOTIATION_PROCESS_NAME = 'default-negotiation';
+export const DOWNLOAD_PROCESS_NAME = 'default-download';
 // Add new processes with a descriptive name
 export const NEGOTIATED_BOOKING_PROCESS_NAME =
   'booking-with-negotiation';
@@ -377,6 +380,7 @@ to review.
       <FileTree.Folder name="InboxPage" defaultOpen>
         <FileTree.File name="InboxPage.stateData.js" />
         <FileTree.File name="InboxPage.stateDataBooking.js" />
+        <FileTree.File name="InboxPage.stateDataDownload.js" />
         <FileTree.File name="InboxPage.stateDataInquiry.js" />
         <FileTree.File name="InboxPage.stateDataNegotiation.js" />
         <FileTree.File name="InboxPage.stateDataPurchase.js" />
@@ -384,6 +388,7 @@ to review.
       <FileTree.Folder name="TransactionPage" defaultOpen>
         <FileTree.File name="TransactionPage.stateData.js" />
         <FileTree.File name="TransactionPage.stateDataBooking.js" />
+        <FileTree.File name="TransactionPage.stateDataDownload.js" />
         <FileTree.File name="TransactionPage.stateDataInquiry.js" />
         <FileTree.File name="TransactionPage.stateDataNegotiation.js" />
         <FileTree.File name="TransactionPage.stateDataPurchase.js" />
@@ -480,6 +485,8 @@ export const getStateData = (params) => {
   /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
+  } else if (processName === DOWNLOAD_PROCESS_NAME) {
+    return getStateDataForDownloadProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
@@ -570,6 +577,8 @@ export const getStateData = params => {
   /* ... */
   if (processName === PURCHASE_PROCESS_NAME) {
     return getStateDataForPurchaseProcess(params, processInfo());
+  } else if (processName === DOWNLOAD_PROCESS_NAME) {
+    return getStateDataForDownloadProcess(params, processInfo());
   } else if (processName === BOOKING_PROCESS_NAME) {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
@@ -612,6 +621,7 @@ const tabsForListingType = (processName, listingTypeConfig) => {
     ['default-purchase']: [DETAILS, PRICING_AND_STOCK, ...deliveryMaybe, ...styleOrPhotosTab],
     ['default-negotiation']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
     ['default-inquiry']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
+    ['default-download']: [DETAILS, ...locationMaybe, FILES, ...pricingMaybe, ...styleOrPhotosTab],
   };
 
   return tabs[processName] || tabs['default-inquiry'];
