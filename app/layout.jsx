@@ -5,7 +5,7 @@ import localFont from 'next/font/local';
 // Components
 import Logo from './components/Logo.js';
 import PrideLogo from './components/PrideLogo.js';
-import SlackIcon from './components/SlackIcon.js';
+import CommunityIcon from './components/CommunityIcon.js';
 import AskAIButton from './components/AskAIButton.js';
 import KapaWidget from './components/KapaWidget.js';
 
@@ -65,8 +65,8 @@ const banner = (
 const navbar = (
   <Navbar
     logo={<Logo />}
-    chatLink="https://www.sharetribe.com/dev-slack"
-    chatIcon={<SlackIcon />}
+    chatLink="https://community.sharetribe.com/c/building-with-custom-code"
+    chatIcon={<CommunityIcon />}
     projectLink="https://www.github.com/sharetribe/web-template"
     // ... Your additional navbar options
   >
