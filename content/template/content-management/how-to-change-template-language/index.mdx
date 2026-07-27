@@ -60,27 +60,13 @@ Once you have the marketplace text file in place:
 import messagesInLocale from './translations/fr.json';`
 ```
 
-3. If you are using a locale not currently supported in Console while
-   working with moment library, you can modify
-   [app.js](https://github.com/sharetribe/web-template/blob/main/src/app.js)
-   to either:
-   - Add you preferred locale to MomentLocaleLoader
-   - Stop using the MomentLocaleLoader and instead import the locale
-     directly in `app.js`, e.g.
-
-   ```js filename="src/app.js"
-   import 'moment/locale/fr';
-   const hardCodedLocale =
-     process.env.NODE_ENV === 'test' ? 'en' : 'fr';
-   ```
-
 <Callout type="info">
   Sharetribe supports a wide range of locales out of the box. Check
   Console to see if your chosen locale is already supported by
   navigating to Build > General > Localizations > Locale.
 </Callout>
 
-4.  Point `messagesInLocale` to correct .json file, for example:
+3.  Point `messagesInLocale` to correct .json file, for example:
 
 ```js
 import messagesInLocale from './translations/it.json';
@@ -90,6 +76,11 @@ It is also recommended to change _en.json_ translations. That way,
 accidentally deleted keys in dynamic hosted marketplace texts (in
 Console) won't cause the default English translations to be rendered in
 your custom client app.
+
+Dates are formatted using your marketplace's `locale` and
+`firstDayOfWeek`
+[configuration variables](/template/configuration/variables/#locale). No
+additional setup is needed to get correctly localized dates.
 
 ## Changing the marketplace texts used in tests
 
