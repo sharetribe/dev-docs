@@ -57,7 +57,7 @@ Cursor, VS Code, and Claude Code, as well as copy the MCP server URL
 Setup steps vary depending on which client you are using.
 
 {/* prettier-ignore */}
-<Tabs items={['Claude Code', 'Claude Desktop', 'ChatGPT Desktop', 'Cursor', 'VS Code', 'Other']}>
+<Tabs items={['Claude Code', 'Claude Desktop', 'ChatGPT Desktop', 'Cursor', 'VS Code', 'Antigravity', 'Other']}>
   <Tabs.Tab>
   
 Run the following command in your terminal:
@@ -153,6 +153,29 @@ Create an `mcp.json` file in your workspace `.vscode` folder:
 
 For more details, see the
 [VS Code MCP documentation](https://code.visualstudio.com/docs/copilot/customization/mcp-servers).
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+Add the following snippet into your `/.gemini/config/mcp_config.json`
+file:
+
+```shell filename="./.gemini/config/mcp_config.json"
+{
+  "mcpServers": {
+    "sharetribe-docs": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://sharetribe.mcp.kapa.ai"]
+    }
+  }
+}
+
+```
+
+Restart Antigravity and authenticate when prompted.
+
+For more details, see the
+[Antigravity MCP documentation](https://antigravity.google/docs/mcp).
 
   </Tabs.Tab>
   <Tabs.Tab>

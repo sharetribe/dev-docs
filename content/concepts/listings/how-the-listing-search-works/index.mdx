@@ -347,4 +347,9 @@ of the following attributes:
 - or any **numeric** attribute in the listing's public data or metadata.
 
 The **sort** parameter supports up to three parameters in a single
-query.
+query. If a single sort parameter is provided, listings that have the
+same value of that parameter are not sorted within that group on any
+determined secondary attribute. Providing multiple sort parameters is
+the right way to guarantee sort order within a group that has the same
+sort values – otherwise the order may or may not be stable across
+queries.
