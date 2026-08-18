@@ -37,6 +37,12 @@ export default function KapaWidget() {
       'data-view-mode': 'sidebar',
       'data-color-scheme': 'light',
       'data-color-scheme-selector': '.dark',
+      'data-mcp-button-background-color': '#FFFFFF',
+      'data-mcp-button-color': '#181616',
+      'data-mcp-button-hover-background-color': '#E8E8E8',
+      'data-modal-close-button-background-color': '#FFFFFF',
+      'data-modal-close-button-color': '#181616',
+      'data-modal-close-button-hover-background-color': '#E8E8E8',
     };
     Object.entries(attrs).forEach(([key, value]) =>
       script.setAttribute(key, value)
