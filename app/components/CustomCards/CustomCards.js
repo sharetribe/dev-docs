@@ -122,7 +122,7 @@ const externalLinkBase =
   "inline-flex items-center gap-1 text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 underline after:content-['↗'] after:translate-y-px after:transition-transform after:duration-75 hover:after:translate-x-0.5 focus:after:translate-x-0.5";
 
 /**
- * A card component for displaying community contributions.
+ * A card component for displaying developer contributions.
  * Displays title, description, contributor username, and multiple links.
  *
  * @param {string} title - The title of the contribution

@@ -1,6 +1,6 @@
 export default {
     index: {
-        title: 'Community contributions',
+        title: 'Developer contributions',
         "theme": {
             "typesetting": "article",
             "pagination": false,
