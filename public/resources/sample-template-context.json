@@ -174,7 +174,8 @@
           "membership" : "standard"
         }
       },
-      "content" : "Well done, customer Jane P!"
+      "content" : "Well done, customer Jane P!",
+      "rating" : 5
     }, {
       "subject" : {
         "id" : "fd180cc2-a99c-4e43-b960-9b94daec5265",
@@ -194,7 +195,8 @@
           "membership" : "premium"
         }
       },
-      "content" : "Good job, provider Joe D!"
+      "content" : "Good job, provider Joe D!",
+      "rating" : 4
     } ],
     "tx-line-items" : [ {
       "code" : "line-item/night",
