@@ -786,6 +786,7 @@ message: message {
     reviews: reviews [
       0: review {
         content: string "Sample review of customer"
+        rating: int 4
         subject: user {
           id: UUID 5a680a01-a281-4e7a-a276-786280fda2b8
           first-name: string "Alice"
@@ -799,6 +800,7 @@ message: message {
       }
       1: review {
         content: string "Sample review of provider"
+        rating: int 5
         subject: user {
           id: UUID 2b44e4fd-ec24-4730-a3ff-9af3a07d6751
           first-name: string "John"
@@ -1094,6 +1096,7 @@ Context for transaction emails:
     "reviews": [
       {
         "content": "string",
+        "rating": "integer",
         "subject": {
           "id": "uuid",
           "first-name": "string",
