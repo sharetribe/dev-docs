@@ -1127,6 +1127,32 @@ attached to the transaction.
 
 **Configuration options**: -
 
+#### :action/update-protected-files
+
+Replace the transaction's protected file attachments with the given set:
+files missing from `protectedFileAttachments` are removed, files not yet
+attached are added. If `protectedFileAttachments` is not given, the
+attachments are left untouched.
+
+A new file can only be attached by its owner. If the customer or
+provider performs the transition, the file must be owned by that same
+party. An operator can attach a file owned by either party. Files that
+are already attached and kept in `protectedFileAttachments` are not
+checked again for ownership, so either party can keep a file the other
+party attached.
+
+Detaching a file (by leaving it out of `protectedFileAttachments`) is
+not restricted by ownership so any party can detach any file.
+
+**Preconditions**: -
+
+**Parameters**:
+
+- `protectedFileAttachments`: collection of `{fileId}` maps, max 50
+  items, optional
+
+**Configuration options**: -
+
 ### Stripe integration
 
 #### `:action/stripe-create-payment-intent`
