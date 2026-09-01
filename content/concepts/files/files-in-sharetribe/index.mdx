@@ -233,7 +233,12 @@ fileAttachments attribute:
   the resource in question
 - `protectedFileAttachments` are visible to the user who created the
   resource, and additionally the file can be revealed in a transaction
-  to the other transaction participant
+  to the other transaction participant. Files can be managed through the
+  transaction process transition action
+  [`:action/update-protected-files`](/references/transaction-process-actions/#actionupdate-protected-files).
+  Note that new files can only be attached by the transition owner,
+  while files that have already been attached are not checked again for
+  ownership.
 - `privateFileAttachments` are visible only to the user who created the
   resource.
 

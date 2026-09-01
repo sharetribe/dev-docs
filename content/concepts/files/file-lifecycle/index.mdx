@@ -157,6 +157,15 @@ Depending on your use case, you may want to allow attaching files that
 have completed upload but still verifying, or only allow attaching files
 that are available.
 
+<Callout type="info">
+  Protected files as part of the transaction process are attached
+  differently - the transition action
+  [`:action/update-protected-files`](/references/transaction-process-actions/#actionupdate-protected-files)
+  replaces the transaction's protected files with a given set. See
+  [Files in Sharetribe](/concepts/files/files-in-sharetribe/#visibility)
+  for details.
+</Callout>
+
 </Steps>
 
 After the file is attached to a resource, it is visible according to the
