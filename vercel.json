@@ -1832,6 +1832,11 @@
       "source": "/docs/introduction/introducing-template/",
       "destination": "/docs/",
       "permanent": true
+    },
+    {
+      "source": "/docs/community-contributions/",
+      "destination": "/docs/developer-contributions/",
+      "permanent": true
     }
   ]
 }
