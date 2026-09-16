@@ -227,9 +227,9 @@ export const CustomCardColumn = ({ children, header, className = '' }) => {
   return (
     <section className={className}>
       {header ? (
-        <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
+        <h2 className={sectionHeaderClassName} style={sectionHeaderStyle}>
           {header}
-        </h1>
+        </h2>
       ) : null}
       <div className="mt-4 grid gap-4" style={{ gridTemplateColumns: '1fr' }}>
         {children}
@@ -268,9 +268,9 @@ export const CustomCardGrid = ({ children, columns, header, style = {} }) => {
   return (
     <section style={style}>
       {header ? (
-        <h1 className={sectionHeaderClassName} style={sectionHeaderStyle}>
+        <h2 className={sectionHeaderClassName} style={sectionHeaderStyle}>
           {header}
-        </h1>
+        </h2>
       ) : null}
       <div
         className={gridClasses.trim()}
