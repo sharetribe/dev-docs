@@ -2,7 +2,7 @@
 title: Usage-based pricing
 sidebarTitle: Usage-based pricing
 description:
-  Learn how Sharetribe's Usage-based pricing works, including usage
+  Learn how Sharetribe's usage-based pricing works, including usage
   types, usage tiers, credit commitments, and billing.
 ---
 
@@ -44,7 +44,7 @@ exceeds 1M credits.
   />
 </CustomCardGrid>
 
-Credits are counted across all usage across the Sharetribe platform,
+Credits are counted across all usage on the Sharetribe platform,
 including asset management and actions taken in Console. See all
 endpoints that consume credits in the
 [API credit usage reference](/references/api-credit-usage). Endpoints
@@ -95,9 +95,10 @@ Suppose your marketplace uses 8 million credits in a month:
 |            |                 |                |           |
 | 8M total   |                 |                | $370      |
 
-Each tier applies only to the credits within that range. Total monthly
-cost in the example above would be the addition of the usage-based
-pricing ($370) and the cost of the subscription plan.
+Each tier applies only to the credits within that range. The $370 in
+usage-based charges from the example above is in addition to your
+monthly subscription price. Your total monthly cost would be $370 plus
+the cost of your plan.
 
 ## Usage types
 
@@ -158,15 +159,15 @@ consume no credits.
 Whether a request is billed depends on the HTTP status code of the
 response:
 
-| Response status           | Billed |
-| ------------------------- | ------ |
-| 2xx (success)             | Yes    |
-| 3xx (redirect)            | No     |
-| 401 Unauthorized          | No     |
-| 404 Not found             | Maybe  |
-| 429 Too Many Requests     | No     |
-| Other 4xx (client errors) | Yes    |
-| 5xx (server errors)       | No     |
+| Response status           | Billed           |
+| ------------------------- | ---------------- |
+| 2xx (success)             | Yes              |
+| 3xx (redirect)            | No               |
+| 401 Unauthorized          | No               |
+| 404 Not found             | Depends on cause |
+| 429 Too Many Requests     | No               |
+| Other 4xx (client errors) | Yes              |
+| 5xx (server errors)       | No               |
 
 In other words, you are billed for requests the platform served
 successfully (2xx) and for requests that failed because of how they were
@@ -176,7 +177,7 @@ exceptions:
 - 401: Unauthenticated requests are not billed.
 - 404: Not found due to an invalid endpoint URL (e.g.
   `/v1/api/listings/doesntexist`) are not billed. 404 responses due to
-  other reasons. For example, querying a listing with a non-existing ID
+  other reasons, for example, querying a listing with a non-existing ID
   are billed.
 - 429: Rate-limited requests are not billed.
 - Redirects and server-side errors (5xx) are not billed.
@@ -195,6 +196,9 @@ Credit commitments are available in the following tiers:
 | 10M credits / month  | $249 / month  |
 | 50M credits / month  | $499 / month  |
 | 200M credits / month | $999 / month  |
+
+Credit commitment prices are charged in addition to your subscription
+plan.
 
 You can manage your credit commitment in
 [Sharetribe Console](https://console.sharetribe.com).
