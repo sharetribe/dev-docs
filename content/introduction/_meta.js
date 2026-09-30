@@ -1,5 +1,6 @@
 export default {
   'introduction-to-customizing': {},
+  'pricing': {},
   'getting-started-with-web-template': {},
   'set-up-and-use-stripe': {},
   'development-skills': {},
