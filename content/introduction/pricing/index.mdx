@@ -145,6 +145,13 @@ per GB transferred, on top of their per-request credits:
 Data transfer credits are charged on top of per-request credits for
 endpoints that move file or image data.
 
+<Callout>
+  **GB** in the data transfer rates means 2³⁰ bytes (1,073,741,824
+  bytes). Data transfer credits are proportional to the bytes actually
+  transferred: for example, uploading 100 MB of files consumes 100/1024
+  of the per-GB rate.
+</Callout>
+
 ## Unique image requests
 
 The first time each image is requested through the Image CDN within a
