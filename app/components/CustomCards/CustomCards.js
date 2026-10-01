@@ -77,18 +77,18 @@ const LandingPageCard = ({ title, description, href, icon, iconAltText }) => {
       {...(openInNewWindow && { target: '_blank', rel: 'noopener noreferrer' })}
       className={`
         group overflow-hidden rounded-lg
-        text-current no-underline transition-all duration-150 ease-out hover:opacity-75
+        text-current no-underline transition-all duration-150 ease-out ${href ? 'hover:opacity-75' : ''}
         bg-white dark:bg-[#181616]
         p-8
-        ${hasCustomIcon ? 'flex flex-col' : 'flex items-center gap-8'}
+        ${hasCustomIcon && href ? 'flex flex-col' : 'flex items-center gap-8'}
       `
         .trim()
         .replace(/\s+/g, ' ')}
       style={{ cursor: href ? 'pointer' : 'default' }}
     >
-      {hasCustomIcon ? (
+      {hasCustomIcon && href ? (
         <>
-          {/* Custom icon in top left */}
+          {/* Custom icon in top left (link cards) */}
           <img
             src={iconSrc}
             alt={iconAltText}
@@ -96,6 +96,19 @@ const LandingPageCard = ({ title, description, href, icon, iconAltText }) => {
           />
           {/* Card content - title and description at bottom */}
           <div className="flex flex-col gap-2">
+            <LandingCardTitle>{title}</LandingCardTitle>
+            <LandingCardDescription>{description}</LandingCardDescription>
+          </div>
+        </>
+      ) : hasCustomIcon && !href ? (
+        <>
+          {/* Custom icon inline with content (static cards) */}
+          <img
+            src={iconSrc}
+            alt={iconAltText}
+            className="flex-shrink-0 self-start"
+          />
+          <div className="flex flex-col gap-2 flex-1">
             <LandingCardTitle>{title}</LandingCardTitle>
             <LandingCardDescription>{description}</LandingCardDescription>
           </div>

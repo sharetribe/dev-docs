@@ -1,0 +1,318 @@
+---
+title: API credit usage reference
+sidebarTitle: API credit usage
+description:
+  Reference listing every Sharetribe API endpoint and its usage type for
+  credit billing.
+---
+
+import { Callout } from 'nextra/components';
+
+# API credit usage reference
+
+This reference lists every billable Sharetribe API endpoint and the
+usage type that determines its credit cost. For an overview of how
+credits and usage types work, see
+[usage-based pricing](/introduction/pricing).
+
+<Callout type="info">
+  Rows marked "Per GB" in the Data transfer column additionally bill
+  transferred bytes at the data transfer rates listed in the [pricing
+  overview](/introduction/pricing#data-transfer-rates).
+</Callout>
+
+## Marketplace API
+
+The public API used by your marketplace application.
+
+| Endpoint                                        | Usage type     | Data transfer |
+| ----------------------------------------------- | -------------- | ------------- |
+| `/v1/api/availability_exceptions/create`        | Simple write   | —             |
+| `/v1/api/availability_exceptions/delete`        | Simple write   | —             |
+| `/v1/api/availability_exceptions/query`         | Simple read    | —             |
+| `/v1/api/bookings/query`                        | Simple read    | —             |
+| `/v1/api/current_user/change_email`             | Standard write | —             |
+| `/v1/api/current_user/change_password`          | Standard write | —             |
+| `/v1/api/current_user/create`                   | Standard write | —             |
+| `/v1/api/current_user/create_stripe_account`    | Standard write | —             |
+| `/v1/api/current_user/create_with_idp`          | Standard write | —             |
+| `/v1/api/current_user/delete`                   | Heavy write    | —             |
+| `/v1/api/current_user/send_verification_email`  | Standard write | —             |
+| `/v1/api/current_user/show`                     | Simple read    | —             |
+| `/v1/api/current_user/update_profile`           | Standard write | —             |
+| `/v1/api/current_user/update_stripe_account`    | Standard write | —             |
+| `/v1/api/current_user/verify_email`             | Standard write | —             |
+| `/v1/api/file_downloads/create`                 | File download  | Per GB        |
+| `/v1/api/file_uploads/create`                   | File upload    | Per GB        |
+| `/v1/api/files/show`                            | Simple read    | —             |
+| `/v1/api/images/upload`                         | Image upload   | Per GB        |
+| `/v1/api/listings/query`                        | Heavy read     | —             |
+| `/v1/api/listings/show`                         | Simple read    | —             |
+| `/v1/api/marketplace/show`                      | Simple read    | —             |
+| `/v1/api/messages/query`                        | Standard read  | —             |
+| `/v1/api/messages/send`                         | Standard write | —             |
+| `/v1/api/own_file_downloads/create`             | File download  | Per GB        |
+| `/v1/api/own_files/create`                      | Simple write   | —             |
+| `/v1/api/own_files/show`                        | Simple read    | —             |
+| `/v1/api/own_listings/add_image`                | Simple write   | —             |
+| `/v1/api/own_listings/close`                    | Simple write   | —             |
+| `/v1/api/own_listings/create`                   | Standard write | —             |
+| `/v1/api/own_listings/create_draft`             | Standard write | —             |
+| `/v1/api/own_listings/discard_draft`            | Simple write   | —             |
+| `/v1/api/own_listings/open`                     | Simple write   | —             |
+| `/v1/api/own_listings/publish_draft`            | Standard write | —             |
+| `/v1/api/own_listings/query`                    | Heavy read     | —             |
+| `/v1/api/own_listings/show`                     | Simple read    | —             |
+| `/v1/api/own_listings/update`                   | Standard write | —             |
+| `/v1/api/password_reset/request`                | Standard write | —             |
+| `/v1/api/password_reset/reset`                  | Standard write | —             |
+| `/v1/api/process_transitions/query`             | Simple read    | —             |
+| `/v1/api/reviews/query`                         | Standard read  | —             |
+| `/v1/api/reviews/show`                          | Simple read    | —             |
+| `/v1/api/sitemap_data/query_assets`             | Heavy read     | —             |
+| `/v1/api/sitemap_data/query_listings`           | Heavy read     | —             |
+| `/v1/api/stock/compare_and_set`                 | Simple write   | —             |
+| `/v1/api/stock_adjustments/create`              | Simple write   | —             |
+| `/v1/api/stock_adjustments/query`               | Simple read    | —             |
+| `/v1/api/stripe_account/create`                 | Standard write | —             |
+| `/v1/api/stripe_account/fetch`                  | Heavy read     | —             |
+| `/v1/api/stripe_account/update`                 | Standard write | —             |
+| `/v1/api/stripe_account_links/create`           | Standard write | —             |
+| `/v1/api/stripe_customer/add_payment_method`    | Standard write | —             |
+| `/v1/api/stripe_customer/create`                | Standard write | —             |
+| `/v1/api/stripe_customer/delete`                | Standard write | —             |
+| `/v1/api/stripe_customer/delete_payment_method` | Standard write | —             |
+| `/v1/api/stripe_persons/create`                 | Standard write | —             |
+| `/v1/api/stripe_setup_intents/create`           | Standard write | —             |
+| `/v1/api/timeslots/query`                       | Standard read  | —             |
+| `/v1/api/transactions/initiate`                 | Heavy write    | —             |
+| `/v1/api/transactions/initiate_speculative`     | Standard read  | —             |
+| `/v1/api/transactions/query`                    | Heavy read     | —             |
+| `/v1/api/transactions/show`                     | Simple read    | —             |
+| `/v1/api/transactions/transition`               | Heavy write    | —             |
+| `/v1/api/transactions/transition_speculative`   | Standard read  | —             |
+| `/v1/api/users/show`                            | Simple read    | —             |
+
+## Integration API
+
+The API for integrations and event polling.
+
+| Endpoint                                                  | Usage type     | Data transfer |
+| --------------------------------------------------------- | -------------- | ------------- |
+| `/v1/integration_api/availability_exceptions/create`      | Simple write   | —             |
+| `/v1/integration_api/availability_exceptions/delete`      | Simple write   | —             |
+| `/v1/integration_api/availability_exceptions/query`       | Simple read    | —             |
+| `/v1/integration_api/events/query`                        | Heavy read     | —             |
+| `/v1/integration_api/file_attachments/query`              | Standard read  | —             |
+| `/v1/integration_api/file_downloads/create`               | File download  | Per GB        |
+| `/v1/integration_api/file_uploads/create`                 | File upload    | Per GB        |
+| `/v1/integration_api/files/create`                        | Simple write   | —             |
+| `/v1/integration_api/files/query`                         | Standard read  | —             |
+| `/v1/integration_api/images/upload`                       | Image upload   | Per GB        |
+| `/v1/integration_api/listings/approve`                    | Simple write   | —             |
+| `/v1/integration_api/listings/close`                      | Simple write   | —             |
+| `/v1/integration_api/listings/create`                     | Standard write | —             |
+| `/v1/integration_api/listings/open`                       | Simple write   | —             |
+| `/v1/integration_api/listings/query`                      | Heavy read     | —             |
+| `/v1/integration_api/listings/show`                       | Simple read    | —             |
+| `/v1/integration_api/listings/update`                     | Standard write | —             |
+| `/v1/integration_api/marketplace/show`                    | Simple read    | —             |
+| `/v1/integration_api/messages/query`                      | Standard read  | —             |
+| `/v1/integration_api/stock/compare_and_set`               | Simple write   | —             |
+| `/v1/integration_api/stock_adjustments/create`            | Simple write   | —             |
+| `/v1/integration_api/stock_adjustments/query`             | Simple read    | —             |
+| `/v1/integration_api/stock_reservations/show`             | Simple read    | —             |
+| `/v1/integration_api/transactions/query`                  | Heavy read     | —             |
+| `/v1/integration_api/transactions/show`                   | Simple read    | —             |
+| `/v1/integration_api/transactions/transition`             | Heavy write    | —             |
+| `/v1/integration_api/transactions/transition_speculative` | Standard read  | —             |
+| `/v1/integration_api/transactions/update_metadata`        | Standard write | —             |
+| `/v1/integration_api/users/approve`                       | Simple write   | —             |
+| `/v1/integration_api/users/query`                         | Heavy read     | —             |
+| `/v1/integration_api/users/show`                          | Simple read    | —             |
+| `/v1/integration_api/users/update_permissions`            | Simple write   | —             |
+| `/v1/integration_api/users/update_profile`                | Standard write | —             |
+| `/v1/integration_api/users/verify_email`                  | Simple write   | —             |
+
+## Build API
+
+The Build API is used by Sharetribe CLI.
+
+| Endpoint                                 | Usage type     |
+| ---------------------------------------- | -------------- |
+| `/v1/build-api/aliases/create-alias`     | Simple write   |
+| `/v1/build-api/aliases/delete-alias`     | Simple write   |
+| `/v1/build-api/aliases/update-alias`     | Simple write   |
+| `/v1/build-api/current_admin/show`       | Simple read    |
+| `/v1/build-api/events/query`             | Heavy read     |
+| `/v1/build-api/listing-approval/disable` | Simple write   |
+| `/v1/build-api/listing-approval/enable`  | Simple write   |
+| `/v1/build-api/marketplace/show`         | Simple read    |
+| `/v1/build-api/notifications/preview`    | Heavy read     |
+| `/v1/build-api/notifications/send`       | Standard write |
+| `/v1/build-api/processes/create`         | Heavy write    |
+| `/v1/build-api/processes/create-version` | Heavy write    |
+| `/v1/build-api/processes/query`          | Heavy read     |
+| `/v1/build-api/processes/query-versions` | Heavy read     |
+| `/v1/build-api/processes/show`           | Heavy read     |
+| `/v1/build-api/search-schemas/query`     | Simple read    |
+| `/v1/build-api/search-schemas/set`       | Heavy write    |
+| `/v1/build-api/search-schemas/unset`     | Heavy write    |
+| `/v1/build-api/stripe/update-version`    | Simple write   |
+
+## Authentication API
+
+Issuing and revoking API access tokens.
+
+| Endpoint                             | Usage type     |
+| ------------------------------------ | -------------- |
+| `/v1/auth/auth_with_idp`             | Authentication |
+| `/v1/auth/multitenant/auth_with_idp` | Authentication |
+| `/v1/auth/multitenant/client_data`   | Authentication |
+| `/v1/auth/multitenant/token`         | Authentication |
+| `/v1/auth/revoke`                    | Authentication |
+| `/v1/auth/token`                     | Authentication |
+
+## Sharetribe Console
+
+Actions taken in Sharetribe Console are backed by API calls and consume
+credits like any other API usage. The Console API is not public, so
+operations are listed by what they do in Console rather than by endpoint
+URL.
+
+| Operation                             | Usage type           | Data transfer |
+| ------------------------------------- | -------------------- | ------------- |
+| Accept invitation                     | Simple write         | —             |
+| Activate pending email                | Simple write         | —             |
+| Add review                            | Standard write       | —             |
+| Approve listing                       | Simple write         | —             |
+| Approve user                          | Simple write         | —             |
+| Ban user                              | Heavy write          | —             |
+| Change organization member role       | Simple write         | —             |
+| Change password                       | Simple write         | —             |
+| Close or reopen listing               | Simple write         | —             |
+| Compare assets between environments   | Heavy asset read     | —             |
+| Copy assets between environments      | Heavy asset write    | —             |
+| Create Integration API application    | Simple write         | —             |
+| Create Marketplace API application    | Simple write         | —             |
+| Create application client secret      | Simple write         | —             |
+| Create email verification token       | Simple write         | —             |
+| Create identity provider and client   | Simple write         | —             |
+| Create identity provider client       | Simple write         | —             |
+| Create marketplace                    | Standard write       | —             |
+| Create organization for admin         | Heavy write          | —             |
+| Create subscription                   | Simple write         | —             |
+| Delete Stripe Account and Customer    | Heavy write          | —             |
+| Delete application                    | Simple write         | —             |
+| Delete asset                          | Standard asset write | —             |
+| Delete file                           | Simple write         | —             |
+| Delete file attachment                | Simple write         | —             |
+| Delete identity provider client       | Simple write         | —             |
+| Delete listing                        | Simple write         | —             |
+| Delete review                         | Simple write         | —             |
+| Delete user                           | Heavy write          | —             |
+| Download file attachment              | File download        | Per GB        |
+| Duplicate asset and images            | Heavy asset write    | —             |
+| Edit listing                          | Standard write       | —             |
+| Edit review                           | Standard write       | —             |
+| Enable Dev environment                | Heavy write          | —             |
+| Enable Live environment               | Heavy write          | —             |
+| Initiate custom domain setup          | Simple write         | —             |
+| Initiate email change                 | Simple write         | —             |
+| Invite admin                          | Simple write         | —             |
+| Preview email template                | Heavy read           | —             |
+| Purchase credit commitment            | Simple write         | —             |
+| Query API credit usage                | Heavy read           | —             |
+| Query additional admin data           | Simple read          | —             |
+| Query admin API keys                  | Simple read          | —             |
+| Query admin data                      | Simple read          | —             |
+| Query applications                    | Simple read          | —             |
+| Query asset                           | Standard asset read  | —             |
+| Query built-in email template         | Simple read          | —             |
+| Query built-in email templates        | Simple read          | —             |
+| Query feature flags                   | Simple read          | —             |
+| Query identity provider clients       | Simple read          | —             |
+| Query identity providers              | Simple read          | —             |
+| Query listing                         | Standard read        | —             |
+| Query listings                        | Heavy read           | —             |
+| Query marketplace                     | Simple read          | —             |
+| Query marketplace settings            | Simple read          | —             |
+| Query navigation configuration assets | Standard asset read  | —             |
+| Query onboarding configuration        | Simple read          | —             |
+| Query organization                    | Simple read          | —             |
+| Query organization marketplaces       | Simple read          | —             |
+| Query organization memberships        | Simple read          | —             |
+| Query organizations                   | Simple read          | —             |
+| Query payment configuration           | Simple read          | —             |
+| Query pending invitation              | Simple read          | —             |
+| Query pending invitations             | Simple read          | —             |
+| Query product usage data              | Standard read        | —             |
+| Query review                          | Simple read          | —             |
+| Query reviews                         | Heavy read           | —             |
+| Query search schemas                  | Simple read          | —             |
+| Query search terms                    | Heavy read           | —             |
+| Query subscription                    | Simple read          | —             |
+| Query subscription billing data       | Simple read          | —             |
+| Query transaction                     | Standard read        | —             |
+| Query transaction process version     | Simple read          | —             |
+| Query transaction process versions    | Standard read        | —             |
+| Query transaction processes           | Simple read          | —             |
+| Query transactions                    | Heavy read           | —             |
+| Query user                            | Standard read        | —             |
+| Query users                           | Heavy read           | —             |
+| Remove organization member            | Simple write         | —             |
+| Remove pending email                  | Simple write         | —             |
+| Reset admin API key                   | Simple write         | —             |
+| Reset marketplace                     | Heavy write          | —             |
+| Save asset                            | Standard asset write | —             |
+| Save onboarding configuration         | Simple write         | —             |
+| Seed default assets                   | Heavy asset write    | —             |
+| Seed marketplace                      | Heavy write          | —             |
+| Send test email                       | Standard write       | —             |
+| Set up email sending account          | Standard write       | —             |
+| Stage asset                           | Standard asset write | —             |
+| Start subscription checkout           | Simple write         | —             |
+| Toggle built-in email template        | Simple write         | —             |
+| Transition transaction                | Heavy write          | —             |
+| Unban user                            | Simple write         | —             |
+| Update Stripe API key                 | Standard write       | —             |
+| Update built-in email template        | Simple write         | —             |
+| Update domain setup                   | Simple write         | —             |
+| Update email sender name              | Simple write         | —             |
+| Update marketplace settings           | Simple write         | —             |
+| Update sender email settings          | Simple write         | —             |
+| Update setup checklist step           | Simple write         | —             |
+| Update transaction metadata           | Standard write       | —             |
+| Update user                           | Standard write       | —             |
+| Validate sender email domain          | Standard write       | —             |
+| Verify email                          | Simple write         | —             |
+
+## Asset Delivery API
+
+Delivery of marketplace assets (content and configuration).
+
+| Endpoint                                           | Usage type        |
+| -------------------------------------------------- | ----------------- |
+| `/v1/assets/pub/{clientId}/a/…` (asset by alias)   | Simple asset read |
+| `/v1/assets/pub/{clientId}/v/…` (asset by version) | Simple asset read |
+
+## Image CDN
+
+Delivery of images through the image CDN is billed as the **Image
+download** usage type. No endpoint maps to this type. It covers all
+image CDN delivery, billed per request and per GB delivered:
+
+| Image download   | Credits |
+| ---------------- | ------- |
+| Per request      | 1.5     |
+| Per GB delivered | 10,000  |
+
+In addition, the first request for an image within a calendar month is
+billed as the **Unique image request** usage type (once per unique image
+per month). All requests, including the first, are also billed as image
+CDN delivery above. Images that are not requested during a month consume
+no credits:
+
+| Unique image request          | Credits |
+| ----------------------------- | ------- |
+| Per image, per calendar month | 340     |

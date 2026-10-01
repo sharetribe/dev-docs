@@ -1,0 +1,248 @@
+---
+title: Usage-based pricing
+sidebarTitle: Usage-based pricing
+description:
+  Learn how Sharetribe's usage-based pricing works, including usage
+  types, usage tiers, credit commitments, and billing.
+---
+
+import { Callout } from 'nextra/components';
+import {
+  LandingPageCard,
+  CustomCardGrid,
+} from '../../../app/components/CustomCards/CustomCards';
+
+# Usage-based pricing
+
+Sharetribe uses usage-based pricing. You pay a monthly or yearly fee for
+your base plan, and the API usage your marketplace generates once it
+exceeds 1M credits.
+
+<Callout type="info">
+  This pricing model will go into effect for existing customers on
+  December 1, 2026
+</Callout>
+
+## How it works
+
+<CustomCardGrid columns={2}>
+  <LandingPageCard
+    title="Credit-based"
+    description="All API endpoint usage is measured in credits. Every billable API request consumes credits determined by the endpoint's usage type."
+  />
+  <LandingPageCard
+    title="1 million credits included"
+    description="Every plan includes 1 million usage credits per month at no additional cost."
+  />
+  <LandingPageCard
+    title="Volume discounts"
+    description="Volume discounts apply automatically as your usage grows. The more you use, the lower the per-credit price."
+  />
+  <LandingPageCard
+    title="Credit commitments"
+    description="Get a lower rate when you commit to a certain amount of usage per year."
+  />
+</CustomCardGrid>
+
+Credits are counted across all usage on the Sharetribe platform,
+including asset management and actions taken in Console. See all
+endpoints that consume credits in the
+[API credit usage reference](/references/api-credit-usage). Endpoints
+not listed in the API credit usage reference do not consume credits.
+This includes, for example, the Console sign-in and account management
+flows.
+
+## Subscription plans
+
+Every plan includes 1 million usage credits per month. Volume discounts
+apply automatically as your usage grows.
+
+| Plan  | Monthly price | Annual price       | Included credits |
+| ----- | ------------- | ------------------ | ---------------- |
+| Build | $39/month     | No annual discount | 1M / month       |
+| Live  | $259/month    | $199/month         | 1M / month       |
+
+## Usage tiers
+
+The first 1 million usage credits per month are included in every plan.
+Beyond that, volume discounts apply automatically through the following
+usage tiers:
+
+| Monthly usage | Price per 1,000 credits |
+| ------------- | ----------------------- |
+| 1M – 3M       | $0.07                   |
+| 3M – 6M       | $0.05                   |
+| 6M – 10M      | $0.04                   |
+| 10M – 15M     | $0.03                   |
+| 15M – 20M     | $0.02                   |
+| 20M – 30M     | $0.01                   |
+| 30M – 50M     | $0.009                  |
+| 50M – 100M    | $0.008                  |
+| 100M – 150M   | $0.007                  |
+| 150M – 200M   | $0.006                  |
+| 200M+         | $0.005                  |
+
+### Example
+
+Suppose your marketplace uses 8 million credits in a month:
+
+| Usage tier | Credits in tier | Rate per 1,000 | Tier cost |
+| ---------- | --------------- | -------------- | --------- |
+| 0 – 1M     | 1,000,000       | Included       | $0        |
+| 1M – 3M    | 2,000,000       | $0.07          | $140      |
+| 3M – 6M    | 3,000,000       | $0.05          | $150      |
+| 6M – 8M    | 2,000,000       | $0.04          | $80       |
+|            |                 |                |           |
+| 8M total   |                 |                | $370      |
+
+Each tier applies only to the credits within that range. The $370 in
+usage-based charges from the example above is in addition to your
+monthly subscription price. Your total monthly cost would be $370 plus
+the cost of your plan.
+
+## Usage types
+
+Each endpoint is assigned one of the following usage types. A
+[billable request](/introduction/pricing/#http-status-codes-and-billing)
+consumes this many credits:
+
+| Usage type           | Credits per request |
+| -------------------- | ------------------- |
+| Simple read          | 1                   |
+| Standard read        | 2                   |
+| Heavy read           | 5                   |
+| Simple write         | 5                   |
+| Standard write       | 10                  |
+| Heavy write          | 15                  |
+| Authentication       | 1                   |
+| Simple asset read    | 0.5                 |
+| Standard asset read  | 5                   |
+| Heavy asset read     | 10                  |
+| Standard asset write | 15                  |
+| Heavy asset write    | 30                  |
+| File upload          | 70                  |
+| File download        | 5                   |
+| Image upload         | 30                  |
+| Image download       | 1.5                 |
+
+<Callout>
+  For a full mapping of every API endpoint to its usage type, see the
+  [API credit usage reference](/references/api-credit-usage).
+</Callout>
+
+## Data transfer rates
+
+Endpoints that transfer file or image data additionally consume credits
+per GB transferred, on top of their per-request credits:
+
+| Data transfer type | Credits per GB |
+| ------------------ | -------------- |
+| File upload        | 255,000        |
+| File download      | 25,000         |
+| Image upload       | 230,000        |
+| Image download     | 10,000         |
+
+Data transfer credits are charged on top of per-request credits for
+endpoints that move file or image data.
+
+<Callout>
+  **GB** in the data transfer rates means 2³⁰ bytes (1,073,741,824
+  bytes). Data transfer credits are proportional to the bytes actually
+  transferred: for example, uploading 100 MB of files consumes 100/1024
+  of the per-GB rate.
+</Callout>
+
+## Unique image requests
+
+The first time each image is requested through the Image CDN within a
+calendar month, a one-time charge of 340 credits applies per image.
+Further requests for that image during the same month, including
+requests for different size or format variants, incur no additional
+unique image charge. Images that are not requested once during a month
+consume no credits.
+
+## HTTP status codes and billing
+
+Whether a request is billed depends on the HTTP status code of the
+response:
+
+| Response status           | Billed           |
+| ------------------------- | ---------------- |
+| 2xx (success)             | Yes              |
+| 3xx (redirect)            | No               |
+| 401 Unauthorized          | No               |
+| 404 Not found             | Depends on cause |
+| 429 Too Many Requests     | No               |
+| Other 4xx (client errors) | Yes              |
+| 5xx (server errors)       | No               |
+
+In other words, you are billed for requests the platform served
+successfully (2xx) and for requests that failed because of how they were
+made (4xx — for example, validation errors), with the following
+exceptions:
+
+- 401: Unauthenticated requests are not billed.
+- 404: Not found due to an invalid endpoint URL (e.g.
+  `/v1/api/listings/doesntexist`) are not billed. 404 responses due to
+  other reasons, for example, querying a listing with a non-existing ID
+  are billed.
+- 429: Rate-limited requests are not billed.
+- Redirects and server-side errors (5xx) are not billed.
+
+Data transfer follows the same rule: transferred bytes are billed only
+when the request itself has a billable status.
+
+## Credit commitments
+
+With a credit commitment, you commit to a certain amount of monthly
+usage credits for a year and lock in a lower rate for those credits.
+Credit commitments are available in the following tiers:
+
+| Commitment           | Monthly price |
+| -------------------- | ------------- |
+| 10M credits / month  | $249 / month  |
+| 50M credits / month  | $499 / month  |
+| 200M credits / month | $999 / month  |
+
+Credit commitment prices are charged in addition to your subscription
+plan.
+
+You can manage your credit commitment in
+[Sharetribe Console](https://console.sharetribe.com).
+
+## Monitoring usage
+
+You can follow credit consumption via
+[Console](https://console.sharetribe.com/) under "Manage Subscription".
+You can view how many credits you have used up and download a detailed
+CSV file that shows a monthly aggregate of your usage grouped by
+endpoint.
+
+## Best practices
+
+Keep efficient API usage in mind from the very beginning of developing
+your marketplace. As your marketplace traffic grows, inefficiencies in
+code can result in excessive API calls and unnecessary costs. If you
+have an existing marketplace, use the CSV export in Console to identify
+which endpoints consume the most credits and spot opportunities to
+optimize.
+
+- When polling events with the Integration API, avoid unnecessarily high
+  polling frequencies.
+- Be mindful of high-frequency writes to extended data. For example,
+  storing the number of views a listing has received in extended data
+  can become expensive at scale. Consider the credit cost when designing
+  features like this.
+- Pay attention to rate limits during development. Consistently hitting
+  rate limits may indicate a bug or an inefficient pattern that is
+  making excessive API calls.
+- Reuse SDK instances when using the Integration API. A single instance
+  can safely be shared across requests. Creating a new instance per
+  request triggers a separate authentication call each time.
+- Consider increasing cache durations for assets. You can configure
+  longer caching for configuration assets via
+  [sdkCacheProxy.js](https://github.com/sharetribe/web-template/blob/main/server/api-util/sdkCacheProxy.js).
+  This reduces API calls to asset endpoints, at the cost of a longer
+  delay before Console changes are reflected on the site.
+- You can also introduce caching for other API calls to reduce the total
+  number of requests, keeping in mind the tradeoff with data freshness.

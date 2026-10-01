@@ -7,4 +7,5 @@ export default {
   'getting-started-with-sdks': {},
   'getting-started-with-sharetribe-cli': {},
   'getting-started-with-integration-api': {},
+  'pricing': {},
 };
