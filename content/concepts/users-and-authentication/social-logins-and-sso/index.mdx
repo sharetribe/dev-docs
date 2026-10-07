@@ -112,3 +112,32 @@ not include a request to the identity provider.
 
 After these steps are successful, the user has the necessary
 authentication to use the marketplace.
+
+## Trusted client IDs
+
+An identity provider client in Console has one Client ID. If you have a
+client for Google or a custom Open ID Connect, the client can also have
+up to 10 Trusted client IDs. Trusted client IDs let Sharetribe accept ID
+tokens issued to another client of the same identity provider, for
+example a mobile app's client.
+
+The token's audience (`aud`) can be the Client ID or any of the Trusted
+client IDs. If the `aud` claim lists several audiences, every one of
+them must be the Client ID or a Trusted client ID. Otherwise the token
+is rejected.
+
+In API requests, the IdP client ID parameter identifies which identity
+provider client in Console to use. Always pass the main Client ID here,
+even when the token was issued to a Trusted client ID.
+
+In this example, the identity provider client has Client ID `XYZ` and
+Trusted client ID `ABC`, and the ID token has `aud: "ABC"`.
+
+| Endpoint                                             | IdP client ID parameter | Value to pass     | Token parameter                        |
+| ---------------------------------------------------- | ----------------------- | ----------------- | -------------------------------------- |
+| Authentication API `POST /v1/auth/auth_with_idp`     | `idp_client_id`         | `XYZ` (Client ID) | `idp_token`: the token issued to `ABC` |
+| Marketplace API `POST /v1/api/users/create_with_idp` | `idpClientId`           | `XYZ` (Client ID) | `idpToken`: the token issued to `ABC`  |
+
+If you pass `ABC` as the IdP client ID, the Authentication API responds
+with `401 Unauthorized`. The Marketplace API responds with `403`
+"Identity provider ID and client ID are invalid".
