@@ -169,7 +169,8 @@ response:
 | Response status           | Billed           |
 | ------------------------- | ---------------- |
 | 2xx (success)             | Yes              |
-| 3xx (redirect)            | No               |
+| 301 (redirect)            | Yes              |
+| 304 (not modified)        | Yes              |
 | 401 Unauthorized          | No               |
 | 404 Not found             | Depends on cause |
 | 429 Too Many Requests     | No               |
@@ -181,13 +182,16 @@ successfully (2xx) and for requests that failed because of how they were
 made (4xx — for example, validation errors), with the following
 exceptions:
 
+- 301 and 304: Redirect (301) and cache revalidation (304) responses
+  from the Asset Delivery API are billed, as both are part of normal
+  content delivery.
 - 401: Unauthenticated requests are not billed.
 - 404: Not found due to an invalid endpoint URL (e.g.
   `/v1/api/listings/doesntexist`) are not billed. 404 responses due to
   other reasons, for example, querying a listing with a non-existing ID
   are billed.
 - 429: Rate-limited requests are not billed.
-- Redirects and server-side errors (5xx) are not billed.
+- Server-side errors (5xx) are not billed.
 
 Data transfer follows the same rule: transferred bytes are billed only
 when the request itself has a billable status.
