@@ -2,8 +2,8 @@
 title: Modify booking time intervals in time-based listings
 sidebarTitle: Modify booking time intervals
 description:
-  This guide describes how to change the modify the default booking
-  lengths, using e.g. booking length periods of 30 minutes.
+  This guide describes how to modify the default booking lengths, using
+  e.g. booking length periods of 30 minutes.
 ---
 
 import { Callout, FileTree } from 'nextra/components';
@@ -25,27 +25,322 @@ unit type is set to "hour".
 
 <Callout type="info">
 
-Starting with Sharetribe Web Template
-[v8.0.0](https://github.com/sharetribe/web-template/releases/tag/v8.0.0),
-the template also supports fixed timeslots, where the provider can
-choose the length of possible bookings, and the customer only selects a
-start time for their booking. This guide applies to non-fixed time
-slots, where the customer can select multiple intervals of the available
-booking length by setting a start time and an end time.
+The Sharetribe Web Template also supports fixed timeslots, where the
+provider can choose the length of possible bookings, and the customer
+only selects a start time for their booking. This guide applies to
+non-fixed time slots, where the customer can select multiple intervals
+of the available booking length by setting a start time and an end time.
+
+This guide builds on top of release
+[v12.5.0](https://github.com/sharetribe/web-template/releases/tag/v12.5.0).
+If you are working on an earlier version, you will need to apply some of
+the changes from that version to support this use case in your template.
 
 </Callout>
 
 ## Set booking length to 30 minutes
 
-The simplest use case is to create uniform 30 minute booking slots.
-Start with adding a constant for the booking length in minutes.
+The simplest use case is to create uniform 30 minute booking slots
+instead of hour long slots.
 
-```jsx filename="src/util/dates.js"
-const timeSlotMinutes = 30;
+### Use non-hour duration in FieldDateAndTimeInput.js
+
+The `src/util/dates.js` file exports a `bookingTimeUnits` object that
+describes time units used in the template. We can import
+`bookingTimeUnits` in
+`src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js`, so
+that we can replace usages of hard-coded 'hour' with a duration set as
+one of the defined booking time units.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="OrderPanel" defaultOpen>
+        <FileTree.Folder name="BookingTimeForm" defaultOpen>
+          <FileTree.File name="FieldDateAndTimeInput.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+In addition, we want to import the functions `getStartBoundaries` and
+`getEndBoundaries` to replace the hour-based `getStartHours` and
+`getEndHours` so that we can use the half hour time unit.
+
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {2-4}
+import {
+  getStartBoundaries,
+  getEndBoundaries,
+  bookingTimeUnits,
 ```
 
-Time slot handling is done using a few helper functions in
-`src/util/dates.js`
+Then, let's set the `halfHour` time unit to a variable `duration`. This
+will make it easier to change the length of the duration later. We'll
+define this right after the imports.
+
+We also set a variable `minDurationInMinutes` for the shortest bookable
+time slot. We will use it when fetching time slots, so that we only need
+to change it in one place later.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {3-4}
+import css from './FieldDateAndTimeInput.module.css';
+
+const duration = bookingTimeUnits.halfHour;
+const minDurationInMinutes = duration.timeUnitInMinutes;
+```
+
+The next step is to replace the usage of `getStartHours` with
+`getStartBoundaries`, and usage of `getEndHours` with
+`getEndBoundaries`. Both pairs of functions take the same parameters,
+except that `getStartBoundaries` and `getEndBoundaries` take an
+additional `timeUnit` parameter. This is where we will use
+`duration.timeUnit`.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {5}
+    // If date next to selected start date is inside timeslot use the next date to get the hours of full day.
+    // Otherwise use the end of the timeslot.
+    const endLimit = isDateSameOrAfter(endDate, nextDate) ? nextDate : endDate;
+
+    const hours = getStartBoundaries(startLimit, endLimit, timeZone, intl, duration.timeUnit);
+    return availableHours.concat(hours);
+  }, []);
+  return allHours;
+```
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {8}
+    // If the selected end date is on the same day as timeslot end, use the timeslot end.
+    // Else use the start of the next day after selected date.
+    endLimit = isSameDate(getStartOf(endDate, 'day', timeZone), startOfEndDay)
+      ? endDate
+      : dayAfterBookingEnd;
+  }
+
+  return getEndBoundaries(startLimit, endLimit, timeZone, intl, duration.timeUnit);
+};
+```
+
+For the function `getAllTimeValues`, we will change the time unit for
+end time modification to use `duration` instead of the hard-coded 'hour'
+value.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {8}
+  // Note: We need to remove 1ms from the calculated endDate so that if the end
+  // date would be the next day at 00:00 the day in the form is still correct.
+  // Because we are only using the date and not the exact time we can remove the
+  // 1ms.
+  const endDate = selectedEndDate
+    ? selectedEndDate
+    : startTimeAsDate
+    ? new Date(findNextBoundary(startTimeAsDate, 1, duration.timeUnit, timeZone).getTime() - 1)
+    : null;
+```
+
+Next, we'll modify helper functions related to time slot fetching.
+
+When fetching time slots from the API, we need to define the minimum
+length of a booking that we want to show availability for. By default,
+the BookingTimeForm fetches one hour slots, and now that we are using
+half hour slots, we want to also fetch availability using our
+`minDurationInMinutes` value.
+
+We need to update the minimum duration in four places.
+
+First, let's change the interval length in the helper function for
+fetching month data.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {5}
+    const options = {
+      extraQueryParams: {
+        intervalDuration: 'P1D',
+        maxPerInterval: 1,
+        minDurationStartingInInterval: minDurationInMinutes,
+        perPage: 31,
+        page: 1,
+      },
+    };
+
+    // Fetch time slots for given time range
+    onFetchTimeSlots(listingId, start, end, timeZone, options);
+  }
+};
+```
+
+Another place where we need to update the minimum duration is a helper
+function for when the booking start date changes and we need to fetch
+availability for the selected start date.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {11}
+const updateBookingFieldsOnStartDateChange = params => {
+  const {
+    timeSlotsOnDate,
+    monthlyTimeSlots,
+    startDate,
+    timeZone,
+    seatsEnabled,
+    formApi,
+    intl,
+  } = params;
+  const minDurationStartingInDay = minDurationInMinutes;
+```
+
+The third place that needs the minimum duration update is in the
+`FieldDateAndTimeInput` component itself.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {3}
+// Currently available monthly data (reduced set of time slots data using intervalDuration: P1D)
+const [startMonth, endMonth] = getMonthlyFetchRange(monthlyTimeSlots, timeZone);
+const minDurationStartingInDay = minDurationInMinutes;
+const options = { minDurationStartingInDay };
+```
+
+The fourth update is in a `useEffect` inside the component that logs
+debugging data to console:
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {5}
+// This side effect just prints debug data into the console.log feed.
+// Note: endMonth is exclusive end time of the range.
+const tz = timeZone;
+const nextMonth = nextMonthFn(currentMonth, tz);
+const options = { minDurationStartingInDay: minDurationInMinutes };
+```
+
+Finally, we'll update a helper function for when booking start date
+changes. The `onBookingStartDateChange` function defines `timeUnit` as a
+hard-coded `'hour'`, and we can replace that with the time unit from
+`duration`.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {6}
+// This callback function (onBookingStartDateChange) is called from DatePicker component.
+// It gets raw value as a param - browser's local time instead of time in listing's timezone.
+const startDate = timeOfDayFromLocalToTimeZone(value.date, timeZone);
+const nextDay = getStartOf(startDate, 'day', timeZone, 1, 'days');
+
+const { timeUnit } = duration;
+```
+
+<Callout type="info">
+
+This booking length change will not affect how providers can set their
+availability. For hourly listings, availability is set as full hours by
+default.
+
+If you want to allow your providers to set availability in 15 minute
+increments, you need to include both fixed and hourly listings in the
+`useIncrementalBoundaries` prop when passing it from
+`EditListingAvailabilityPlanForm` to `AvailabilityPlanEntries` and from
+`EditListingAvailabilityExceptionForm` to `ExceptionDateTimeRange`.
+
+</Callout >
+
+### Update ListingPage.duck.js and TransactionPage.duck.js to use non-hour duration
+
+When fetching availability on the listing page, or on transaction page
+after an inquiry, we also need to consider the minimum duration.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="ListingPage.duck.js" />
+      </FileTree.Folder>
+      <FileTree.Folder name="TransactionPage" defaultOpen>
+        <FileTree.File name="TransactionPage.duck.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+We need to update the `fetchMonthlyTimeSlots` thunk in two places for
+each file to fetch availability for half hour intervals as well. Both
+files already import `bookingTimeUnits`, so we can use it directly. The
+examples below are from `ListingPage.duck.js` but the same changes apply
+on `TransactionPage.duck.js`.
+
+We first set `duration` to the half hour unit, and
+`minDurationInMinutes` to its length:
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.duck.js" {6-7}
+const fetchMonthlyTimeSlots = (dispatch, listing) => {
+  const hasWindow = typeof window !== 'undefined';
+  const { availabilityPlan, publicData } = listing?.attributes || {};
+  const tz = availabilityPlan?.timezone;
+
+  const duration = bookingTimeUnits.halfHour;
+  const minDurationInMinutes = duration.timeUnitInMinutes;
+```
+
+Next, we define `timeUnit` based on the duration.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.duck.js" {4}
+const timeUnit = startTimeInterval
+  ? bookingTimeUnits[startTimeInterval]?.timeUnit
+  : unitType === 'hour'
+  ? duration.timeUnit
+  : 'day';
+const nextBoundary = findNextBoundary(now, 1, timeUnit, tz);
+```
+
+And then we use `minDurationInMinutes` as the minimum duration:
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.duck.js" {8}
+const nextMonthEnd = isFixed
+  ? getStartOf(nextMonth, 'minute', tz, bookingLengthInMinutes, 'minutes')
+  : nextMonth;
+const followingMonthEnd = isFixed
+  ? getStartOf(nextAfterNextMonth, 'minute', tz, bookingLengthInMinutes, 'minutes')
+  : nextAfterNextMonth;
+
+const minDurationStartingInInterval = isFixed ? bookingLengthInMinutes : minDurationInMinutes;
+```
+
+Now customers can make bookings with one or more 30 minute durations.
+
+For listings with an hourly price, the server-side function
+`calculateQuantityFromHours` in
+[server/api-util/lineItemHelpers.js](https://github.com/sharetribe/web-template/blob/main/server/api-util/lineItemHelpers.js)
+determines the correct quantity as a decimal of full hours. However, if
+you want to set a price per minute, or e.g. a price per non-hour
+session, you will need to modify `calculateQuantityFromHours` in that
+file as well.
+
+![Booking breakdown with half hour booking](./30_minute_booking.png)
+
+## Use an irregular time slot
+
+If your booking length does not divide an hour evenly, such as 45 or 75
+minutes, you will need a few more changes. In this example, we use a 45
+minute booking length.
+
+The template rounds custom time units to multiples of the unit length.
+For a 45 minute unit, those multiples do not line up with full hours. As
+a result, depending on the start time of the availability (8 AM vs 9 AM
+vs 10 AM), the first time slot may start 15 or 30 minutes after the
+actual start time.
+
+To fix this, we round to a shorter interval that does line up with full
+hours. To find that interval, we calculate the greatest common factor of
+the booking length and a full hour using the
+[Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm).
+For a 45 minute booking length, the greatest common factor with an hour
+is 15 minutes. We then make sure that the first time slot starts at the
+first 15 minute mark of the availability.
+
+### Add new time unit and custom handling to dates.js
+
+All rounding happens in `src/util/dates.js`.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
@@ -55,291 +350,166 @@ Time slot handling is done using a few helper functions in
   </FileTree.Folder>
 </FileTree>
 
-- `getStartHours` and `getEndHours` return a list of timepoints that are
-  displayed as the booking's possible start and end moments,
-  respectively. They both use the same helper function `getSharpHours`
-- `getSharpHours` retrieves the sharp hours that exist within the
-  availability time slot. It uses the `getBoundaries` function and
-  passes in hard-coded 1 hour time increments.
-- The `getBoundaries` function fetches the boundaries for bookable slots
-  based on a given time unit. It calls the `findBookingUnitBoundaries`
-  function.
-- `findBookingUnitBoundaries` is a recursive function that checks
-  whether the current boundary (e.g. sharp hour or custom time span)
-  passed to it falls within the availability time slot.
-  - If the current boundary is within the availability time slot, the
-    function calls itself with the next boundary and cumulates the
-    boundary results into an array.
-  - If the current boundary does not fall within the availability time
-    slot, the function returns the cumulated results from the previous
-    iterations.
-  - `findBookingUnitBoundaries` takes a `nextBoundaryFn` parameter that
-    it uses to determine the next boundary value to pass to itself.
-- the function passed as `nextBoundaryFn` is `findNextBoundary`. The
-  `findNextBoundary` function increments the current boundary by a
-  predefined value, both for custom time units and for the default ones
-  – day and hour.
+First, let's add a 45 minute time unit to `bookingTimeUnits`. The key
+and the `timeUnit` value need to match, because the template looks up
+the unit configuration by its `timeUnit`.
 
-```jsx filename="src/util/dates.js" showLineNumbers{718}
-export const findNextBoundary = (
-  currentDate,
-  unitCount,
-  timeUnit,
-  timeZone
-) => {
-  const customTimeUnitConfig = bookingTimeUnits[timeUnit]?.isCustom
-    ? bookingTimeUnits[timeUnit]
-    : null;
-
-  if (!!customTimeUnitConfig) {
-    // If the time unit is custom, we need to use startOfMinuteBasedInterval function to adjust 00, 15, 30, 45 rounding.
-    const customTimeUnitInMinutes =
-      customTimeUnitConfig?.timeUnitInMinutes;
-    const minuteOffset = !!customTimeUnitInMinutes
-      ? unitCount * customTimeUnitInMinutes
-      : unitCount;
-
-    return moment(currentDate)
-      .clone()
-      .tz(timeZone)
-      .add(minuteOffset, 'minute')
-      .startOfMinuteBasedInterval(customTimeUnitInMinutes)
-      .toDate();
-  } else {
-    // Other time units are handled with the default moment.js functions
-    return moment(currentDate)
-      .clone()
-      .tz(timeZone)
-      .add(unitCount, timeUnit)
-      .startOf(timeUnit)
-      .toDate();
-  }
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {6-10}
+  quarterHour: {
+    timeUnit: 'quarterHour',
+    timeUnitInMinutes: 15,
+    isCustom: true,
+  },
+  fortyFiveMinutes: {
+    timeUnit: 'fortyFiveMinutes',
+    timeUnitInMinutes: 45,
+    isCustom: true,
+  },
 };
 ```
-
-### Use the custom extension function for moment.js
-
-The template hourly listing handling uses the
-[moment-timezone](https://momentjs.com/timezone/) library to modify
-times and dates and convert them between the listing's time zone and the
-user's time zone.
-
-By default, the `findNextBoundary` function uses
-`moment.startOf(timeUnit)` to round the booking slots to the top of each
-hour or day. For custom time slots, the function uses customized
-moment.js extension `startOfMinuteBasedInterval()`, which is defined
-earlier in the same `dates.js` file.
-
-```jsx filename="src/util/dates.js"
-moment.fn.startOfMinuteBasedInterval = function (unitCount) {
-  const durationInMs = moment
-    .duration(unitCount, 'minutes')
-    .asMilliseconds();
-
-  // Calculate the number of durations since 1970-01-01 00:00:00
-  const durationCount = Math.floor(this.valueOf() / durationInMs);
-  // Return a moment that is rounded to the start of the previous whole number of durations
-  return moment(durationCount * durationInMs);
-};
-```
-
-It is added to `moment.js` using the prototype exposed through
-`moment.fn`, so that we can chain it in the same place as the default
-`startOf(timeUnit)` function.
-
-### Add a new block for handling customized time slots
-
-You will need to create a new `else if` block for the hourly unit type,
-where you use the `startOfMinuteBasedInterval` function instead of the
-default `startOf(timeUnit)` function, and pass the `timeSlotMinutes`
-value as the addition and rounding duration values.
-
-```jsx filename="src/util/dates.js" {25-32}
-export const findNextBoundary = (
-  currentDate,
-  unitCount,
-  timeUnit,
-  timeZone
-) => {
-  const customTimeUnitConfig = bookingTimeUnits[timeUnit]?.isCustom
-    ? bookingTimeUnits[timeUnit]
-    : null;
-
-  if (!!customTimeUnitConfig) {
-    // If the time unit is custom, we need to use startOfMinuteBasedInterval function to adjust 00, 15, 30, 45 rounding.
-    const customTimeUnitInMinutes =
-      customTimeUnitConfig?.timeUnitInMinutes;
-    const minuteOffset = !!customTimeUnitInMinutes
-      ? unitCount * customTimeUnitInMinutes
-      : unitCount;
-
-    return moment(currentDate)
-      .clone()
-      .tz(timeZone)
-      .add(minuteOffset, 'minute')
-      .startOfMinuteBasedInterval(customTimeUnitInMinutes)
-      .toDate();
-  } else if (timeUnit === 'hour') {
-    // Replace hourly handling with the defined booking length
-    return moment(currentDate)
-      .clone()
-      .tz(timeZone)
-      .add(timeSlotMinutes, 'minute')
-      .startOfMinuteBasedInterval(timeSlotMinutes)
-      .toDate();
-  } else {
-    // Other time units are handled with the default moment.js functions
-    return moment(currentDate)
-      .clone()
-      .tz(timeZone)
-      .add(unitCount, timeUnit)
-      .startOf(timeUnit)
-      .toDate();
-  }
-};
-```
-
-For listings with an hourly price, the server-side function
-`calculateQuantityFromHours` in [server/api-util/lineItemHelpers.js]()
-determines the correct quantity as a decimal of full hours. However, if
-you want to set a price per minute, or e.g. a price per non-hour
-session, you will need to modify `calculateQuantityFromHours` in that
-file as well.
-
-![Booking breakdown with half hour booking](./30_minute_booking.png)
 
 <Callout type="info">
-
-Note that this change also changes the time intervals available for
-modifying a listing's availability exceptions.
-
-If you want to continue handling availability exceptions with full
-hours, you can introduce a parameter `useFullHours = true` and pass it
-down the following path:
-
-- `getStartHours` to `getSharpHours`
-- `getEndHours` to `getSharpHours`
-- `getSharpHours` to `getBoundaries`
-- `getBoundaries` to `findBookingUnitBoundaries` and the
-  `findNextBoundary` function defined as `currentBoundary`
-- `findBookingUnitBoundaries` to the `nextBoundaryFn` call defined as
-  `currentBoundary`
-
-In `findNextBoundary`, replace the `else if (timeUnit === 'hour')`
-condition with `else if (!useFullHours)`
-
-Finally, you'll need to modify `FieldDateAndTimeInput.js` usages of
-`getStartHours` and `getEndHours` to pass `false` for the `useFullHours`
-parameter, so that they use your modified handling instead.
-
+  Time slot lengths that aren't defined by default but that divide
+  evenly into an hour (e.g. 20 minutes) only require adding a new
+  `bookingTimeUnits` entry and a `duration` change in
+  `FieldDateAndTimeInput.js`, `ListingPage.duck.js` and
+  `TransactionPage.duck.js`. They don't require the changes to
+  `dates.js` that are described below.
 </Callout>
 
-## Use an irregular time slot
+Then, let's add a helper function `gcf` for the greatest common factor,
+and a constant for the length of an hour in minutes. We can add them
+right after the comment that lists the functions to modify for custom
+time units.
 
-If your marketplace has custom booking lengths longer than (and not
-divisible by) 30 minutes, you will need to extend the previous steps to
-a more complex approach to make sure the time slots show up correctly.
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {9-13}
+// NOTE: If your customization is using different time-units than hours
+// and different boundaries than sharp hours, you need to modify these functions:
+// - findBookingUnitBoundaries (DST changes)
+// - findNextBoundary
+// - getSharpHours -> use getUnitBoundaries
+// - getStartHours -> use getStartBoundaries
+// - getEndHours -> use getEndBoundaries
 
-### Find the rounding duration
+const HOUR_MINUTES = bookingTimeUnits.hour.timeUnitInMinutes;
 
-When the booking length is not a factor of a full hour, using the
-`timeslotMinutes` value might cause issues, because the start time slot
-gets rounded to a multiple of the time slot in general. This means that
-depending on the start time of the availability (8 AM vs 9 AM vs 10 AM),
-the first time slot may show up as starting 15 minutes or half hour past
-the actual desired start time.
-
-To align the first available boundary with a sharp hour, we need to
-manually set the first boundary to the specified start time, and set
-rounding to a factor of a full hour.
-
-To determine the correct rounding minute amount, we calculate the
-greatest common factor of the booking length and a full hour using the
-[Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm).
-For instance, when using a 45 minute time slot, the greatest common
-divisor with an hour is 15 minutes.
-
-```jsx filename="src/util/dates.js"
-const timeSlotMinutes = 45;
-const hourMinutes = 60;
-
-/**
- * Calculate the greatest common factor (gcf) of two timeslot lengths
- * to determine rounding value using the Euclidean algorithm
- * (https://en.wikipedia.org/wiki/Euclidean_algorithm).
- */
-const gcf = (a, b) => {
-  return a ? gcf(b % a, a) : b;
-};
-
-/**
- * Define the rounding value.
- * If the first time slot is shorter than general time slot,
- * swap the parameters around so that the first parameter is the shorter one
- */
-const rounding = gcf(timeSlotMinutes, hourMinutes);
+// Calculate the greatest common factor of two numbers
+// using the Euclidean algorithm, e.g. gcf(45, 60) === 15
+const gcf = (a, b) => (a ? gcf(b % a, a) : b);
 ```
 
-### Manually set first boundary to start time
+Next, we'll modify the `findNextBoundary` function. It calculates each
+boundary by adding the unit length to the previous boundary, and then
+rounding down to a multiple of the unit length.
 
-To manually set the first boundary to the start time, we need to pass an
-`isFirst` parameter to the `findNextBoundary` function. For the first
-time slot, we then skip incrementing completely. The rounding function
-now rounds the start time back to the rounding boundary.
+We make two changes to how it handles custom time units:
 
-The default start time is passed to `findNextBoundary` as one
-millisecond before start time, since the default addition of 30 minutes
-and the `startOfDuration(...)` function cancel each other out. Now that
-we want to set the first booking slot manually, we also need to revert
-that millisecond change in our modified handling.
+- We round to the greatest common factor of the unit length and an hour,
+  instead of the unit length itself.
+- We add an `isFirst` parameter. For the first boundary, we add the
+  rounding length instead of the unit length. This moves the first
+  boundary to the first 15 minute mark of the availability.
 
-```diff filename="src/util/dates.js"
-- export const findNextBoundary = (currentDate, unitCount, timeUnit, timeZone) => {
-+ export const findNextBoundary = (currentDate, unitCount, timeUnit, timeZone, isFirst = false) => {
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {1,9-12,18}
+export const findNextBoundary = (currentDate, unitCount, timeUnit, timeZone, isFirst = false) => {
   const customTimeUnitConfig = bookingTimeUnits[timeUnit]?.isCustom
     ? bookingTimeUnits[timeUnit]
     : null;
-  /* ... */
-  } else if (timeUnit === 'hour') {
-+   // Add separate handling for the first timeslot so that bookings can start
-+   // from the beginning of the available time slot
-+   const increment = isFirst ? 0 : timeSlotMinutes;
-+   // Revert the millisecondBeforeStartTime change if increment is 0, so that the rounding
-+   // works correctly
-+   const date = isFirst ? new Date(currentDate.getTime() + 1) : currentDate;
 
-    // Replace hourly handling with the defined booking length
--   return moment(currentDate)
-+   return moment(date)
+  if (!!customTimeUnitConfig) {
+    // If the time unit is custom, we need to use startOfMinuteBasedInterval function to adjust 00, 15, 30, 45 rounding.
+    const customTimeUnitInMinutes = customTimeUnitConfig?.timeUnitInMinutes;
+    // Round to an interval that lines up with full hours, e.g. 15 minutes for a 45 minute unit
+    const roundingInMinutes = gcf(customTimeUnitInMinutes, HOUR_MINUTES);
+    // Move the first boundary to the next rounding interval, so that bookings can start when availability starts
+    const minuteOffset = isFirst ? roundingInMinutes : unitCount * customTimeUnitInMinutes;
+
+    return moment(currentDate)
       .clone()
       .tz(timeZone)
--     .add(timeSlotMinutes, 'minutes')
--     .startOfMinuteBasedInterval(timeSlotMinutes)
-+     .add(increment, 'minutes')
-+     .startOfMinuteBasedInterval(rounding)
+      .add(minuteOffset, 'minute')
+      .startOfMinuteBasedInterval(roundingInMinutes)
       .toDate();
   } else {
-    // Other time units are handled with the default moment.js functions
-    return moment(currentDate)
-    /* ... */
 ```
 
-Then, in the `getBoundaries` function that calls `findNextBoundary`, we
-will need to pass `true` as the `isFirst` parameter to the very first
-`findBookingUnitBoundaries` function call.
+The half hour and quarter hour units divide an hour evenly. For them,
+the rounding length is the same as the unit length, so their boundaries
+do not change.
 
-```diff filename="src/util/dates.js"
-export const getBoundaries = (startTime, endTime, unitCount, timeUnit, timeZone, intl) => {
-  /* ... */
+Finally, we need to pass `true` as the `isFirst` parameter when
+`getBoundaries` calculates the first boundary.
+
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {5}
+  // Select a moment before startTime to find next possible sharp hour.
+  // I.e. startTime might be a sharp hour.
   const millisecondBeforeStartTime = new Date(startTime.getTime() - 1);
   return findBookingUnitBoundaries({
-+   // Add isFirst param to determine first time slot handling
--   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone),
-+   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
-    startMoment: moment(startTime),
-    endMoment: moment(endTime),
-    /* ... */
+    currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
 ```
+
+### Use new duration in FieldDateAndTimeInput.js
+
+In the previous section, we set `duration` to the half hour unit. Now we
+can change it to our new unit, and the booking form uses it everywhere.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="OrderPanel" defaultOpen>
+        <FileTree.Folder name="BookingTimeForm" defaultOpen>
+          <FileTree.File name="FieldDateAndTimeInput.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {3}
+import css from './FieldDateAndTimeInput.module.css';
+
+const duration = bookingTimeUnits.fortyFiveMinutes;
+const minDurationInMinutes = duration.timeUnitInMinutes;
+```
+
+### Use new duration in ListingPage.duck.js and TransactionPage.duck.js
+
+We make the same change in the `fetchMonthlyTimeSlots` thunk of both
+files.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="ListingPage.duck.js" />
+      </FileTree.Folder>
+      <FileTree.Folder name="TransactionPage" defaultOpen>
+        <FileTree.File name="TransactionPage.duck.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.duck.js" {6}
+const fetchMonthlyTimeSlots = (dispatch, listing) => {
+  const hasWindow = typeof window !== 'undefined';
+  const { availabilityPlan, publicData } = listing?.attributes || {};
+  const tz = availabilityPlan?.timezone;
+
+  const duration = bookingTimeUnits.fortyFiveMinutes;
+  const minDurationInMinutes = duration.timeUnitInMinutes;
+```
+
+Now, customers can make bookings with 45 minute booking slots. Price is
+still calculated as a fraction of the hourly price.
+
+![Booking times with 45 minute booking slots](./45_minute_booking.png)
 
 ## Add separate handling for first timeslot
 
@@ -350,131 +520,194 @@ the option to extend it for 30 minutes at a time. In those cases, you
 need to create different handling for the first time slot, i.e. the
 first start and end boundaries.
 
-```jsx filename="src/util/dates.js"
-const timeSlotMinutes = 30;
-const firstSlotMinutes = 75;
+This section builds on the previous section. We add a time unit that has
+two lengths: 75 minutes for the first time slot and 30 minutes for each
+extension. Then we use the two lengths in the booking form:
 
-/**
- * Define the rounding value.
- * If the first time slot is shorter than general time slot,
- * swap the parameters around so that the first parameter is the shorter one
- */
-const rounding = gcf(timeSlotMinutes, firstSlotMinutes);
-```
+- Start times are 30 minutes apart, and each start time needs at least
+  75 minutes of availability after it.
+- The first end time is 75 minutes after the start time. Each end time
+  after that is 30 minutes later.
 
-### Determine first time slot boundaries
+### Add a new custom unit and first unit handling to dates.js
 
-In this use case, we want to determine a different behavior for the
-start and end boundaries of the first time slot. For this reason, we
-need to pass an `isStart` parameter to `findNextCustomBoundary` and use
-it to determine the boundary timepoints in addition to the `isFirst`
-parameter.
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="util" defaultOpen>
+      <FileTree.File name="dates.js" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
 
-```diff filename="src/util/dates.js"
-export const findNextBoundary = (
-  currentDate,
-  unitCount,
-  timeUnit,
-  timeZone,
-- isFirst = false
-+ isFirst = false,
-+ isStart = false,
-) => {
-  /* ... */
-  } else if (timeUnit === 'hour') {
-    // Add separate handling for the first timeslot so that bookings can start
-    // from the beginning of the available time slot
-+   // Use the default booking length for non-first slots
-+   // Use the first booking length for first end boundary
-+   // Use 0 for first start boundary
--   const increment = isFirst ? 0 : timeSlotMinutes;
-+   const increment = !isFirst
-+     ? timeSlotMinutes
-+     : !isStart
-+     ? firstSlotMinutes
-+     : 0;
-+
-    // Revert the millisecondBeforeStartTime change if increment is 0, so that the rounding
-    // works correctly
-    const date = isFirst ? new Date(currentDate.getTime() + 1) : currentDate;
-    /* ... */
+First, let's add a new time unit to `bookingTimeUnits`. The
+`timeUnitInMinutes` value is the length of each extension, and the new
+`firstUnitInMinutes` value is the length of the first time slot.
+
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {6-11}
+  fortyFiveMinutes: {
+    timeUnit: 'fortyFiveMinutes',
+    timeUnitInMinutes: 45,
+    isCustom: true,
+  },
+  customRental: {
+    timeUnit: 'customRental',
+    timeUnitInMinutes: 30,
+    firstUnitInMinutes: 75,
+    isCustom: true,
+  },
 };
 ```
 
-The `getBoundaries` and `getSharpHours` functions are used for both
-start hours and end hours, so we need to receive `isStart` as a
-parameter in both, and pass the value on to `findNextBoundary`.
+Next, we need to include the first time slot length in the rounding. The
+first end time of a booking is 75 minutes after its start time. For that
+end time to fall on a rounding boundary, the rounding length needs to
+divide 75 minutes as well as the extension length and an hour. For a 75
+minute first slot and 30 minute extensions, the rounding length is 15
+minutes.
 
-```diff filename="src/util/dates.js"
-  export const getBoundaries = (
-    startTime,
-    endTime,
-    unitCount,
-    timeUnit,
-    timeZone,
-    intl,
-+   isStart = false
-  ) => {
-    if (!moment.tz.zone(timeZone)) {
-    /* ... */
-    return findBookingUnitBoundaries({
--   // Add isFirst param to determine first time slot handling
--   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true),
-+   // Add isFirst and isStart params to determine first time slot handling
-+   currentBoundary: findNextBoundary(millisecondBeforeStartTime, 1, timeUnit, timeZone, true, isStart),
-      startMoment: moment(startTime),
+{/* prettier-ignore */}
+```jsx filename="src/util/dates.js" {4-6}
+  if (!!customTimeUnitConfig) {
+    // If the time unit is custom, we need to use startOfMinuteBasedInterval function to adjust 00, 15, 30, 45 rounding.
+    const customTimeUnitInMinutes = customTimeUnitConfig?.timeUnitInMinutes;
+    const firstUnitInMinutes = customTimeUnitConfig?.firstUnitInMinutes || 0;
+    // Round to an interval that lines up with full hours and the first time slot length, e.g. 15 minutes for 75 and 30 minute units
+    const roundingInMinutes = gcf(gcf(customTimeUnitInMinutes, HOUR_MINUTES), firstUnitInMinutes);
 ```
 
-```diff filename="src/util/dates.js"
-- export const getSharpHours = (startTime, endTime, timeZone, intl) => {
-+ export const getSharpHours = (startTime, endTime, timeZone, intl, isStart) => {
--   return getBoundaries(startTime, endTime, 1, 'hour', timeZone, intl);
-+   return getBoundaries(startTime, endTime, 1, 'hour', timeZone, intl, isStart);
+Time units without `firstUnitInMinutes` round the same way as before,
+because the greatest common factor of any number and 0 is the number
+itself.
+
+### Use new duration and customized timeslot filtering in FieldDateAndTimeInput.js
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="OrderPanel" defaultOpen>
+        <FileTree.Folder name="BookingTimeForm" defaultOpen>
+          <FileTree.File name="FieldDateAndTimeInput.js" />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+First, let's set `duration` to our new time unit. The shortest bookable
+time slot is now the first time slot length, so we also set
+`minDurationInMinutes` to `firstUnitInMinutes`.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {3-4}
+import css from './FieldDateAndTimeInput.module.css';
+
+const duration = bookingTimeUnits.customRental;
+const minDurationInMinutes = duration.firstUnitInMinutes;
+```
+
+The `getStartBoundaries` and `getEndBoundaries` functions assume that
+start and end times are one time unit apart. `getStartBoundaries`
+removes the last boundary, and `getEndBoundaries` removes the first one.
+With a longer first time slot, we need to filter the boundaries
+ourselves. So we replace both imports with `getUnitBoundaries`, which
+returns every boundary in the given range.
+
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {2}
+import {
+  getUnitBoundaries,
+  bookingTimeUnits,
+```
+
+Then, let's update the start times in `getAvailableStartTimes`. We keep
+the start times that leave room for the first time slot before the
+availability ends. The `endLimit` check removes the boundary at
+midnight, which belongs to the next day.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {5-9}
+    // If date next to selected start date is inside timeslot use the next date to get the hours of full day.
+    // Otherwise use the end of the timeslot.
+    const endLimit = isDateSameOrAfter(endDate, nextDate) ? nextDate : endDate;
+
+    // Start times need enough availability for the first time slot
+    const latestStart = getStartOf(endDate, 'minute', timeZone, -duration.firstUnitInMinutes, 'minutes');
+    const hours = getUnitBoundaries(startLimit, endLimit, timeZone, intl, duration.timeUnit).filter(
+      boundary => boundary.timestamp <= latestStart.getTime() && boundary.timestamp < endLimit.getTime()
+    );
+    return availableHours.concat(hours);
+  }, []);
+  return allHours;
+```
+
+Next, we'll update the end times in `getAvailableEndTimes`. The first
+end time is the first time slot length after the booking start. From
+there, `getUnitBoundaries` adds 30 minutes at a time. When the customer
+selects an end date after the start date, the filter keeps only the end
+times on that date.
+
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {8-12}
+    // If the selected end date is on the same day as timeslot end, use the timeslot end.
+    // Else use the start of the next day after selected date.
+    endLimit = isSameDate(getStartOf(endDate, 'day', timeZone), startOfEndDay)
+      ? endDate
+      : dayAfterBookingEnd;
+  }
+
+  // The first end time is the first time slot length after the booking start
+  const firstEndTime = getStartOf(bookingStartTimeAsDate, 'minute', timeZone, duration.firstUnitInMinutes, 'minutes');
+  return getUnitBoundaries(firstEndTime, endLimit, timeZone, intl, duration.timeUnit).filter(
+    boundary => boundary.timestamp > startLimit.getTime()
+  );
 };
 ```
 
-### Customize start hour and end hour list behavior
+Finally, in `getAllTimeValues`, the default end date also needs to
+account for the first time slot length. Otherwise, a booking that starts
+late in the evening gets an end date with no available end times.
 
-By default, `getStartHours` and `getEndHours` basically retrieve the
-same list, but `getStartHours` removes the last entry and `getEndHours`
-removes the first entry. Since we have custom start and end handling in
-`findNextBoundary`, we also need to modify the start and end hour lists.
-
-To get correct start times, we need to first pass `true` as the
-`isStart` parameter from `getStartHours` to `getSharpHours`.
-
-In addition, we need to make sure that even when selecting the last
-start time, there is enough availability for the first timeslot. We do
-this by removing enough entries from the end so that the first time slot
-can be booked even from the last start moment.
-
-```diff filename="src/util/dates.js"
-export const getStartHours = (startTime, endTime, timeZone, intl) => {
--  const hours = getSharpHours(startTime, endTime, timeZone, intl);
-+  const hours = getSharpHours(startTime, endTime, timeZone, intl, true);
-
-- return hours.length < 2 ? hours : hours.slice(0, -1);
-+ // Remove enough start times so that the first slot length can successfully be
-+ // booked also from the last start time
-+ const removeCount = Math.ceil(firstSlotMinutes / timeSlotMinutes)
-+ return hours.length < removeCount ? [] : hours.slice(0, -removeCount);
-};
+{/* prettier-ignore */}
+```jsx filename="src/components/OrderPanel/BookingTimeForm/FieldDateAndTimeInput.js" {4}
+  const endDate = selectedEndDate
+    ? selectedEndDate
+    : startTimeAsDate
+    ? new Date(getStartOf(startTimeAsDate, 'minute', timeZone, duration.firstUnitInMinutes, 'minutes').getTime() - 1)
+    : null;
 ```
 
-Finally, we can simplify the end hour handling. Since the first entry is
-determined in the `findNextCustomBoundary` function, we do not need to
-remove it. Instead, we can just return the full list from
-`getSharpHours`.
+### Use custom time unit in ListingPage.duck.js and TransactionPage.duck.js
 
-```diff filename="src/util/dates.js"
-export const getEndHours = (startTime, endTime, timeZone, intl) => {
--  const hours = getSharpHours(startTime, endTime, timeZone, intl);
--  return hours.length < 2 ? [] : hours.slice(1);
-+  return getSharpHours(startTime, endTime, timeZone, intl);
-};
+In the `fetchMonthlyTimeSlots` thunk of both files, we set `duration` to
+the new time unit and `minDurationInMinutes` to the first time slot
+length.
+
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="containers" defaultOpen>
+      <FileTree.Folder name="ListingPage" defaultOpen>
+        <FileTree.File name="ListingPage.duck.js" />
+      </FileTree.Folder>
+      <FileTree.Folder name="TransactionPage" defaultOpen>
+        <FileTree.File name="TransactionPage.duck.js" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.duck.js" {6-7}
+const fetchMonthlyTimeSlots = (dispatch, listing) => {
+  const hasWindow = typeof window !== 'undefined';
+  const { availabilityPlan, publicData } = listing?.attributes || {};
+  const tz = availabilityPlan?.timezone;
+
+  const duration = bookingTimeUnits.customRental;
+  const minDurationInMinutes = duration.firstUnitInMinutes;
 ```
 
 We can then see that after the first booking length of 75 minutes, the
-subsequent boundaries are 30 minutes each.
+subsequent boundaries are 30 minutes each. Price is still calculated as
+a fraction of the hourly price.
 
 ![Booking end options for different first slot](./different_first_slot_booking.png)

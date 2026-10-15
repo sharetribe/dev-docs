@@ -55,13 +55,15 @@ availability. Under the hood, availability is automatically set from
 `00:00` to `00:00` (i.e., midnight to midnight), enabling bookings to
 span for consecutive days.
 
-For hourly and fixed booking length listings, the template exposes full
+For hourly and fixed booking length listings, the template exposes more
 control over start and end times when adjusting availability entries.
-These entries can be consecutive or non-consecutive and may have varying
-seat counts. While it is technically possible to create a continuous
-availability window from `00:00` to `00:00`, enabling bookings that span
-entire days or overnight, the template does not have built-in support
-for creating hourly bookings that span multiple calendar days.
+Providers can define hourly booking availability at full hour intervals
+and fixed booking availability at 15 minute intervals. These entries can
+be consecutive or non-consecutive and may have varying seat counts.
+While it is technically possible to create a continuous availability
+window from `00:00` to `00:00`, enabling bookings that span entire days
+or overnight, the template does not have built-in support for creating
+hourly bookings that span multiple calendar days.
 
 ### Availability exceptions
 
@@ -73,9 +75,16 @@ created based on the unit type:
   end dates can be the same date
 - For nightly bookings, exceptions are created per night, and the end
   date needs to be at least one day later than the start date
-- For hourly bookings and fixed-length bookings, exceptions are created
-  with a start time and an end time, and the end time needs to be at
-  least an hour later, and on the hour, e.g. 13:00 or 14:00.
+- For hourly bookings, exceptions are created with a start time and an
+  end time, and the end time needs to be at least an hour later, and on
+  the hour, e.g. 13:00 or 14:00.
+- For fixed-length bookings, exceptions are created with a start time
+  and an end time, and you can set both in 15 minute increments. End
+  time needs to be at least 15 minutes after start time. Up until
+  Sharetribe Web Template release
+  [v12.5.0](https://github.com/sharetribe/web-template/releases/tag/v12.5.0),
+  fixed booking availability was handled similarly to hourly booking
+  availability.
 
 Regardless of the unit type, all exceptions are made using the same
 [endpoint](https://www.sharetribe.com/api-reference/marketplace.html#create-availability-exceptions).
