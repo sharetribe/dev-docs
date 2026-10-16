@@ -10,6 +10,7 @@ export default function KapaWidget() {
       'data-website-id': 'adc8b7cb-4e4a-4f1d-aef2-274477f095da',
       'data-project-name': 'Sharetribe',
       'data-project-color': '#181616',
+      'data-webmcp-enabled': 'true',
       'data-mcp-enabled': 'true',
       'data-mcp-server-url': 'https://sharetribe.mcp.kapa.ai',
       'data-project-logo':
