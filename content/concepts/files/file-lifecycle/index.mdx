@@ -203,5 +203,6 @@ so when an operator deletes a file associated with a message, both the
 
 There is no file deletion endpoint in either Integration API or
 Marketplace API. If you've uploaded a file but you have not yet attached
-it to a message, leaving the file unattached will result in it being
-eventually deleted.
+it to any resource, leaving the file unattached will result in it being
+eventually deleted. Similarly, if all resources that reference a file
+are deleted, the file becomes orphaned and is eventually deleted.
