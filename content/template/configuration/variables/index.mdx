@@ -224,6 +224,13 @@ cover photo. When creating or editing a listing, authors can reorder
 images by dragging and dropping them, or with keyboard commands for
 accessibility.
 
+If the listing type configuration includes a max image count, the field
+for adding images is hidden when the listing reaches the limit. If
+images are already over the limit when the configuration is added or
+changed, image saving is disabled until the provider removes the extra
+images. The image count limit is enforced only in the Sharetribe Web
+Template UI, not in the API.
+
 ### Listing image aspect ratio
 
 Use the `listingImage` option to specify the aspect ratio and image
@@ -348,7 +355,8 @@ user can select the listing type from a dropdown based on the listing
 types defined in the configuration files. The listing type and
 transaction process alias are stored in the public data of the listing.
 Listing types can also be used to define whether listings of the type
-should show available stock.
+should show available stock, or whether there are limits to how many
+images can be added to the listing.
 
 You can use this configuration to enable different listing types, either
 using the same transaction processes or different ones. Each listing
