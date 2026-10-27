@@ -39,7 +39,7 @@ in the template.
 ## How configurations are merged in the template
 
 The template uses a function
-[mergeConfig](https://github.com/sharetribe/web-template/blob/main/src/util/configHelpers.js#L667)
+[mergeConfig](https://github.com/sharetribe/web-template/blob/main/src/util/configHelpers.js#L1742)
 in _src/util/configHelpers.js_ to handle the configurations.
 
 ```shell
@@ -50,17 +50,61 @@ in _src/util/configHelpers.js_ to handle the configurations.
 
 ```jsx
 export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
-  // defaultConfigs.listingMinimumPriceSubUnits is the backup for listing's minimum price
+  // Remove trailing slash from marketplaceRootURL if any
+  const marketplaceRootURL = defaultConfigs.marketplaceRootURL;
+  const cleanedRootURL =
+    typeof marketplaceRootURL === 'string'
+      ? marketplaceRootURL.replace(/\/$/, '')
+      : '';
+
+  // By default, always try to take the value of listingMinimumPriceSubUnits from the transaction-size.json asset.
+  // - If there is no value, we use the defaultConfigs.listingMinimumPriceSubUnits
+  // - If the value is 0 (aka _falsy_), we use the defaultConfigs.listingMinimumPriceSubUnits
+  //   (The latter is mainly due to backward compatibility atm, since Console won't allow saving 0 anymore.)
+  // Note: It might make sense that 0 handling is different for default-inquiry process.
+  //       With the built-in code flow, you can only remove price altogether from listing type using default-inquiries.
   const listingMinimumPriceSubUnits =
     getListingMinimumPrice(configAsset.transactionSize) ||
     defaultConfigs.listingMinimumPriceSubUnits;
+
+  const validHostedCategories = validateCategoryConfig(
+    configAsset.categories
+  );
+  const categoryConfiguration = getBuiltInCategorySpecs(
+    validHostedCategories
+  );
+  const listingConfiguration = mergeListingConfig(
+    configAsset,
+    defaultConfigs,
+    validHostedCategories
+  );
 
   return {
     // Use default configs as a starting point for app config.
     ...defaultConfigs,
 
+    marketplaceRootURL: cleanedRootURL,
+
+    // AccessControl config contains a flag whether the marketplace is private.
+    accessControl: validAccessControl(configAsset.accessControl),
+
     // Overwrite default configs if hosted config is available
     listingMinimumPriceSubUnits,
+
+    // Localization: currency is first-level config atm.
+    currency: mergeCurrency(
+      configAsset.localization?.currency,
+      defaultConfigs.currency
+    ),
+
+    // Stripe config currently comes from defaultConfigs atm.
+    stripe: validateStripeCurrency(defaultConfigs.stripe),
+
+    // Localization (locale, first day of week)
+    localization: mergeLocalizations(
+      configAsset.localization,
+      defaultConfigs.localization
+    ),
 
     // Analytics might come from hosted assets at some point.
     analytics: mergeAnalyticsConfig(
@@ -80,17 +124,40 @@ export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
     // but defaultConfigs is used if type of the hosted configs is unknown
     layout: mergeLayouts(configAsset.layout, defaultConfigs.layout),
 
-    // Listing configuration comes entirely from hosted assets
-    listing: mergeListingConfig(configAsset, defaultConfigs),
+    // User configuration comes entirely from hosted assets by default.
+    user: mergeUserConfig(configAsset, defaultConfigs),
+
+    // Set category configuration (includes fixed key, array of categories etc.
+    categoryConfiguration,
+
+    // Listing configuration comes entirely from hosted assets by default.
+    listing: listingConfiguration,
 
     // Hosted search configuration does not yet contain sortConfig
     search: mergeSearchConfig(
       configAsset.search,
-      defaultConfigs.search
+      defaultConfigs.search,
+      categoryConfiguration,
+      listingConfiguration.listingTypes,
+      listingConfiguration.listingFields
     ),
 
     // Map provider info might come from hosted assets. Other map configs come from defaultConfigs.
     maps: mergeMapConfig(configAsset.maps, defaultConfigs.maps),
+
+    // Google Site Verification can be given through configs.
+    // Renders a meta tag: <meta name="google-site-verification" content="[token-here]>" />
+    googleSearchConsole: configAsset.googleSearchConsole
+      ?.googleSiteVerification
+      ? configAsset.googleSearchConsole
+      : defaultConfigs.googleSearchConsole,
+
+    // The top-bar.json asset contains logo link and custom links
+    // - The logo link can be used to link logo to another domain
+    // - Custom links are links specified by marketplace operator (both internal and external)
+    //   - Topbar tries to fit primary links to the visible space,
+    //     but secondary links are always behind dropdown menu.
+    topbar: configAsset.topbar, // defaultConfigs.topbar,
 
     // Include hosted footer config, if it exists
     // Note: if footer asset is not set, Footer is not rendered.
@@ -111,7 +178,11 @@ configurations and local configurations.
 
 ```jsx
 // Note: by default, listing types and fields are only merged if explicitly set for debugging
-const mergeListingConfig = (hostedConfig, defaultConfigs) => {
+const mergeListingConfig = (
+  hostedConfig,
+  defaultConfigs,
+  categoriesInUse
+) => {
   // Listing configuration is splitted to several assets in Console
   const hostedListingTypes = restructureListingTypes(
     hostedConfig.listingTypes?.listingTypes
@@ -127,7 +198,7 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
     ...rest
   } = defaultConfigs.listing || {};
 
-  // When debugging, include default configs.
+  // When debugging, include default configs by passing 'true' here.
   // Otherwise, use listing types and fields from hosted assets.
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
   const listingTypes = shouldMerge
@@ -137,11 +208,17 @@ const mergeListingConfig = (hostedConfig, defaultConfigs) => {
     ? union(hostedListingFields, defaultListingFields, 'key')
     : hostedListingFields;
 
-  const listingTypesInUse = getListingTypeStringsInUse(listingTypes);
+  const listingTypesInUse = listingTypes.map(
+    (lt) => `${lt.listingType}`
+  );
 
   return {
     ...rest,
-    listingFields: validListingFields(listingFields, listingTypesInUse),
+    listingFields: validListingFields(
+      listingFields,
+      listingTypesInUse,
+      categoriesInUse
+    ),
     listingTypes: validListingTypes(listingTypes),
     enforceValidListingType:
       defaultConfigs.listing.enforceValidListingType,
@@ -172,14 +249,12 @@ First, follow the directions in the process README.md to configure the
 template to use the new process. Then, make the following modifications
 to the _mergeListingConfig_ function:
 
-```diff
-const mergeListingConfig = (hostedConfig, defaultConfigs) => {
+{/* prettier-ignore */}
+```jsx {4}
+const mergeListingConfig = (hostedConfig, defaultConfigs, categoriesInUse) => {
   /* ... */
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
-- const listingTypes = shouldMerge
--   ? union(hostedListingTypes, defaultListingTypes, 'listingType')
--   : hostedListingTypes;
-+ const listingTypes = union(hostedListingTypes, defaultListingTypes, 'listingType');
+  const listingTypes = union(hostedListingTypes, defaultListingTypes, 'listingType');
   const listingFields = shouldMerge
     ? union(hostedListingFields, defaultListingFields, 'key')
     : hostedListingFields;
