@@ -7,7 +7,7 @@ description:
   page.
 ---
 
-import { FileTree, Steps, Callout } from 'nextra/components';
+import { FileTree, Steps, Callout, Tabs } from 'nextra/components';
 
 # How to integrate Payment Request Button for Apple Pay and Google Pay
 
@@ -121,7 +121,7 @@ First, add your country code in your .env file as
 `REACT_APP_STRIPE_COUNTRY`:
 
 ```shell filename=".env"
-REACT_APP_STRIPE_COUNTRY=DE;
+REACT_APP_STRIPE_COUNTRY=DE
 ```
 
 Add that as an export in `src/config/configStripe.js`. Include a
@@ -143,11 +143,14 @@ export const country = process.env.REACT_APP_STRIPE_COUNTRY || 'US';
 ### Extend `confirmCardPayment` in stripe.duck.js
 
 The `confirmCardPaymentPayloadCreator` function builds `args` as either
-`[secret]` or `[secret, paymentParams]` in the default implementation.
+`[stripePaymentIntentClientSecret]` or
+`[stripePaymentIntentClientSecret, paymentParams]` in the default
+implementation.
 
 Payment Request Button uses two-phase confirmation. This means that a
-third branch for `[secret, paymentParams, confirmOptions]` is needed for
-the Payment Request Button flow, since it requires passing
+third branch for
+`[stripePaymentIntentClientSecret, paymentParams, confirmOptions]` is
+needed for the Payment Request Button flow, since it requires passing
 `{ handleActions: false }` as a third argument to the
 `stripe.confirmCardPayment` thunk on the first call.
 
@@ -160,23 +163,29 @@ the Payment Request Button flow, since it requires passing
 </FileTree>
 
 Add `confirmOptions` to the destructuring of `params`, then replace the
-two-branch ternary with a three-branch version:
+two-branch ternary with a three-branch version. The rest of the function
+stays the same.
 
-```diff filename="src/ducks/stripe.duck.js"
- const confirmCardPaymentPayloadCreator = async (params) => {
--  const { stripe, paymentParams, stripePaymentIntentClientSecret: secret } = params;
-+  const { stripe, paymentParams, confirmOptions, stripePaymentIntentClientSecret: secret } = params;
+{/* prettier-ignore */}
+```jsx filename="src/ducks/stripe.duck.js" {4,10-15}
+const confirmCardPaymentPayloadCreator = (params, { rejectWithValue }) => {
+  // It's required to use the same instance of Stripe as where the card has been created
+  // so that's why Stripe needs to be passed here and we can't create a new instance.
+  const { stripe, paymentParams, confirmOptions, stripePaymentIntentClientSecret } = params;
+  const transactionId = params.orderId;
 
--  const args = paymentParams ? [secret, paymentParams] : [secret];
-+  const args =
-+    paymentParams && confirmOptions
-+      ? [secret, paymentParams, confirmOptions]
-+      : paymentParams
-+      ? [secret, paymentParams]
-+      : [secret];
+  // When using default payment method paymentParams.payment_method is
+  // already set Marketplace API side, when request-payment transition is made
+  // so there's no need for paymentParams
+  const args =
+    paymentParams && confirmOptions
+      ? [stripePaymentIntentClientSecret, paymentParams, confirmOptions]
+      : paymentParams
+      ? [stripePaymentIntentClientSecret, paymentParams]
+      : [stripePaymentIntentClientSecret];
 
-   return stripe.confirmCardPayment(...args);
- };
+  /* ... */
+};
 ```
 
 ### Add `processCheckoutWithPRBPayment` to CheckoutPageTransactionHelpers.js
@@ -204,8 +213,8 @@ The function composes the first three async steps from
 confirmation with a two-phase Payment Request Button confirmation:
 
 - `fnRequestPayment` is identical to the card flow. It calls
-  `onInitiateOrder`, handles the inquiry/negotiation/standard transition
-  branches, and persists the transaction.
+  `onInitiateOrder`, picks the request transition, and persists the
+  transaction.
 
 - `fnConfirmCardPaymentPRB` is the two-phase Payment Request Button
   confirmation mentioned in the previous step.
@@ -227,8 +236,19 @@ default payment method. However, wallet payment methods cannot be saved
 as default, so we don't include that step. Instead, we add a `.then`
 block to the composed function to return a correctly shaped response.
 
-Add this new helper function to `CheckoutPageTransactionHelpers.js`:
+{/* prettier-ignore */}
+<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+  <Tabs.Tab>
 
+Both `fnRequestPayment` and `fnConfirmPayment` get their transitions
+from the transaction process file's `getCheckoutPaymentTransitions`
+function, through the `getCheckoutTransitions` helper, like the card
+flow does.
+
+Add this new helper function to `CheckoutPageTransactionHelpers.js`,
+after `processCheckoutWithPayment`:
+
+{/* prettier-ignore */}
 ```jsx filename="src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js"
 export const processCheckoutWithPRBPayment = (
   orderParams,
@@ -252,27 +272,16 @@ export const processCheckoutWithPRBPayment = (
   const processAlias =
     pageData?.listing?.attributes?.publicData?.transactionProcessAlias;
 
-  let createdPaymentIntent = null;
+  // Wallet payments through the Payment Request Button are card payments
+  const { requestPaymentTransition, confirmPaymentTransition } =
+    getCheckoutTransitions(process, storedTx, PAYMENT_METHOD_CARD);
 
   // Step 1: fnRequestPayment – identical to processCheckoutWithPayment
-  const fnRequestPayment = (fnParams) => {
+  const fnRequestPayment = fnParams => {
     const hasPaymentIntents =
       storedTx.attributes.protectedData?.stripePaymentIntents;
 
-    const isOfferPendingInNegotiationProcess =
-      resolveLatestProcessName(processAlias.split('/')[0]) ===
-        NEGOTIATION_PROCESS_NAME &&
-      storedTx.attributes.state ===
-        `state/${process.states.OFFER_PENDING}`;
-
-    const requestTransition =
-      storedTx?.attributes?.lastTransition ===
-      process.transitions.INQUIRE
-        ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
-        : isOfferPendingInNegotiationProcess
-          ? process.transitions.REQUEST_PAYMENT_TO_ACCEPT_OFFER
-          : process.transitions.REQUEST_PAYMENT;
-    const isPrivileged = process.isPrivileged(requestTransition);
+    const isPrivileged = process.isPrivileged(requestPaymentTransition);
 
     const orderPromise = hasPaymentIntents
       ? Promise.resolve(storedTx)
@@ -280,11 +289,11 @@ export const processCheckoutWithPRBPayment = (
           fnParams,
           processAlias,
           storedTx.id,
-          requestTransition,
+          requestPaymentTransition,
           isPrivileged
         );
 
-    orderPromise.then((order) => {
+    return orderPromise.then(order => {
       persistTransaction(
         order,
         pageData,
@@ -292,13 +301,12 @@ export const processCheckoutWithPRBPayment = (
         setPageData,
         sessionStorageKey
       );
+      return order;
     });
-
-    return orderPromise;
   };
 
   // Step 2: PRB two-phase confirmation, replaces fnConfirmCardPayment
-  const fnConfirmCardPaymentPRB = async (fnParams) => {
+  const fnConfirmCardPaymentPRB = async fnParams => {
     const order = fnParams;
 
     const hasPaymentIntents =
@@ -320,14 +328,14 @@ export const processCheckoutWithPRBPayment = (
     }
 
     // First call: confirm PI attaching the PRB payment method, without handling
-    // any required actions. This returns quickly so ev.complete() can be called promptly.
+    // any required actions. Stripe returns before any 3DS step, so ev.complete() can be called next.
     let firstResult;
     try {
       firstResult = await onConfirmCardPayment({
         stripe,
         stripePaymentIntentClientSecret,
         paymentParams: { payment_method: ev.paymentMethod.id },
-        confirmOptions: { handleActions: false }, // extended in Step 2 above
+        confirmOptions: { handleActions: false }, // supported by the stripe.duck.js change above
         orderId: order?.id,
       });
     } catch (err) {
@@ -340,8 +348,6 @@ export const processCheckoutWithPRBPayment = (
     // Must be called promptly; Stripe will timeout if delayed.
     ev.complete('success');
 
-    createdPaymentIntent = firstResult.paymentIntent;
-
     // Second call: handle 3DS or other required actions if the PI needs them.
     if (firstResult.paymentIntent?.status === 'requires_action') {
       const secondResult = await onConfirmCardPayment({
@@ -350,7 +356,6 @@ export const processCheckoutWithPRBPayment = (
         orderId: order?.id,
         // No paymentParams, no confirmOptions — let Stripe handle the action
       });
-      createdPaymentIntent = secondResult.paymentIntent;
       return {
         transactionId: order?.id,
         paymentIntent: secondResult.paymentIntent,
@@ -364,8 +369,184 @@ export const processCheckoutWithPRBPayment = (
   };
 
   // Step 3: complete order – identical to processCheckoutWithPayment
-  const fnConfirmPayment = (fnParams) => {
-    createdPaymentIntent = fnParams.paymentIntent;
+  const fnConfirmPayment = fnParams => {
+    const transactionId = fnParams.transactionId;
+    const isTransitionedAlready =
+      storedTx?.attributes?.lastTransition === confirmPaymentTransition;
+    const orderPromise = isTransitionedAlready
+      ? Promise.resolve(storedTx)
+      : onConfirmPayment(transactionId, confirmPaymentTransition, {});
+
+    return orderPromise.then(order => {
+      persistTransaction(
+        order,
+        pageData,
+        storeData,
+        setPageData,
+        sessionStorageKey
+      );
+      return order;
+    });
+  };
+
+  const applyAsync = (acc, val) => acc.then(val);
+  const composeAsync = (...funcs) => x =>
+    funcs.reduce(applyAsync, Promise.resolve(x));
+  const handlePRBPaymentIntentCreation = composeAsync(
+    fnRequestPayment,
+    fnConfirmCardPaymentPRB,
+    fnConfirmPayment
+  );
+
+  return handlePRBPaymentIntentCreation(orderParams).then(order => ({
+    orderId: order?.id,
+    paymentMethodSaved: true,
+  }));
+};
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+In earlier versions, `fnRequestPayment` handles the
+inquiry/negotiation/standard transition branching itself, like the card
+flow does. `fnConfirmPayment` uses the `CONFIRM_PAYMENT` transition
+directly.
+
+Add this new helper function to `CheckoutPageTransactionHelpers.js`,
+after `processCheckoutWithPayment`:
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js"
+export const processCheckoutWithPRBPayment = (
+  orderParams,
+  extraPaymentParams
+) => {
+  const {
+    ev, // Stripe paymentmethod event object
+    hasPaymentIntentUserActionsDone,
+    onConfirmCardPayment,
+    onConfirmPayment,
+    onInitiateOrder,
+    pageData,
+    paymentIntent,
+    process,
+    setPageData,
+    sessionStorageKey,
+    stripe,
+  } = extraPaymentParams;
+
+  const storedTx = ensureTransaction(pageData.transaction);
+  const processAlias =
+    pageData?.listing?.attributes?.publicData?.transactionProcessAlias;
+
+  // Step 1: fnRequestPayment – identical to processCheckoutWithPayment
+  const fnRequestPayment = fnParams => {
+    const hasPaymentIntents =
+      storedTx.attributes.protectedData?.stripePaymentIntents;
+
+    const isOfferPendingInNegotiationProcess =
+      resolveLatestProcessName(processAlias.split('/')[0]) ===
+        NEGOTIATION_PROCESS_NAME &&
+      storedTx.attributes.state ===
+        `state/${process.states.OFFER_PENDING}`;
+
+    const requestTransition =
+      storedTx?.attributes?.lastTransition ===
+      process.transitions.INQUIRE
+        ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
+        : isOfferPendingInNegotiationProcess
+        ? process.transitions.REQUEST_PAYMENT_TO_ACCEPT_OFFER
+        : process.transitions.REQUEST_PAYMENT;
+    const isPrivileged = process.isPrivileged(requestTransition);
+
+    const orderPromise = hasPaymentIntents
+      ? Promise.resolve(storedTx)
+      : onInitiateOrder(
+          fnParams,
+          processAlias,
+          storedTx.id,
+          requestTransition,
+          isPrivileged
+        );
+
+    return orderPromise.then(order => {
+      persistTransaction(
+        order,
+        pageData,
+        storeData,
+        setPageData,
+        sessionStorageKey
+      );
+      return order;
+    });
+  };
+
+  // Step 2: PRB two-phase confirmation, replaces fnConfirmCardPayment
+  const fnConfirmCardPaymentPRB = async fnParams => {
+    const order = fnParams;
+
+    const hasPaymentIntents =
+      order?.attributes?.protectedData?.stripePaymentIntents;
+    if (!hasPaymentIntents) {
+      throw new Error(
+        `Missing StripePaymentIntents key in transaction's protectedData. Check that your transaction process is configured to use payment intents.`
+      );
+    }
+
+    const { stripePaymentIntentClientSecret } =
+      order.attributes.protectedData.stripePaymentIntents.default;
+
+    // If PI user actions are already done (e.g. a previous attempt succeeded),
+    // close the sheet and pass through
+    if (hasPaymentIntentUserActionsDone) {
+      ev.complete('success');
+      return { transactionId: order?.id, paymentIntent };
+    }
+
+    // First call: confirm PI attaching the PRB payment method, without handling
+    // any required actions. Stripe returns before any 3DS step, so ev.complete() can be called next.
+    let firstResult;
+    try {
+      firstResult = await onConfirmCardPayment({
+        stripe,
+        stripePaymentIntentClientSecret,
+        paymentParams: { payment_method: ev.paymentMethod.id },
+        confirmOptions: { handleActions: false }, // supported by the stripe.duck.js change above
+        orderId: order?.id,
+      });
+    } catch (err) {
+      // Confirmation failed — tell the browser to re-show the payment interface
+      ev.complete('fail');
+      throw err;
+    }
+
+    // Close the browser payment sheet before handling any further actions.
+    // Must be called promptly; Stripe will timeout if delayed.
+    ev.complete('success');
+
+    // Second call: handle 3DS or other required actions if the PI needs them.
+    if (firstResult.paymentIntent?.status === 'requires_action') {
+      const secondResult = await onConfirmCardPayment({
+        stripe,
+        stripePaymentIntentClientSecret,
+        orderId: order?.id,
+        // No paymentParams, no confirmOptions — let Stripe handle the action
+      });
+      return {
+        transactionId: order?.id,
+        paymentIntent: secondResult.paymentIntent,
+      };
+    }
+
+    return {
+      transactionId: order?.id,
+      paymentIntent: firstResult.paymentIntent,
+    };
+  };
+
+  // Step 3: complete order – identical to processCheckoutWithPayment
+  const fnConfirmPayment = fnParams => {
     const transactionId = fnParams.transactionId;
     const transitionName = process.transitions.CONFIRM_PAYMENT;
     const isTransitionedAlready =
@@ -374,7 +555,7 @@ export const processCheckoutWithPRBPayment = (
       ? Promise.resolve(storedTx)
       : onConfirmPayment(transactionId, transitionName, {});
 
-    orderPromise.then((order) => {
+    return orderPromise.then(order => {
       persistTransaction(
         order,
         pageData,
@@ -382,28 +563,28 @@ export const processCheckoutWithPRBPayment = (
         setPageData,
         sessionStorageKey
       );
+      return order;
     });
-
-    return orderPromise;
   };
 
   const applyAsync = (acc, val) => acc.then(val);
-  const composeAsync =
-    (...funcs) =>
-    (x) =>
-      funcs.reduce(applyAsync, Promise.resolve(x));
+  const composeAsync = (...funcs) => x =>
+    funcs.reduce(applyAsync, Promise.resolve(x));
   const handlePRBPaymentIntentCreation = composeAsync(
     fnRequestPayment,
     fnConfirmCardPaymentPRB,
     fnConfirmPayment
   );
 
-  return handlePRBPaymentIntentCreation(orderParams).then((order) => ({
+  return handlePRBPaymentIntentCreation(orderParams).then(order => ({
     orderId: order?.id,
     paymentMethodSaved: true,
   }));
 };
 ```
+
+  </Tabs.Tab>
+</Tabs>
 
 ### Update StripePaymentForm.js
 
@@ -472,15 +653,17 @@ This function will do 4 things:
    Button with the initialized paymentRequest
 4. set the payment request callback for selecting a payment method
 
+Add the method before `initializeStripeElement`:
+
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 initializePRButton(element) {
   const { payinTotal, stripeCountry, providerStripeAccountId } = this.props;
   // if given, "element" is the DOM node from "ref"
   const container = element || this.prContainer;
 
-  if (!payinTotal || !this.stripe || this.pr || providerStripeAccountId) {
-    return
-  };
+  if (!payinTotal || !this.stripe || this.pr || !providerStripeAccountId) {
+    return;
+  }
 
   // Use the transaction's payinTotal to set currency and amount
   // for the payment request.
@@ -517,7 +700,7 @@ initializePRButton(element) {
 #### Update `handleStripeJsLoadedEvent`
 
 Add the following block at the end of `handleStripeJsLoadedEvent`, after
-the `initializeStripeElement()` call:
+the `if` block that calls `initializeStripeElement()`:
 
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 const { payinTotal } = this.props;
@@ -550,6 +733,8 @@ triggering a form submit, so the form values are not passed
 automatically. The `handlePRBPaymentMethod` function reads them
 explicitly from `this.finalFormAPI.getState().values`.
 
+Add both methods after `handleStripeElementRef`:
+
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 handlePRButtonRef(el) {
   this.prContainer = el;
@@ -568,7 +753,7 @@ handlePRBPaymentMethod(ev) {
 }
 ```
 
-#### Add `componentDidUpdate` for deferred Payment Request Button initialization
+#### Handle deferred Payment Request Button initialization in `componentDidUpdate`
 
 The card element is initialized in `handleStripeJsLoadedEvent` because
 the Stripe publishable key is always available by the time it runs.
@@ -582,6 +767,15 @@ The way `componentDidUpdate` solves this is by watching for the moment
 duplicate initialize in case `handleStripeJsLoadedEvent` already
 succeeded.
 
+`providerStripeAccountId` has the same timing issue. Your server
+endpoint returns it asynchronously, and it often arrives after
+`payinTotal`. For example, if you read the provider id from the
+speculated transaction, the fetch can only start once `payinTotal` is
+already available. Because `initializePRButton` also returns early
+without `providerStripeAccountId`, `componentDidUpdate` retries the
+initialization when either `payinTotal` or `providerStripeAccountId`
+first becomes available.
+
 Updating `payinTotal` on the checkout page is not something the
 Sharetribe Web Template supports by default. If this is something that
 you have added with customization, you will need to include logic to
@@ -590,11 +784,77 @@ initialization — for example, when a quantity is updated —
 `this.pr.update()` keeps the amount on the payment sheet in sync without
 recreating the button.
 
+{/* prettier-ignore */}
+<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+  <Tabs.Tab>
+
+Add `payinTotal` and `providerStripeAccountId` to the destructured
+props, and add the two Payment Request Button checks at the end of the
+existing `componentDidUpdate`.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js" {7-8,30-41}
+  componentDidUpdate(prevProps) {
+    const {
+      checkoutPaymentMethod,
+      hasHandledCardPayment,
+      defaultPaymentMethod,
+      loadingData,
+      payinTotal,
+      providerStripeAccountId,
+    } = this.props;
+
+    const prevUsedCardPayment = prevProps.checkoutPaymentMethod === PAYMENT_METHOD_CARD;
+    const usesCardPayment = checkoutPaymentMethod === PAYMENT_METHOD_CARD;
+    if (!prevUsedCardPayment && usesCardPayment) {
+      if (
+        !(hasHandledCardPayment || defaultPaymentMethod || loadingData) &&
+        !this.card &&
+        this.cardContainer
+      ) {
+        this.initializeStripeElement();
+      }
+    }
+
+    if (prevUsedCardPayment && !usesCardPayment && this.card) {
+      this.card.removeEventListener('change', this.handleCardValueChange);
+      this.card.unmount();
+      this.card = null;
+      this.setState({ cardValueValid: false, error: null });
+    }
+
+    // payinTotal and providerStripeAccountId load asynchronously in either order,
+    // so retry the initialization when either one first becomes available.
+    const payinTotalArrived = !prevProps.payinTotal && payinTotal;
+    const providerStripeAccountIdArrived =
+      !prevProps.providerStripeAccountId && providerStripeAccountId;
+    if ((payinTotalArrived || providerStripeAccountIdArrived) && this.prContainer && !this.pr) {
+      this.initializePRButton();
+    }
+
+    if (prevProps.payinTotal?.amount !== payinTotal?.amount && this.pr) {
+      this.pr.update({ total: { label: 'Total', amount: payinTotal.amount } });
+    }
+  }
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+In earlier versions, `StripePaymentForm` does not have a
+`componentDidUpdate` method, so this step requires adding it. Add the
+following method to `StripePaymentForm`, after `componentDidMount`:
+
 ```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
 componentDidUpdate(prevProps) {
-  const { payinTotal } = this.props;
+  const { payinTotal, providerStripeAccountId } = this.props;
 
-  if (!prevProps.payinTotal && payinTotal && this.prContainer && !this.pr) {
+  // payinTotal and providerStripeAccountId load asynchronously in either order,
+  // so retry the initialization when either one first becomes available.
+  const payinTotalArrived = !prevProps.payinTotal && payinTotal;
+  const providerStripeAccountIdArrived =
+    !prevProps.providerStripeAccountId && providerStripeAccountId;
+  if ((payinTotalArrived || providerStripeAccountIdArrived) && this.prContainer && !this.pr) {
     this.initializePRButton();
   }
 
@@ -603,6 +863,9 @@ componentDidUpdate(prevProps) {
   }
 }
 ```
+
+  </Tabs.Tab>
+</Tabs>
 
 #### Add Payment Request Button cleanup to `componentWillUnmount`
 
@@ -617,7 +880,8 @@ rather than a Stripe Element, so it does not have `.unmount()`. Instead,
 unregister the `paymentmethod` listener with `.off()`, which is the
 mirror of the `.on()` call in `initializePRButton`.
 
-```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js" {9-16}
   componentWillUnmount() {
     window.removeEventListener(STRIPE_JS_LOADED_EVENT, this.handleStripeJsLoadedEvent);
     if (this.card) {
@@ -625,15 +889,15 @@ mirror of the `.on()` call in `initializePRButton`.
       this.card.unmount();
       this.card = null;
     }
-+
-+   if (this.prButton) {
-+     this.prButton.unmount();
-+     this.prButton = null;
-+   }
-+   if (this.pr) {
-+     this.pr.off('paymentmethod', this.handlePRBPaymentMethod);
-+     this.pr = null;
-+   }
+
+    if (this.prButton) {
+      this.prButton.unmount();
+      this.prButton = null;
+    }
+    if (this.pr) {
+      this.pr.off('paymentmethod', this.handlePRBPaymentMethod);
+      this.pr = null;
+    }
   }
 ```
 
@@ -664,43 +928,50 @@ place the wallet button above the card form. If your marketplace uses
 transaction fields, you'll need to rework the layout so that transaction
 fields appear above the payment method elements.
 
-```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
-const { prCanMakePayment } = this.state;
-const showPaymentRequestButton = !askShippingDetails;
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js" {1-2,6-21}
+    const { prCanMakePayment } = this.state;
+    const showPaymentRequestButton = !askShippingDetails;
 
-return hasStripeKey ? (
-  <Form className={classes} onSubmit={handleSubmit} enforcePagePreloadFor="OrderDetailsPage">
-+   {showPaymentRequestButton ? (
-+     <div className={css.paymentRequestButtonSection}>
-+       <div
-+         ref={this.handlePRButtonRef}
-+         id={`${formId}-prb`}
-+         className={classNames(cardClasses)}
-+       />
-+       {prCanMakePayment ? (
-+         <div className={css.paymentRequestDivider}>
-+           <span className={css.paymentRequestDividerText}>
-+             <FormattedMessage id="StripePaymentForm.orPayWithCard" />
-+           </span>
-+         </div>
-+       ) : null}
-+     </div>
-+   ) : null}+
-    <LocationOrShippingDetails ... />
-    {/* ...rest of form */}
-  </Form>
-) : ...
+    return hasStripeKey ? (
+      <Form className={classes} onSubmit={handleSubmit} enforcePagePreloadFor="OrderDetailsPage">
+        {showPaymentRequestButton ? (
+          <div className={css.paymentRequestButtonSection}>
+            <div
+              ref={this.handlePRButtonRef}
+              id={`${formId}-prb`}
+              className={classNames(cardClasses)}
+            />
+            {prCanMakePayment ? (
+              <div className={css.paymentRequestDivider}>
+                <span className={css.paymentRequestDividerText}>
+                  <FormattedMessage id="StripePaymentForm.orPayWithCard" />
+                </span>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <LocationOrShippingDetails
+          askShippingDetails={askShippingDetails}
+          showPickUpLocation={showPickUpLocation}
+          showLocation={showLocation}
+          listingLocation={listingLocation}
+          isFuzzyLocation={isFuzzyLocation}
+          formApi={formApi}
+          locale={locale}
+          intl={intl}
+        />
+
+        {/* ... */}
 ```
 
-Add the CSS for the new elements to `StripePaymentForm.module.css`:
+Add the CSS for the new elements to the end of
+`StripePaymentForm.module.css`:
 
 ```css filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.module.css"
 .paymentRequestButtonSection {
   margin-bottom: 24px;
-}
-
-.paymentRequestButton {
-  /* Stripe fills this element to 100% width */
 }
 
 .paymentRequestDivider {
@@ -725,7 +996,8 @@ Add the CSS for the new elements to `StripePaymentForm.module.css`:
 }
 ```
 
-And add the translation key to `src/translations/en.json`:
+And add the translation key to `src/translations/en.json`, next to the
+other `StripePaymentForm` keys:
 
 ```json filename="src/translations/en.json"
 "StripePaymentForm.orPayWithCard": "or pay with card",
@@ -736,24 +1008,34 @@ And add the translation key to `src/translations/en.json`:
 The `render()` function already destructures `onSubmit` before spreading
 `...rest` into `<FinalForm>`, because `onSubmit` is consumed by the
 class instance and must not reach FinalForm as an unrecognized prop. We
-have introduced three new props that should follow the same rule:
-`payinTotal` and `stripeCountry` are consumed by `initializePRButton`,
-and `onPRBPaymentMethod` is consumed by `handlePRBPaymentMethod`.
+have introduced four new props that should follow the same rule:
+`payinTotal`, `stripeCountry` and `providerStripeAccountId` are consumed
+by `initializePRButton`, and `onPRBPaymentMethod` is consumed by
+`handlePRBPaymentMethod`.
 
-Destructure all three alongside `onSubmit` so they are excluded from
+Destructure all four alongside `onSubmit` so they are excluded from
 `...rest`.
 
-```diff filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js"
-render() {
-  const {
-    onSubmit,
-+   payinTotal,
-+   stripeCountry,
-+   onPRBPaymentMethod,
-    ...rest
-  } = this.props;
-  // ...
-}
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/StripePaymentForm/StripePaymentForm.js" {2-9}
+  render() {
+    const {
+      onSubmit,
+      payinTotal,
+      stripeCountry,
+      providerStripeAccountId,
+      onPRBPaymentMethod,
+      ...rest
+    } = this.props;
+    return (
+      <FinalForm
+        onSubmit={this.handleSubmit}
+        mutators={{ ...arrayMutators }}
+        {...rest}
+        render={this.paymentForm}
+      />
+    );
+  }
 ```
 
 #### Update Content Security Policy in server/csp.js
@@ -764,43 +1046,54 @@ render() {
   </FileTree.Folder>
 </FileTree>
 
-The existing `server/csp.js` already has `connectSrc` and `frameSrc`
-directives for Stripe, which the default card payment flow requires. The
-Payment Request Button adds new usages that need additional entries in
-both directives.
-
 When the user taps the Payment Request Button, Stripe opens its payment
 sheet in an iframe. This iframe loads assets from multiple domains that
 must be present in `frameSrc` or the iframe is blocked.
 
 The button also makes XHR calls to Stripe and Google Pay during payment
 sheet initialization and confirmation, so the related domains need to be
-added to `connectSrc`.
+present in `connectSrc`.
 
-In `csp.js`, extend the existing directives by concatenating the new
-domains onto the current `defaultDirectives` values.
+The default directives in `server/csp.js` already cover some of these
+domains, because the card payment flow and Google Analytics need them.
+The default `connectSrc` has `*.google.com` and `*.stripe.com`, and the
+default `frameSrc` has `*.stripe.com`. The Payment Request Button also
+needs `*.stripe.network` in both directives, and `*.google.com` in
+`frameSrc`.
 
-```diff filename="server/csp.js"
-+  const { connectSrc = [self] } = defaultDirectives;
-+  const extendedConnectSrc = connectSrc.concat(
-+    '*.google.com',
-+    '*.stripe.com',
-+    '*.stripe.network',
-+    'api.stripe.com'
-+  );
-+  const { frameSrc = [self] } = defaultDirectives;
-+  const extendedFrameSrc = frameSrc.concat(
-+    '*.google.com',
-+    '*.stripe.com',
-+    '*.stripe.network',
-+    'js.stripe.com',
-+    'hooks.stripe.com'
-+  );
+In `csp.js`, extend the existing directives by concatenating the Payment
+Request Button domains onto the current `defaultDirectives` values. The
+lists below include every domain the button uses, so some of them repeat
+the defaults or are covered by `*.stripe.com`.
 
-   const customDirectives = {
-+    connectSrc: extendedConnectSrc,
-+    frameSrc: extendedFrameSrc,
-   };
+{/* prettier-ignore */}
+```jsx filename="server/csp.js" {5-19,24-25}
+  // Example: extend default img directive with custom domain
+  // const { imgSrc = [self] } = defaultDirectives;
+  // const exampleImgSrc = imgSrc.concat('my-custom-domain.example.com');
+
+  const { connectSrc = [self] } = defaultDirectives;
+  const extendedConnectSrc = connectSrc.concat(
+    '*.google.com',
+    '*.stripe.com',
+    '*.stripe.network',
+    'api.stripe.com'
+  );
+  const { frameSrc = [self] } = defaultDirectives;
+  const extendedFrameSrc = frameSrc.concat(
+    '*.google.com',
+    '*.stripe.com',
+    '*.stripe.network',
+    'js.stripe.com',
+    'hooks.stripe.com'
+  );
+
+  const customDirectives = {
+    // Example: Add custom directive override
+    // imgSrc: exampleImgSrc,
+    connectSrc: extendedConnectSrc,
+    frameSrc: extendedFrameSrc,
+  };
 ```
 
 #### Wire `handlePaymentRequest` in CheckoutPageWithPayment.js
@@ -838,8 +1131,9 @@ The default module-level function `handleSubmit` in
 - and then navigates to `OrderDetailsPage`.
 
 We'll add `handlePaymentRequest` as its counterpart for the Payment
-Request Button flow, and most of its body is identical — the differences
-follow from two things the PRB flow does differently.
+Request Button flow. It follows the same steps, but it only handles
+wallet card payments, so its body is shorter. Two differences come from
+how the PRB flow works.
 
 First, the Stripe payment sheet has its own in-progress state. When
 `submitting` is already true, `handlePaymentRequest` calls
@@ -861,6 +1155,33 @@ Sharetribe payment method. Like `handleSubmit`, `handlePaymentRequest`
 must call `onSubmitCallback()` after a successful payment and
 `setOrderPageInitialValues` before navigating to `OrderDetailsPage`.
 
+The card `handleSubmit` receives the customer's message as `message`,
+because `StripePaymentForm.handleSubmit` trims the `initialMessage` form
+field before submitting. `handlePaymentRequest` receives the raw form
+values, so it reads and trims `initialMessage` itself.
+
+Add `handlePaymentRequest` after `handleSubmit`, before
+`onStripeInitialized`.
+
+{/* prettier-ignore */}
+<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+  <Tabs.Tab>
+
+Since release vXX.XX.XX, `getOrderParams` also takes the transaction
+process and the checkout payment method, and the card `handleSubmit`
+passes both. `handlePaymentRequest` passes `PAYMENT_METHOD_CARD`,
+because wallet payments through the Payment Request Button are card
+payments. `CheckoutPageWithPayment.js` already imports
+`PAYMENT_METHOD_CARD`.
+
+The card `handleSubmit` also navigates to `OrderDetailsPage` with the
+`completeCheckoutNavigation` helper from
+`CheckoutPageTransactionHelpers.js`. The helper calls
+`setOrderPageInitialValues` and `onSubmitCallback()` before navigating,
+so `handlePaymentRequest` uses it too. `CheckoutPageWithPayment.js`
+already imports `completeCheckoutNavigation`.
+
+{/* prettier-ignore */}
 ```jsx filename="src/containers/CheckoutPage/CheckoutPageWithPayment.js"
 const handlePaymentRequest = (
   ev,
@@ -894,7 +1215,7 @@ const handlePaymentRequest = (
     transactionFieldConfigs = [],
   } = props;
 
-  const { message } = formValues;
+  const { initialMessage } = formValues;
   const transactionFieldsProtectedData = {
     ...pickTransactionFieldsData(
       formValues,
@@ -905,7 +1226,114 @@ const handlePaymentRequest = (
   };
   const shippingDetails = {};
   const optionalPaymentParams = {};
-  const customerDefaultMessage = message ? message.trim() : null;
+  const customerDefaultMessage = initialMessage
+    ? initialMessage.trim()
+    : null;
+
+  const orderParams = getOrderParams(
+    pageData,
+    shippingDetails,
+    optionalPaymentParams,
+    config,
+    transactionFieldsProtectedData,
+    customerDefaultMessage,
+    process,
+    PAYMENT_METHOD_CARD
+  );
+
+  const hasPaymentIntentUserActionsDone =
+    paymentIntent &&
+    STRIPE_PI_USER_ACTIONS_DONE_STATUSES.includes(paymentIntent.status);
+
+  const prbPaymentParams = {
+    ev,
+    pageData,
+    speculatedTransaction,
+    stripe: stripeInstance,
+    paymentIntent,
+    hasPaymentIntentUserActionsDone,
+    process,
+    onInitiateOrder,
+    onConfirmCardPayment,
+    onConfirmPayment,
+    sessionStorageKey,
+    setPageData,
+  };
+
+  processCheckoutWithPRBPayment(orderParams, prbPaymentParams)
+    .then(response => {
+      setSubmitting(false);
+
+      // Navigate to the TransactionPage to show the order details
+      completeCheckoutNavigation({
+        response,
+        history,
+        routeConfiguration,
+        dispatch,
+        onSubmitCallback,
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      setSubmitting(false);
+    });
+};
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+In earlier versions, `getOrderParams` takes six parameters, without the
+transaction process and the checkout payment method.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPageWithPayment.js"
+const handlePaymentRequest = (
+  ev,
+  stripeInstance,
+  formValues,
+  process,
+  props,
+  submitting,
+  setSubmitting
+) => {
+  if (submitting) {
+    ev.complete('fail');
+    return;
+  }
+  setSubmitting(true);
+
+  const {
+    history,
+    config,
+    routeConfiguration,
+    speculatedTransaction,
+    paymentIntent,
+    dispatch,
+    onInitiateOrder,
+    onConfirmCardPayment,
+    onConfirmPayment,
+    onSubmitCallback,
+    pageData,
+    setPageData,
+    sessionStorageKey,
+    transactionFieldConfigs = [],
+  } = props;
+
+  const { initialMessage } = formValues;
+  const transactionFieldsProtectedData = {
+    ...pickTransactionFieldsData(
+      formValues,
+      'protected',
+      true,
+      transactionFieldConfigs
+    ),
+  };
+  const shippingDetails = {};
+  const optionalPaymentParams = {};
+  const customerDefaultMessage = initialMessage
+    ? initialMessage.trim()
+    : null;
 
   const orderParams = getOrderParams(
     pageData,
@@ -936,7 +1364,7 @@ const handlePaymentRequest = (
   };
 
   processCheckoutWithPRBPayment(orderParams, prbPaymentParams)
-    .then((response) => {
+    .then(response => {
       const { orderId, paymentMethodSaved } = response;
       setSubmitting(false);
 
@@ -959,30 +1387,44 @@ const handlePaymentRequest = (
       onSubmitCallback();
       history.push(orderDetailsPath);
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err);
       setSubmitting(false);
     });
 };
 ```
 
+  </Tabs.Tab>
+</Tabs>
+
 ##### Pass new props to `<StripePaymentForm>`
 
-The three new props to `<StripePaymentForm>` follow the same pattern as
-`totalPrice` and `stripePublishableKey` from `config`.
+Next, we will pass in four new props to `<StripePaymentForm>`.
 
-`payinTotal` is passed from
-`speculatedTransaction?.attributes.payinTotal` rather than from
-`existingTransaction`, as `existingTransaction` only exists if the
-transaction was initiated with an inquiry whereas
-`speculatedTransaction` is fetched on page load. `stripeCountry` comes
-from `config.stripe.country`, the value we added earlier in this guide.
+- `payinTotal` is passed from
+  `speculatedTransaction?.attributes.payinTotal` rather than from
+  `existingTransaction`. The `existingTransaction` entity only exists if
+  the transaction was initiated with an inquiry, whereas
+  `speculatedTransaction` is fetched on page load.
+
+- `stripeCountry` comes from `config.stripe.country` i.e. the value we
+  added earlier in this guide.
+
+- `providerStripeAccountId` is the provider's Stripe Connect account id
+  that your server endpoint from the prerequisites returns. How you
+  fetch it and store it in `CheckoutPageWithPayment` depends on your
+  implementation. The Payment Request Button only renders when this prop
+  has a value.
+
+- `onPRBPaymentMethod` calls `handlePaymentRequest` when the customer
+  authorizes the payment in the browser payment sheet.
 
 ```jsx filename="src/containers/CheckoutPage/CheckoutPageWithPayment.js"
 <StripePaymentForm
   {/* ...existing props */}
   payinTotal={speculatedTransaction?.attributes.payinTotal}
   stripeCountry={config.stripe.country}
+  providerStripeAccountId={providerStripeAccountId}
   onPRBPaymentMethod={(ev, stripeInstance, formValues) =>
     handlePaymentRequest(
       ev,
