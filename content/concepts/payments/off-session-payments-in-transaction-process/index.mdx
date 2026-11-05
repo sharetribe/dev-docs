@@ -166,6 +166,14 @@ redirected to CheckoutPage.js (cf.
 [TransactionPage.js](https://github.com/sharetribe/web-template/blob/main/src/containers/TransactionPage/TransactionPage.js)
 `redirectToCheckoutPageWithInitialValues()`) to continue the process.
 
+CheckoutPage gets its payment transitions from the
+`getCheckoutPaymentTransitions` function in your transaction process
+file, based on the transaction's current state. Add a branch for the
+state where the customer pays manually, so that checkout uses the
+transitions of your manual payment flow. Before Sharetribe Web Template
+release vX.Y.Z, these transitions were selected in
+`CheckoutPageTransactionHelpers.js` instead.
+
 Pay attention to the following points when designing your user flow:
 
 - What action does the customer take in the UI to initiate manual

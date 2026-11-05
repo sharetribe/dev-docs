@@ -7,7 +7,7 @@ description:
   a starting point for these customizations.
 ---
 
-import { Callout, FileTree } from 'nextra/components';
+import { Callout, FileTree, Tabs } from 'nextra/components';
 import { Steps } from 'nextra/components';
 
 # How to remove Stripe and payments
@@ -102,35 +102,40 @@ states in each process. The transaction process file should be updated
 to match the new transaction process.
 [Read more about editing transaction related files](/how-to/transaction-process/change-transaction-process-in-template/#update-the-relevant-files-in-srctransactions-folder).
 
-Example:
+For example, in the booking process graph, point `REQUEST_PAYMENT` and
+`REQUEST_PAYMENT_AFTER_INQUIRY` to `states.PREAUTHORIZED`. Then remove
+the `states.PENDING_PAYMENT` and `states.PAYMENT_EXPIRED` entries.
 
-```diff filename="transactionProcessBooking.js"
-     [STATE_INITIAL]: {
-       on: {
-         [TRANSITION_INQUIRE]: STATE_INQUIRY,
--        [TRANSITION_REQUEST_PAYMENT]: STATE_PENDING_PAYMENT,
-+        [TRANSITION_REQUEST_PAYMENT]: STATE_PREAUTHORIZED,
-       },
-     },
-     [STATE_INQUIRY]: {
-       on: {
--        [TRANSITION_REQUEST_PAYMENT_AFTER_INQUIRY]: STATE_PENDING_PAYMENT,
-+        [TRANSITION_REQUEST_PAYMENT_AFTER_INQUIRY]: STATE_PREAUTHORIZED,
-       },
-     },
--
--    [STATE_PENDING_PAYMENT]: {
--      on: {
--        [TRANSITION_EXPIRE_PAYMENT]: STATE_PAYMENT_EXPIRED,
--        [TRANSITION_CONFIRM_PAYMENT]: STATE_PREAUTHORIZED,
--      },
--    },
--
--    [STATE_PAYMENT_EXPIRED]: {},
-     [STATE_PREAUTHORIZED]: {
-       on: {
-         [TRANSITION_DECLINE]: STATE_DECLINED,
+{/* prettier-ignore */}
+```jsx filename="src/transactions/transactionProcessBooking.js" {4,9}
+    [states.INITIAL]: {
+      on: {
+        [transitions.INQUIRE]: states.INQUIRY,
+        [transitions.REQUEST_PAYMENT]: states.PREAUTHORIZED,
+      },
+    },
+    [states.INQUIRY]: {
+      on: {
+        [transitions.REQUEST_PAYMENT_AFTER_INQUIRY]: states.PREAUTHORIZED,
+      },
+    },
 
+    [states.PREAUTHORIZED]: {
+      on: {
+        [transitions.DECLINE]: states.DECLINED,
+```
+
+If your process works without Stripe, also set `supportedPayments` to an
+empty object in the transaction process file. The listing wizard and
+checkout use `supportedPayments` to decide whether a process uses
+Stripe. A file copied from one of the default payment processes declares
+card payments, so the listing wizard only accepts currencies that Stripe
+supports. The default inquiry process in `transactionProcessInquiry.js`
+uses an empty object for the same reason.
+
+```jsx filename="src/transactions/transactionProcessBooking.js"
+// This process does not support payments
+export const supportedPayments = {};
 ```
 
 ### Remove Stripe checks from EditListingWizard handlePublishListing function
@@ -168,18 +173,27 @@ process, you can instead add a new variable such as `isNoStripeProcess`
 and use it to bypass the Stripe requirement while keeping it for other
 listing types.
 
-```diff filename="EditListingWizard.js"
-handlePublishListing(id) {
-    const { onPublishListingDraft, currentUser, stripeAccount, listing, config } = this.props;
+{/* prettier-ignore */}
+```jsx filename="src/containers/EditListingPage/EditListingWizard/EditListingWizard.js" {13,19}
+  handlePublishListing(id) {
+    const {
+      onPublishListingDraft,
+      currentUser,
+      stripeAccount,
+      listing,
+      config,
+      fileUploadsDisabled,
+      allFilesUploadedAndVerified,
+    } = this.props;
     const processName = listing?.attributes?.publicData?.transactionProcessAlias.split('/')[0];
     const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
-+   const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+    const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
 
     /* ... */
 
     if (
       isInquiryProcess ||
-+     isNoStripeProcess ||
+      isNoStripeProcess ||
       !isPayoutDetailsRequired ||
       (stripeConnected && !stripeRequirementsMissing)
     ) {
@@ -191,43 +205,41 @@ handlePublishListing(id) {
       });
     }
   }
-
 ```
 
 After changing the `handlePublishListing` you can remove unused code.
 You also might want to clean up `EditListingPage` and remove the Stripe
 related props we pass to `EditListingWizard`.
 
-### Remove Stripe checks from ListingPageCarousel and ListingPageCoverPhoto
+### Remove Stripe checks from ListingPage.shared.js
 
 The listing page components show a warning to listing authors if they
 need to add their Stripe payout details to start accepting orders. With
-a non-Stripe listing type, this logic needs to be modified in both
-files.
+a non-Stripe listing type, this logic needs to be modified.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
     <FileTree.Folder name="containers" defaultOpen>
       <FileTree.Folder name="ListingPage" defaultOpen>
-        <FileTree.File name="ListingPageCarousel.js" />
-        <FileTree.File name="ListingPageCoverPhoto.js" />
+        <FileTree.File name="ListingPage.shared.js" />
       </FileTree.Folder>
     </FileTree.Folder>
   </FileTree.Folder>
 </FileTree>
 
-```diff filename="ListingPageCarousel.js"
-+ const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+{/* prettier-ignore */}
+```jsx filename="src/containers/ListingPage/ListingPage.shared.js" {1,5-6}
+  const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
   const currentAuthor = authorAvailable ? currentListing.author : null;
   const ensuredAuthor = ensureUser(currentAuthor);
   const authorNeedsPayoutDetails =
--   ['booking', 'purchase'].includes(processType) || (isNegotiation && unitType === OFFER);
-+   (!isNoStripeProcess && ['booking', 'purchase'].includes(processType)) ||
-+   (isNegotiation && unitType === OFFER);
+    (!isNoStripeProcess && ['booking', 'purchase'].includes(processType)) ||
+    (isNegotiation && unitType === OFFER);
   const noPayoutDetailsSetWithOwnListing =
     isOwnListing && (authorNeedsPayoutDetails && !currentUser?.attributes?.stripeConnected);
+
   const payoutDetailsWarning = noPayoutDetailsSetWithOwnListing ? (
-    <span className={css.payoutDetailsWarning}>
+    <span className={payoutDetailsWarningClassName}>
       <FormattedMessage id="ListingPage.payoutDetailsWarning" values={{ processType }} />
       <NamedLink name="StripePayoutPage">
         <FormattedMessage id="ListingPage.payoutDetailsWarningLink" />
@@ -271,8 +283,8 @@ depending on the transaction process:
 
 - _CheckoutPageWithInquiryProcess_ is used with the default free inquiry
   process
-- _CheckoutPageWithPayment_ is used with the default booking and
-  purchase processes
+- _CheckoutPageWithPayment_ is used with the default processes that
+  process payments
 
 We can use an edited version of the _CheckoutPageWithPayment_ component,
 titled _CheckoutPageWithoutPayment_, as a starting point for the
@@ -312,8 +324,17 @@ If you are adding a separate transaction process that works without
 Stripe, you will need to add the `CheckoutPageWithoutPayment` to the
 CheckoutPage `return` statement to take it into use.
 
-```diff filename="CheckoutPage.js"
-+ const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+{/* prettier-ignore */}
+<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+  <Tabs.Tab>
+
+Since release vXX.XX.XX, the `return` statement also has a branch for
+customers returning from a redirect payment. Add the
+`CheckoutPageWithoutPayment` branch after the inquiry branch.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-34}
+  const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
 
   return processName && isInquiryProcess ? (
     <CheckoutPageWithInquiryProcess
@@ -328,29 +349,83 @@ CheckoutPage `return` statement to take it into use.
       onInquiryWithoutPayment={onInquiryWithoutPayment}
       onSubmitCallback={onSubmitCallback}
       showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
       {...props}
     />
-+ ) : processName && isNoStripeProcess && !speculateTransactionInProgress ? (
-+   <CheckoutPageWithoutPayment
-+     config={config}
-+     routeConfiguration={routeConfiguration}
-+     intl={intl}
-+     history={history}
-+     processName={processName}
-+     sessionStorageKey={STORAGE_KEY}
-+     pageData={pageData}
-+     setPageData={setPageData}
-+     listingTitle={listingTitle}
-+     title={title}
-+     onSubmitCallback={onSubmitCallback}
-+     showListingImage={showListingImage}
-+     {...props}
-+   />
+  ) : processName && isNoStripeProcess && !speculateTransactionInProgress ? (
+    <CheckoutPageWithoutPayment
+      config={config}
+      routeConfiguration={routeConfiguration}
+      intl={intl}
+      history={history}
+      processName={processName}
+      sessionStorageKey={STORAGE_KEY}
+      pageData={pageData}
+      setPageData={setPageData}
+      listingTitle={listingTitle}
+      title={title}
+      onSubmitCallback={onSubmitCallback}
+      showListingImage={showListingImage}
+      {...props}
+    />
+  ) : isReturnAfterRedirect ? (
+    <CheckoutPageRedirectReturn {...props} />
+  ) : processName && !isInquiryProcess && hasSpeculatedTransactionForRender ? (
+    <CheckoutPageWithPayment
+      config={config}
+      /* ... */
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+In earlier versions, add the `CheckoutPageWithoutPayment` branch between
+the inquiry branch and the `CheckoutPageWithPayment` branch.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-34}
+  const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
+
+  return processName && isInquiryProcess ? (
+    <CheckoutPageWithInquiryProcess
+      config={config}
+      routeConfiguration={routeConfiguration}
+      intl={intl}
+      history={history}
+      processName={processName}
+      pageData={pageData}
+      listingTitle={listingTitle}
+      title={title}
+      onInquiryWithoutPayment={onInquiryWithoutPayment}
+      onSubmitCallback={onSubmitCallback}
+      showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
+      {...props}
+    />
+  ) : processName && isNoStripeProcess && !speculateTransactionInProgress ? (
+    <CheckoutPageWithoutPayment
+      config={config}
+      routeConfiguration={routeConfiguration}
+      intl={intl}
+      history={history}
+      processName={processName}
+      sessionStorageKey={STORAGE_KEY}
+      pageData={pageData}
+      setPageData={setPageData}
+      listingTitle={listingTitle}
+      title={title}
+      onSubmitCallback={onSubmitCallback}
+      showListingImage={showListingImage}
+      {...props}
+    />
   ) : processName && !isInquiryProcess && !speculateTransactionInProgress ? (
     <CheckoutPageWithPayment
       config={config}
-    /* ... */
+      /* ... */
 ```
+
+  </Tabs.Tab>
+</Tabs>
 
 To use _CheckoutPageWithoutPayment_, we also need to make these changes
 to existing components:
@@ -459,21 +534,73 @@ export const processCheckoutWithoutPayment = (
   </FileTree.Folder>
 </FileTree>
 
-```diff filename="CheckoutPage.js"
-// Do not fetch extra data if user is not active (E.g. they are in pending-approval state.)
-if (isUserAuthorized(currentUser)) {
-  // This is for processes using payments with Stripe integration
-  if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
-    // Fetch StripeCustomer and speculateTransition for transactions that include Stripe payments
-    loadInitialDataForStripePayments({
-      pageData: data || {},
-      fetchSpeculatedTransaction,
--      fetchStripeCustomer,
-      config,
-    });
-  }
-}
+First, import `CheckoutPageWithoutPayment` and its `loadInitialData`
+function. The `CheckoutPageWithoutPayment` component is also used in the
+`return` statement above.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {5}
+import CheckoutPageWithPayment, {
+  loadInitialDataForStripePayments,
+} from './CheckoutPageWithPayment';
+import CheckoutPageWithInquiryProcess from './CheckoutPageWithInquiryProcess';
+import CheckoutPageWithoutPayment, { loadInitialData } from './CheckoutPageWithoutPayment';
 ```
+
+Then, call `loadInitialData` in the `useEffect` hook of `CheckoutPage`.
+It takes `pageData`, `fetchSpeculatedTransaction` and `config`, so
+`fetchStripeCustomer` is no longer passed.
+
+{/* prettier-ignore */}
+<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+  <Tabs.Tab>
+
+Since release vXX.XX.XX, the hook also skips loading data when the
+customer returns from a redirect payment.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {8}
+    // Do not fetch extra data if user is not active (E.g. they are in pending-approval state.)
+    // Return-after-redirect only resumes confirm — do not speculate or fetch StripeCustomer.
+    if (isUserAuthorized(currentUser) && !isReturnAfterRedirect) {
+      // This is for processes using payments with Stripe integration
+      // Inquiry process has no payment transitions; skip speculate/Stripe customer fetch.
+      if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
+        // Fetch StripeCustomer and speculateTransition for transactions that include Stripe payments
+        loadInitialData({
+          pageData: data || {},
+          fetchSpeculatedTransaction,
+          config,
+        });
+      }
+    }
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+In earlier versions, the `if` condition only checks
+`isUserAuthorized(currentUser)`.
+
+{/* prettier-ignore */}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {7}
+    // Do not fetch extra data if user is not active (E.g. they are in pending-approval state.)
+    if (isUserAuthorized(currentUser)) {
+      // This is for processes using payments with Stripe integration
+      // Inquiry process has no payment transitions; skip speculate/Stripe customer fetch.
+      if (getProcessName(data) !== INQUIRY_PROCESS_NAME) {
+        // Fetch StripeCustomer and speculateTransition for transactions that include Stripe payments
+        loadInitialData({
+          pageData: data || {},
+          fetchSpeculatedTransaction,
+          config,
+        });
+      }
+    }
+```
+
+  </Tabs.Tab>
+</Tabs>
 
 ### Hide or remove Stripe related pages
 
@@ -488,7 +615,10 @@ want to hide them from both navigation component and route
 configuration.
 
 To hide the pages from account settings, modify the
-`LayoutWrapperAccountSettingsSideNav` component:
+`LayoutWrapperAccountSettingsSideNav` component. Destructure only
+`currentPage` from `accountSettingsNavProps`, and replace the
+`payoutDetailsMaybe` and `paymentMethodsMaybe` tab definitions with
+empty arrays:
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
@@ -502,43 +632,23 @@ To hide the pages from account settings, modify the
   </FileTree.Folder>
 </FileTree>
 
-```diff filename="LayoutWrapperAccountSettingsSideNav.js"
-- const { currentPage, showPaymentMethods, showPayoutDetails } = accountSettingsNavProps;
-+ const { currentPage } = accountSettingsNavProps;
+{/* prettier-ignore */}
+```jsx filename="src/components/LayoutComposer/LayoutSideNavigation/LayoutWrapperAccountSettingsSideNav.js" {1-2,4}
+  const { currentPage } = accountSettingsNavProps;
+  const payoutDetailsMaybe = [];
 
-- const payoutDetailsMaybe = showPayoutDetails
--   ? [
--       {
--         text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
--         selected: currentPage === 'StripePayoutPage',
--         id: 'StripePayoutPageTab',
--         linkProps: {
--           name: 'StripePayoutPage',
--         },
--       },
--     ]
--   : [];
-+ const payoutDetailsMaybe = [];
+  const paymentMethodsMaybe = [];
 
-- const paymentMethodsMaybe = showPaymentMethods
--   ? [
--       {
--         text: (
--           <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />
--         ),
--         selected: currentPage === 'PaymentMethodsPage',
--         id: 'PaymentMethodsPageTab',
--         linkProps: {
--           name: 'PaymentMethodsPage',
--         },
--       },
--     ]
--   : [];
-+  const paymentMethodsMaybe = [];
+  const tabs = [
 ```
 
 In `routeConfiguration.js`, remove references to `StripePayoutPage` and
-`PaymentMethodsPage`.
+`PaymentMethodsPage`. Remove both from `ACCOUNT_SETTINGS_PAGES`. Then
+remove the `StripePayoutPage`, `StripePayoutOnboardingPage` and
+`PaymentMethodsPage` routes, so that the `PasswordChangePage` route is
+followed by the `ManageAccountPage` route. Finally, remove the now
+unused `StripePayoutPage` and `PaymentMethodsPage` imports at the top of
+the file.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
@@ -548,46 +658,34 @@ In `routeConfiguration.js`, remove references to `StripePayoutPage` and
   </FileTree.Folder>
 </FileTree>
 
-```diff filename="routeConfiguration.js"
- export const ACCOUNT_SETTINGS_PAGES = [
-   'ContactDetailsPage',
-   'PasswordChangePage',
--  'StripePayoutPage',
--  'PaymentMethodsPage',
-   'ManageAccountPage'
- ];
+{/* prettier-ignore */}
+```jsx filename="src/routing/routeConfiguration.js"
+export const ACCOUNT_SETTINGS_PAGES = [
+  'ContactDetailsPage',
+  'PasswordChangePage',
+  'ManageAccountPage'
+];
 
-return [
-  /* ... */
--  {
--     path: '/account/payments',
--     name: 'StripePayoutPage',
--     auth: true,
--     authPage: 'LoginPage',
--     component: StripePayoutPage,
--     loadData: pageDataLoadingAPI.StripePayoutPage.loadData,
--   },
--   {
--     path: '/account/payments/:returnURLType',
--     name: 'StripePayoutOnboardingPage',
--     auth: true,
--     authPage: 'LoginPage',
--     component: StripePayoutPage,
--     loadData: pageDataLoadingAPI.StripePayoutPage.loadData,
--   },
--   {
--     path: '/account/payment-methods',
--     name: 'PaymentMethodsPage',
--     auth: true,
--     authPage: 'LoginPage',
--     component: PaymentMethodsPage,
--     loadData: pageDataLoadingAPI.PaymentMethodsPage.loadData,
--   },
+/* ... */
 
+    {
+      path: '/account/change-password',
+      name: 'PasswordChangePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: PasswordChangePage,
+    },
+    {
+      path: '/account/manage',
+      name: 'ManageAccountPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: ManageAccountPage,
+    },
 ```
 
 Finally, you need to remove StripePayoutPage from the
-ModalMissingInformation.js component whitelist.
+ModalMissingInformation.js component allowlist.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
@@ -599,14 +697,14 @@ ModalMissingInformation.js component whitelist.
   </FileTree.Folder>
 </FileTree>
 
-```diff filename="ModalMissingInformation.js"
+{/* prettier-ignore */}
+```jsx filename="src/components/ModalMissingInformation/ModalMissingInformation.js"
 const MISSING_INFORMATION_MODAL_WHITELIST = [
   'LoginPage',
   'SignupPage',
   'ContactDetailsPage',
   'EmailVerificationPage',
   'PasswordResetPage',
-- 'StripePayoutPage',
 ];
 ```
 

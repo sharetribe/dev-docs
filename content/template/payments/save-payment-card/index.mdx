@@ -109,11 +109,12 @@ checkout flow:**
   - Fetch `currentUser` entity with
     `stripeCustomer.defaultPaymentMethod` relationship
 - Show correct form fields:
-  - If there's a default payment method saved: show SavedCardDetails
-    component. That component allows you to also select one-time payment
-    instead (and optionally replace the current default payment method
-    with this new payment card). If there's no default payment method
-    saved, one-time payment form is shown on its own.
+  - If there's a default payment method saved: show PaymentMethodPicker
+    (previously SavedCardDetails) component. That component allows you
+    to also select one-time payment instead (and optionally replace the
+    current default payment method with this new payment card). If
+    there's no default payment method saved, one-time payment form is
+    shown on its own.
   - One-time payment needs card details, card holder's name etc. and
     optional permission to save card details for future bookings.
 - When requesting payment, a parameter needs to be passed if card
@@ -183,13 +184,13 @@ sdk.currentUser.show({
 
 ### StripePaymentForm changes - show correct form fields:
 
-If there's a default payment method saved: show SavedCardDetails
-component. That component allows you to also select one-time payment
-instead (and optionally replace the current default payment method with
-this new payment card). If there's no default payment method saved,
-one-time payment form is shown on its own. One-time payment needs card
-details, card holder's name etc. and optional permission to save card
-details for future bookings.
+If there's a default payment method saved: show PaymentMethodPicker
+(previously SavedCardDetails) component. That component allows you to
+also select one-time payment instead (and optionally replace the current
+default payment method with this new payment card). If there's no
+default payment method saved, one-time payment form is shown on its own.
+One-time payment needs card details, card holder's name etc. and
+optional permission to save card details for future bookings.
 
 ### Submit StripePaymentForm
 
