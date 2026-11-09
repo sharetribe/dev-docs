@@ -19,14 +19,14 @@ and reduce the need to call the Mapbox Geolocation API.
 
 This feature is not enabled by default. To enable it, you need to add
 the locations to the
-[configDefaultLocationSearches.js](https://github.com/sharetribe/web-template/blob/main/src/config/configDefaultLocationSearches.js#L14)
+[defaultLocationSearches.js](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultLocationSearches.js#L14)
 file.
 
 To disable the first result on the list to search for the user's
 "Current location", you can change the configuration variable
-[`suggestCurrentLocation` in the configMaps.js file](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js#L23)
+[`suggestCurrentLocation` in the defaultMaps.js file](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultMaps.js#L23)
 to false. The
-[`currentLocationBoundsDistance`](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js#L27)
+[`currentLocationBoundsDistance`](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultMaps.js#L27)
 variable (found in the same file) defines the distance in meters for
 calculating the bounding box around the current location.
 
@@ -53,7 +53,7 @@ box with for all different Mapbox Geocoding
 If your marketplace works only in a specific country or countries it
 might be a good idea to limit the location autocomplete to those
 countries. You can specify whether to use the limitation in
-[config/configMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js#L48).
+[config/maps/defaultMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultMaps.js#L48).
 Search for variable `countryLimit` and uncomment the line to make it
 active. Provide the country or countries in an array using
 [ISO 3166 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)

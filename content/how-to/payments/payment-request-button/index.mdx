@@ -124,19 +124,21 @@ First, add your country code in your .env file as
 REACT_APP_STRIPE_COUNTRY=DE;
 ```
 
-Add that as an export in `src/config/configStripe.js`. Include a
+Add that as an export in `src/config/stripe/defaultStripe.js`. Include a
 fallback value so a missing env variable does not silently break the
 Payment Request Button initialization.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
     <FileTree.Folder name="config" defaultOpen>
-      <FileTree.File name="configStripe.js" active />
+      <FileTree.Folder name="stripe" defaultOpen>
+        <FileTree.File name="defaultStripe.js" active />
+      </FileTree.Folder>
     </FileTree.Folder>
   </FileTree.Folder>
 </FileTree>
 
-```jsx filename="configStripe.js"
+```jsx filename="defaultStripe.js"
 export const country = process.env.REACT_APP_STRIPE_COUNTRY || 'US';
 ```
 

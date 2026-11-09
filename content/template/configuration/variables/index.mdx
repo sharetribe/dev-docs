@@ -44,36 +44,36 @@ in the
 [template environment variables](/template/configuration/template-env/)
 article.
 
-- [configBranding.js](https://github.com/sharetribe/web-template/blob/main/src/config/configBranding.js)
+- [defaultBranding.js](https://github.com/sharetribe/web-template/blob/main/src/config/branding/defaultBranding.js)
   - Marketplace colour, logos, Facebook and Twitter media
 - [configDefault.js](https://github.com/sharetribe/web-template/blob/main/src/config/configDefault.js)
   - Change localization settings, marketplace currency and add social
     media links
-- [configLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/configBranding.js)
+- [defaultLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/layout/defaultLayout.js)
   - Layout or the search and listing page and aspect ratio for listing
     image variants
-- [configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
+- [defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js)
   - You can define extended data variables and how they are displayed on
     both the listing and search page. Read more about the available
     settings in the
-    [configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
+    [defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js)
     file.
-- [configSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/configSearch.js)
+- [defaultSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/search/defaultSearch.js)
   - Change between keyword or location search and set default search
     filters and sorting options
-- [configMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js)
+- [defaultMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultMaps.js)
   - Choose to load maps through Google or Mapbox and location-related
     search settings
-- [configStripe.js](https://github.com/sharetribe/web-template/blob/main/src/config/configStripe.js)
+- [defaultStripe.js](https://github.com/sharetribe/web-template/blob/main/src/config/stripe/defaultStripe.js)
   - The configuration that Stripe needs to function correctly
-- [configDefaultLocationSearches.js](https://github.com/sharetribe/web-template/blob/main/src/config/configDefaultLocationSearches.js)
+- [defaultLocationSearches.js](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultLocationSearches.js)
   - Specify a list of locations that are shown to the user as
     suggestions when they click on the search bar
 
 ## Branding
 
 The
-[configBranding.js](https://github.com/sharetribe/web-template/blob/main/src/config/configBranding.js)
+[defaultBranding.js](https://github.com/sharetribe/web-template/blob/main/src/config/branding/defaultBranding.js)
 file allows you to customize the branding and appearance of your
 marketplace. The configurations you can change include the marketplace's
 color, logos for desktop and mobile devices, a background image, and
@@ -167,7 +167,7 @@ structured data. The address setting contains four properties:
 There are three layout options that you can toggle to change how the
 search page is rendered and how listing images are displayed in your
 marketplace. You can find all layout options in the
-[configLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/configLayout.js)
+[defaultLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/layout/defaultLayout.js)
 file.
 
 ### Search page
@@ -184,7 +184,7 @@ export const searchPage = {
 ```
 
 You can change the layout of the search page in the
-[configLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/configLayout.js#L9)
+[defaultLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/layout/defaultLayout.js#L9)
 file by toggling the `variantType` variable between 'map' and 'grid'.
 
 The 'grid' layout does not contain a map but instead, displays a grid of
@@ -208,7 +208,7 @@ The 'carousel' layout option displays an image carousel, which renders
 images using their original aspect ratio.
 
 You can change the layout of the search page in the
-[configLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/configLayout.js#L16)
+[defaultLayout.js](https://github.com/sharetribe/web-template/blob/main/src/config/layout/defaultLayout.js#L16)
 file by toggling the `listingPage` variable between 'coverPhoto' and
 'carousel'.
 
@@ -270,7 +270,7 @@ fields are additional pieces of information that can be added to a
 listing. Each object in the array represents a single extended data
 field. You can find the full list of configuration options for extended
 data fields in the
-[configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js#L11)
+[defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js#L11)
 file.
 
 Adding a new entry to the `listingFields` array will automatically add a
@@ -346,7 +346,7 @@ Schema types **text** and **shortText** are included in keyword search.
 ### Listing type configurations
 
 The
-[configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
+[defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js)
 file contains an array of listing type and their associated transaction
 process configurations. Listing types contain information on the
 transaction process the listing uses and what unit of time is used to
@@ -370,13 +370,13 @@ transaction processes in use at one time.
 ## Search configuration
 
 The
-[configSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/configSearch.js)
+[defaultSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/search/defaultSearch.js)
 file allows you to adjust the default search filters (price and dates)
 and how listings are sorted on the search page.
 
 ### Search filters
 
-In the configSearch.js file you can change if the search bar supports
+In the defaultSearch.js file you can change if the search bar supports
 location or keyword search by toggling the `mainSearch` variable between
 'keywords' and 'location'.
 
@@ -404,7 +404,7 @@ code changes. These Console-managed settings are fetched via the Asset
 Delivery API and take precedence over local configuration.
 
 The `sortConfig` in
-[configSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/configSearch.js)
+[defaultSearch.js](https://github.com/sharetribe/web-template/blob/main/src/config/search/defaultSearch.js)
 defines the default sort options used as a fallback when no hosted
 configuration is present. You can also disable the sorting element
 altogether, or add sort options based on extended data through this
@@ -419,7 +419,7 @@ article.
 ## Map configurations
 
 The
-[configMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/configMaps.js)
+[defaultMaps.js](https://github.com/sharetribe/web-template/blob/main/src/config/maps/defaultMaps.js)
 file allows you to set up a map provider and adjust map-related
 settings. See [this article](/template/maps/configure-maps/) for a
 complete overview of what map-related adjustments you can achieve
@@ -433,7 +433,7 @@ article.
 ### Stripe configurations
 
 The
-[configStripe.js](https://github.com/sharetribe/web-template/blob/main/src/config/configStripe.js)
+[defaultStripe.js](https://github.com/sharetribe/web-template/blob/main/src/config/stripe/defaultStripe.js)
 file includes all countries supported by the Sharetribe Stripe
 integration. The list of countries is used during the Stripe onboarding
 process. In most cases, no changes are required to this file.
