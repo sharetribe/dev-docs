@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-import { bool, func, object, shape, string } from "prop-types";
 import { Form as FinalForm } from "react-final-form";
+import arrayMutators from "final-form-arrays";
 import classNames from "classnames";
 
-import {
-  FormattedMessage,
-  injectIntl,
-  intlShape,
-} from "../../../util/reactIntl";
+import { FormattedMessage, injectIntl } from "../../../util/reactIntl";
+import { getPropsForCustomTransactionFieldInputs } from "../../../util/fieldHelpers";
 
 import {
   Heading,
   Form,
   PrimaryButton,
   FieldTextInput,
+  CustomExtendedDataField,
 } from "../../../components";
 
 import ShippingDetails from "../ShippingDetails/ShippingDetails";
@@ -117,9 +115,19 @@ class SimpleOrderForm extends Component {
       locale,
       isBooking,
       isFuzzyLocation,
+      transactionFieldConfigs = [],
+      showTransactionFields,
     } = formRenderProps;
 
     this.finalFormAPI = formApi;
+    const hasTransactionFieldConfigs = transactionFieldConfigs.length > 0;
+    const transactionFieldsProps = getPropsForCustomTransactionFieldInputs(
+      transactionFieldConfigs,
+      true,
+    );
+    const showAdditionalInfoHeading =
+      showInitialMessageInput ||
+      (hasTransactionFieldConfigs && showTransactionFields);
 
     const submitDisabled = invalid || submitInProgress;
     const classes = classNames(rootClassName || css.root, className);
@@ -164,12 +172,24 @@ class SimpleOrderForm extends Component {
         {initiateOrderError ? (
           <span className={css.errorMessage}>{initiateOrderError.message}</span>
         ) : null}
+        {showAdditionalInfoHeading ? (
+          <Heading as="h3" rootClassName={css.heading}>
+            <FormattedMessage id="StripePaymentForm.messageHeading" />
+          </Heading>
+        ) : null}
+        {hasTransactionFieldConfigs && showTransactionFields ? (
+          <div className={css.transactionFieldsContainer}>
+            {transactionFieldsProps.map(({ key, ...fieldProps }) => (
+              <CustomExtendedDataField
+                key={key}
+                {...fieldProps}
+                formId={formId}
+              />
+            ))}
+          </div>
+        ) : null}
         {showInitialMessageInput ? (
           <div>
-            <Heading as="h3" rootClassName={css.heading}>
-              <FormattedMessage id="StripePaymentForm.messageHeading" />
-            </Heading>
-
             <FieldTextInput
               type="textarea"
               id={`${formId}-message`}
@@ -211,6 +231,7 @@ class SimpleOrderForm extends Component {
     return (
       <FinalForm
         onSubmit={this.handleSubmit}
+        mutators={{ ...arrayMutators }}
         {...rest}
         render={this.orderForm}
       />

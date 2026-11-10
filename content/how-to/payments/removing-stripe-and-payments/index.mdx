@@ -16,6 +16,10 @@ In this guide, we will go through the minimum changes needed to make the
 booking flow work without Stripe. This is not an easy customization
 project.
 
+The client-side code examples in this guide use the booking process. If
+you are removing Stripe from a purchase, negotiation or download
+process, you need to adjust the examples to match that process.
+
 ## Removing Stripe
 
 The Sharetribe Web Template works with specific transaction processes
@@ -59,20 +63,24 @@ You need to remove at least the following actions:
 - `:action/stripe-capture-payment-intent`
 - `:action/stripe-confirm-payment-intent`
 - `:action/stripe-create-payout`
-- `:action/stripe-refund-charge`
 - `:action/stripe-refund-payment`
 
 If you are using the template default processes with strong customer
 authentication (`default-booking`, `default-purchase`,
 `default-negotiation`, `default-download`) you need to remove confirming
 the payment. Otherwise, the transaction will get stuck. The simplest way
-to do this is to remove `pending-payment` and `expire-payment` states
-and point `request-payment` and `request-payment-after-inquiry`, or
+to do this is to remove the `pending-payment` and `payment-expired`
+states and the `confirm-payment` and `expire-payment` transitions. Then
+point `request-payment` and `request-payment-after-inquiry`, or
 `request-payment-to-accept-offer`, directly to the following state:
 
 - `preauthorized` in `default-booking`
 - `purchased` in `default-purchase` and `default-download`
 - `offer-accepted` in `default-negotiation`
+
+Whenever you remove transitions, double check what notifications you are
+sending in those transitions. If you want to keep the notification, you
+will need to send it in a different transition.
 
 When you are building the transaction process for your marketplace, it
 may make sense to rename some of the states and transitions so that they
@@ -104,7 +112,9 @@ to match the new transaction process.
 
 For example, in the booking process graph, point `REQUEST_PAYMENT` and
 `REQUEST_PAYMENT_AFTER_INQUIRY` to `states.PREAUTHORIZED`. Then remove
-the `states.PENDING_PAYMENT` and `states.PAYMENT_EXPIRED` entries.
+the `states.PENDING_PAYMENT` and `states.PAYMENT_EXPIRED` entries. If
+you added a separate transaction process without Stripe, make these
+changes in the transaction process file of that process instead.
 
 {/* prettier-ignore */}
 ```jsx filename="src/transactions/transactionProcessBooking.js" {4,9}
@@ -159,11 +169,32 @@ information before we allow them to publish listings.
 
 This check is done in the `handlePublishListing` function. If you are
 removing all Stripe functionality from your marketplace, you can
-simplify the whole function like this, and remove the unused code.
+simplify the whole function like this, and remove the unused code. The
+function still checks that a listing with required files has all its
+files uploaded and verified before publishing.
 
-```js filename="EditListingWizard.js"
+{/* prettier-ignore */}
+```jsx filename="src/containers/EditListingPage/EditListingWizard/EditListingWizard.js"
   handlePublishListing(id) {
-    this.props.onPublishListingDraft(id);
+    const {
+      onPublishListingDraft,
+      listing,
+      config,
+      fileUploadsDisabled,
+      allFilesUploadedAndVerified,
+    } = this.props;
+
+    const listingTypeConfig = getListingTypeConfig(listing, this.state.selectedListingType, config);
+    const filesRequired = requireListingFiles(listingTypeConfig);
+
+    // Listing should not be published if files are required and they are not fully
+    // uploaded and verified, or if file uploads have been disabled at the platform level.
+    // This is enforced by the submit on the last EditListingWizard tab; this is added protection.
+    if (filesRequired && (fileUploadsDisabled || !allFilesUploadedAndVerified)) {
+      return;
+    }
+
+    onPublishListingDraft(id);
   }
 ```
 
@@ -248,6 +279,13 @@ a non-Stripe listing type, this logic needs to be modified.
   ) : null;
 ```
 
+If you are removing Stripe entirely, you can omit the whole
+`payoutDetailsWarning` logic instead. Remove the
+`authorNeedsPayoutDetails`, `noPayoutDetailsSetWithOwnListing` and
+`payoutDetailsWarning` constants, and their entries in the object that
+`getDerivedRenderData` returns. The warning links to `StripePayoutPage`,
+which we remove in a later step.
+
 ### Remove Stripe checks from MakeOfferForm
 
 If you are fully removing Stripe, or if you are removing Stripe payments
@@ -318,22 +356,30 @@ StripePaymentForm folder.
 
 If you are removing Stripe entirely, you can replace the
 `CheckoutPageWithPayment` component with the
-`CheckoutPageWithoutPayment` one on CheckoutPage.js.
+`CheckoutPageWithoutPayment` one on CheckoutPage.js. Since release
+[v12.7.0](https://github.com/sharetribe/web-template/releases/tag/v12.7.0),
+CheckoutPage.js also has elements for push payments, such as the
+`isReturnAfterRedirect` branch that renders
+`CheckoutPageRedirectReturn`. If you are using push payments with
+another payment provider, you need to consider separately which of these
+elements to remove and which to keep.
 
 If you are adding a separate transaction process that works without
 Stripe, you will need to add the `CheckoutPageWithoutPayment` to the
 CheckoutPage `return` statement to take it into use.
 
 {/* prettier-ignore */}
-<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+<Tabs items={['Release v12.7.0+', 'Before release v12.7.0']}>
   <Tabs.Tab>
 
-Since release vXX.XX.XX, the `return` statement also has a branch for
-customers returning from a redirect payment. Add the
-`CheckoutPageWithoutPayment` branch after the inquiry branch.
+Since release
+[v12.7.0](https://github.com/sharetribe/web-template/releases/tag/v12.7.0),
+the `return` statement also has a branch for customers returning from a
+redirect payment. Add the `CheckoutPageWithoutPayment` branch after the
+inquiry branch.
 
 {/* prettier-ignore */}
-```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-34}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-36}
   const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
 
   return processName && isInquiryProcess ? (
@@ -366,6 +412,8 @@ customers returning from a redirect payment. Add the
       title={title}
       onSubmitCallback={onSubmitCallback}
       showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
+      showTransactionFields={showTransactionFields}
       {...props}
     />
   ) : isReturnAfterRedirect ? (
@@ -383,7 +431,7 @@ In earlier versions, add the `CheckoutPageWithoutPayment` branch between
 the inquiry branch and the `CheckoutPageWithPayment` branch.
 
 {/* prettier-ignore */}
-```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-34}
+```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {1,19-36}
   const isNoStripeProcess = processName === BOOKING_NO_STRIPE_PROCESS_NAME;
 
   return processName && isInquiryProcess ? (
@@ -416,6 +464,8 @@ the inquiry branch and the `CheckoutPageWithPayment` branch.
       title={title}
       onSubmitCallback={onSubmitCallback}
       showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
+      showTransactionFields={showTransactionFields}
       {...props}
     />
   ) : processName && !isInquiryProcess && !speculateTransactionInProgress ? (
@@ -443,15 +493,13 @@ to existing components:
   </FileTree.Folder>
 </FileTree>
 
-```jsx filename="CheckoutPageTransactionHelpers.js"
+```jsx filename="src/containers/CheckoutPage/CheckoutPageTransactionHelpers.js"
 export const processCheckoutWithoutPayment = (
   orderParams,
   extraParams
 ) => {
   const {
-    message,
     onInitiateOrder,
-    onSendMessage,
     pageData,
     process,
     setPageData,
@@ -503,21 +551,9 @@ export const processCheckoutWithoutPayment = (
     return orderPromise;
   };
 
-  //////////////////////////////////
-  // Step 2: send initial message //
-  //////////////////////////////////
-  const fnSendMessage = (fnParams) => {
-    const orderId = fnParams?.id;
-    return onSendMessage({ id: orderId, message });
-  };
-
-  /////////////////////////////////
-  // Call each step in sequence //
-  ////////////////////////////////
-
-  return fnRequest(orderParams).then((res) =>
-    fnSendMessage({ ...res })
-  );
+  return fnRequest(orderParams).then((order) => ({
+    orderId: order.id,
+  }));
 };
 ```
 
@@ -552,11 +588,13 @@ It takes `pageData`, `fetchSpeculatedTransaction` and `config`, so
 `fetchStripeCustomer` is no longer passed.
 
 {/* prettier-ignore */}
-<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+<Tabs items={['Release v12.7.0+', 'Before release v12.7.0']}>
   <Tabs.Tab>
 
-Since release vXX.XX.XX, the hook also skips loading data when the
-customer returns from a redirect payment.
+Since release
+[v12.7.0](https://github.com/sharetribe/web-template/releases/tag/v12.7.0),
+the hook also skips loading data when the customer returns from a
+redirect payment.
 
 {/* prettier-ignore */}
 ```jsx filename="src/containers/CheckoutPage/CheckoutPage.js" {8}
