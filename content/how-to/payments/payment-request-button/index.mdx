@@ -237,7 +237,7 @@ as default, so we don't include that step. Instead, we add a `.then`
 block to the composed function to return a correctly shaped response.
 
 {/* prettier-ignore */}
-<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+<Tabs items={['Release v12.7.0+', 'Before release v12.7.0']}>
   <Tabs.Tab>
 
 Both `fnRequestPayment` and `fnConfirmPayment` get their transitions
@@ -785,7 +785,7 @@ initialization — for example, when a quantity is updated —
 recreating the button.
 
 {/* prettier-ignore */}
-<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+<Tabs items={['Release v12.7.0+', 'Before release v12.7.0']}>
   <Tabs.Tab>
 
 Add `payinTotal` and `providerStripeAccountId` to the destructured
@@ -1164,15 +1164,16 @@ Add `handlePaymentRequest` after `handleSubmit`, before
 `onStripeInitialized`.
 
 {/* prettier-ignore */}
-<Tabs items={['Release vXX.XX.XX+', 'Before release vXX.XX.XX']}>
+<Tabs items={['Release v12.7.0+', 'Before release v12.7.0']}>
   <Tabs.Tab>
 
-Since release vXX.XX.XX, `getOrderParams` also takes the transaction
-process and the checkout payment method, and the card `handleSubmit`
-passes both. `handlePaymentRequest` passes `PAYMENT_METHOD_CARD`,
-because wallet payments through the Payment Request Button are card
-payments. `CheckoutPageWithPayment.js` already imports
-`PAYMENT_METHOD_CARD`.
+Since
+[release v12.7.0](https://github.com/sharetribe/web-template/releases/tag/v12.7.0),
+`getOrderParams` also takes the transaction process and the checkout
+payment method, and the card `handleSubmit` passes both.
+`handlePaymentRequest` passes `PAYMENT_METHOD_CARD`, because wallet
+payments through the Payment Request Button are card payments.
+`CheckoutPageWithPayment.js` already imports `PAYMENT_METHOD_CARD`.
 
 The card `handleSubmit` also navigates to `OrderDetailsPage` with the
 `completeCheckoutNavigation` helper from
