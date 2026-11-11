@@ -367,6 +367,15 @@ export const isPrivileged = (transition) => {
 };
 ```
 
+In addition, the helpers related to the checkout page need updating
+whenever the payment transitions change. The
+`getCheckoutPaymentTransitions` function returns
+`requestPaymentTransition` and `confirmPaymentTransition`. CheckoutPage
+reads its transitions only from this function, so make sure you are
+returning the correct transitions in that helper. `hasPaymentExpired`
+checks the last transition against `transitions.EXPIRE_PAYMENT`. Update
+it if your process expires payment with a different transition.
+
 ## Update state data for Inbox Page and Transaction Page
 
 In addition to the transaction process file, there are two other places

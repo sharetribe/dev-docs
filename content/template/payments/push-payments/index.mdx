@@ -1,0 +1,242 @@
+---
+title: Push payments in Sharetribe Web Template
+sidebarTitle: Push Payments
+description:
+  This article helps you decide whether to use push payments in your
+  marketplace, what to set up before you start, how the transaction
+  process changes, and what the current template scaffolding does not
+  yet handle.
+---
+
+import { Callout } from 'nextra/components';
+
+# Push payments in Sharetribe Web Template
+
+Push payment methods, such as iDEAL or Bancontact, let the customer
+confirm the payment in their bank or payment app. In checkout, the
+customer is redirected away from your marketplace and then returned to
+it after confirming the payment.
+
+Since release
+[v12.7.0](https://github.com/sharetribe/web-template/releases/tag/v12.7.0),
+Sharetribe Web Template includes scaffolding for push payments. The
+built-in transaction processes still support card payments only. The
+push payment code is a starting point for your own customization, and it
+is marked with comments that start with `// Push payments (redirect)`.
+
+This article covers the decisions to make before you start building:
+whether push payments suit your marketplace, what to set up outside the
+template, how the transaction process changes, and what the current
+scaffolding does not yet handle. For the template files you need to
+change, see the
+[transactions README](https://github.com/sharetribe/web-template/blob/main/src/transactions/README.md)
+and the
+[CheckoutPageRedirectReturn README](https://github.com/sharetribe/web-template/blob/main/src/containers/CheckoutPage/CheckoutPageRedirectReturn/README.md)
+in the template.
+
+<Callout type="warning">
+
+The current scaffolding expects card payments to be in place. Checkout
+starts with card selected, and it fetches the first price breakdown for
+a card payment. Because of this, a transaction process that offers push
+payments needs to offer card payments too. A process that offers only
+push payments does not work without further changes to checkout.
+
+</Callout>
+
+## Should you use push payments?
+
+### How push payments change the money flow
+
+With card payments, the payment can start with a preauthorization. The
+money is reserved on the customer's card, but it is not yet charged.
+With push payments, there is no preauthorization. The payment is charged
+in full as soon as the customer confirms it. After that, the payment can
+only be reversed with a full refund, and Stripe does not return its
+processing fees on a refund.
+
+The
+[payment methods overview](/concepts/payments/payment-methods-overview/#money-flow-in-different-scenarios)
+describes both money flows in more detail.
+
+### Which transaction processes suit push payments
+
+Because the payment is charged immediately, push payments suit processes
+where the provider does not need to accept the order after payment.
+Instant booking and purchase processes fit well.
+
+A request-to-book process, where the provider accepts or declines the
+booking after the customer has paid, needs more consideration. Every
+declined booking becomes a full refund, and the marketplace covers the
+Stripe fees. If you do need provider acceptance, consider a process
+where the provider accepts the booking before the customer pays.
+
+### Which push payment methods you can use
+
+Sharetribe supports push payment methods that have immediate payment
+confirmation and that Stripe's PaymentIntents API supports. The
+[`stripe-create-payment-intent-push` action reference](/references/transaction-process-actions/#actionstripe-create-payment-intent-push)
+lists some of the supported methods.
+
+Most push payment methods only work with certain currencies and in
+certain countries. For example, iDEAL works with EUR. Check the methods
+that suit your marketplace's currency and your providers' countries in
+[Stripe's payment method support documentation](https://docs.stripe.com/payments/payment-methods/payment-method-support).
+In the template, each payment method in
+`src/transactions/paymentMethods.js` can list its supported currencies.
+Checkout then offers the method only for listings in those currencies.
+
+## What to set up before you start
+
+### Stripe
+
+Sharetribe creates payments on behalf of the provider's Stripe account.
+For these payments, Stripe requires the payment method to be enabled for
+your connected accounts, not only for your platform account. You can set
+this in the Stripe Dashboard under **Settings** > **Connect** >
+**Payment methods** > **Connected accounts**.
+
+Some payment methods have extra requirements for the provider's Stripe
+account. A provider who does not meet them cannot accept that payment
+method. Read more in
+[Stripe's guide to managing payment methods for connected accounts](https://docs.stripe.com/connect/payment-methods).
+
+Set up and test the payment methods in Stripe test mode first.
+
+### A transaction process to start from
+
+The template does not include a transaction process with push payments.
+You can start your development work from the
+[instant-booking process](https://github.com/sharetribe/example-processes#instant-booking)
+in the
+[Sharetribe example transaction processes repository](https://github.com/sharetribe/example-processes).
+It supports both card and push payments, and it has no provider
+acceptance step.
+
+## How the transaction process changes
+
+This section uses the `instant-booking` process as an example.
+
+### Separate request transitions for push payments
+
+The `instant-booking` process has separate transitions for requesting a
+card payment and a push payment. The push payment transitions,
+`request-push-payment` and `request-push-payment-after-inquiry`, use
+`:action/stripe-create-payment-intent-push` instead of
+`:action/stripe-create-payment-intent`. Both kinds of transitions lead
+to the `pending-payment` state.
+
+```clojure filename="instant-booking/process.edn"
+  {:name :transition/request-push-payment,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/create-pending-booking, :config {:type :time}}
+    {:name :action/privileged-set-line-items}
+    {:name :action/stripe-create-payment-intent-push}],
+   :to :state/pending-payment,
+   :privileged? true}
+```
+
+The push payment action needs a `paymentMethodTypes` parameter, for
+example `["ideal"]`, to define which payment methods the customer can
+use. Because the transition is privileged, the template's server checks
+the parameter against an allowlist before it calls the Marketplace API.
+The allowlist is empty by default.
+
+### One confirm transition for both payment types
+
+Card and push payments can share the `confirm-payment` transition. In
+the `instant-booking` process, it goes from `pending-payment` directly
+to `booked`, so there is no `preauthorized` state and no provider
+acceptance.
+
+```clojure filename="instant-booking/process.edn"
+  {:name :transition/confirm-payment,
+   :actor :actor.role/customer,
+   :actions [{:name :action/accept-booking}
+             {:name :action/stripe-confirm-payment-intent}
+             {:name :action/stripe-capture-payment-intent}
+             ],
+   :from :state/pending-payment,
+   :to :state/booked}
+```
+
+The transition captures card payments with
+`:action/stripe-capture-payment-intent`. For push payments, the payment
+is already captured when the customer confirms it, so the capture action
+has no effect. That is why one transition works for both payment types.
+
+### Payment expiration and refunds
+
+The `expire-payment` transition moves a transaction from
+`pending-payment` to `payment-expired` if the payment is not confirmed
+in time. In the `instant-booking` process, the time limit is 15 minutes.
+The transition runs `:action/stripe-refund-payment`.
+
+With push payments, the customer leaves your marketplace to confirm the
+payment. Their bank charges the payment when they confirm it. If the
+customer does not return to your marketplace before the payment expires,
+the transaction does not get confirmed. The `expire-payment` transition
+then refunds the payment in full, and the marketplace covers the Stripe
+fees. To confirm these payments, you need to listen to Stripe webhooks
+and run the confirm transition from your server. The template does not
+include a webhook handler by default. Also consider whether the time
+limit gives your customers enough time to confirm the payment in their
+bank, or if you want to extend the time.
+
+The operator's `cancel` transition refunds the payment in full with
+`:action/stripe-refund-payment`. For push payments, the marketplace
+covers the Stripe fees in this case too.
+
+### Taking the process into use
+
+To take the process into use, push it to your marketplace with
+Sharetribe CLI and create an alias for it. Then add a listing type that
+uses the process, and add a process file for it in the template. These
+guides show you how to do this:
+
+- [Create a new transaction process with Sharetribe CLI](/how-to/transaction-process/create-new-transaction-process-with-cli/)
+- [Change transaction process in Sharetribe Web Template](/how-to/transaction-process/change-transaction-process-in-template/)
+
+The `instant-booking` process
+[README](https://github.com/sharetribe/example-processes/tree/master/instant-booking)
+also lists the template changes for the process. Note that the README
+instructions do not enable push payments in the template. For the push
+payment changes, follow the checklist in the
+[transactions README](https://github.com/sharetribe/web-template/blob/main/src/transactions/README.md)
+in the template.
+
+## Known limitations
+
+The push payment scaffolding in the template has these limitations that
+you will need to solve when fully developing a push payments feature.
+
+**Processes that offer only push payments.** As described at the top of
+this article, checkout expects card payments to be available. In
+addition, checkout saves the selected payment method to the
+transaction's protected data only when the customer can choose between
+several payment methods. Code that reads the payment method later treats
+a missing value as a card payment.
+
+**No error message after a failed redirect.** If the customer cancels
+the payment in their bank, or the payment fails, the template returns
+them to the checkout page. The page does not show an error message.
+
+**Returning on a different device or browser.** The page that the
+customer returns to after the redirect reads the listing and transaction
+from the browser's session storage. If the customer confirms the payment
+on another device, or in another browser, the data is missing, and the
+customer cannot finish checkout. To confirm these payments, you need
+Stripe webhooks or another way to confirm the payment from your server.
+
+**No saved push payment methods.** The Marketplace API can save cards
+only, so customers cannot save a push payment method for later payments,
+and they cannot be used for off-session payments.
+
+## Further reading
+
+- [Payment methods overview](/concepts/payments/payment-methods-overview/)
+- [How PaymentIntents work](/concepts/payments/payment-intents/)
+- [Action reference for Stripe integration](/references/transaction-process-actions/#stripe-integration)
+- [Transaction process](/concepts/transactions/transaction-process/)

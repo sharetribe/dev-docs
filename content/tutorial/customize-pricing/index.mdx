@@ -763,9 +763,10 @@ In `CheckoutPageWithPayment.js`, the function that does the heavy
 lifting in handling the payment processing is
 `processCheckoutWithPayment()`, which is imported from a helper file. In
 short, it first creates five functions to handle the transaction payment
-process, then composes them into a single function
-`handlePaymentIntentCreation()`, and then calls that function with the
-`orderParams` parameter.
+process. Then it composes them into two payment flows, one for card
+payments and one for push payments. For card payments, it calls
+`handlePaymentIntentCreationWithCard()` (previously
+`handlePaymentIntentCreation()`) with the `orderParams` parameter.
 
 </Callout>
 

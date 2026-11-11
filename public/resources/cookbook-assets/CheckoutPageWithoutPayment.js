@@ -1,19 +1,10 @@
 import React, { useState } from "react";
-import {
-  arrayOf,
-  bool,
-  func,
-  object,
-  oneOfType,
-  shape,
-  string,
-} from "prop-types";
 
 // Import contexts and util modules
-import { FormattedMessage, intlShape } from "../../util/reactIntl";
+import { FormattedMessage } from "../../util/reactIntl";
 import { pathByRouteName } from "../../util/routes";
+import { pickTransactionFieldsData } from "../../util/fieldHelpers.js";
 import {
-  propTypes,
   LINE_ITEM_HOUR,
   DATE_TYPE_DATE,
   DATE_TYPE_DATETIME,
@@ -27,20 +18,24 @@ import {
 } from "../../transactions/transaction";
 
 // Import shared components
-import { H3, H4, NamedLink, OrderBreakdown, Page } from "../../components";
+import {
+  H3,
+  H4,
+  NamedLink,
+  OrderBreakdown,
+  Page,
+  TopbarSimplified,
+} from "../../components";
 
 import {
   bookingDatesMaybe,
-  getBillingDetails,
   getFormattedTotalPrice,
   getShippingDetailsMaybe,
   getTransactionTypeData,
   processCheckoutWithoutPayment,
-  setOrderPageInitialValues,
 } from "./CheckoutPageTransactionHelpers.js";
 import { getErrorMessages } from "./ErrorMessages";
 
-import CustomTopbar from "./CustomTopbar";
 import SimpleOrderForm from "./StripePaymentForm/SimpleOrderForm";
 import DetailsSideCard from "./DetailsSideCard";
 import MobileListingImage from "./MobileListingImage";
@@ -48,8 +43,37 @@ import MobileOrderBreakdown from "./MobileOrderBreakdown";
 
 import css from "./CheckoutPage.module.css";
 
+const capitalizeString = (s) => `${s.charAt(0).toUpperCase()}${s.substr(1)}`;
+
 /**
- * Construct orderParams object using pageData from session storage, shipping details, and optional payment params.
+ * Prefix the properties of the chosen price variant as first level properties for the protected data of the transaction
+ *
+ * @example
+ * const priceVariant = {
+ *   name: 'something',
+ * }
+ *
+ * will be returned as:
+ * const priceVariant = {
+ *   priceVariantName: 'something',
+ * }
+ *
+ * @param {Object} priceVariant - The price variant object
+ * @returns {Object} The price variant object with the properties prefixed with priceVariant*
+ */
+const prefixPriceVariantProperties = (priceVariant) => {
+  if (!priceVariant) {
+    return {};
+  }
+
+  const entries = Object.entries(priceVariant).map(([key, value]) => {
+    return [`priceVariant${capitalizeString(key)}`, value];
+  });
+  return Object.fromEntries(entries);
+};
+
+/**
+ * Construct orderParams object using pageData from session storage, shipping details, transaction fields and the customer's message.
  * Note: This is used for both speculate transition and real transition
  *       - Speculate transition is called, when the the component is mounted. It's used to test if the data can go through the API validation
  *       - Real transition is made, when the user submits the OrderForm.
@@ -57,31 +81,68 @@ import css from "./CheckoutPage.module.css";
  * @param {Object} pageData data that's saved to session storage.
  * @param {Object} shippingDetails shipping address if applicable.
  * @param {Object} config app-wide configs. This contains hosted configs too.
+ * @param {Object} [transactionFieldProtectedData] protectedData from transaction field configs
+ * @param {string} [customerDefaultMessage] optional message saved to protectedData
  * @returns orderParams.
  */
-const getOrderParams = (pageData, shippingDetails, config) => {
+const getOrderParams = (
+  pageData,
+  shippingDetails,
+  config,
+  transactionFieldProtectedData = {},
+  customerDefaultMessage,
+) => {
   const quantity = pageData.orderData?.quantity;
   const quantityMaybe = quantity ? { quantity } : {};
+  const seats = pageData.orderData?.seats;
+  const seatsMaybe = seats ? { seats } : {};
   const deliveryMethod = pageData.orderData?.deliveryMethod;
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
-
-  const { listingType, unitType } =
+  const { listingType, unitType, priceVariants } =
     pageData?.listing?.attributes?.publicData || {};
+
+  // price variant data for fixed duration bookings
+  const priceVariantName = pageData.orderData?.priceVariantName;
+  const priceVariantNameMaybe = priceVariantName ? { priceVariantName } : {};
+  const priceVariant = priceVariants?.find(
+    (pv) => pv.name === priceVariantName,
+  );
+  const priceVariantMaybe = priceVariant
+    ? prefixPriceVariantProperties(priceVariant)
+    : {};
+
+  // The transaction page shows the customer's message from protected data
+  const customerDefaultMessageMaybe = customerDefaultMessage
+    ? { customerDefaultMessage }
+    : {};
+
   const protectedDataMaybe = {
     protectedData: {
       ...getTransactionTypeData(listingType, unitType, config),
       ...deliveryMethodMaybe,
       ...shippingDetails,
+      ...priceVariantMaybe,
+      ...transactionFieldProtectedData,
+      ...customerDefaultMessageMaybe,
     },
   };
 
-  // These are the order parameters for the first payment-related transition
-  // which is either initiate-transition or initiate-transition-after-enquiry
+  // Note: Avoid misinterpreting the following logic as allowing arbitrary mixing of `quantity` and `seats`.
+  // You can only pass either quantity OR seats and units to the orderParams object
+  // Quantity represents the total booked units for the line item (e.g. days, hours).
+  // When quantity is not passed, we pass seats and units.
+  // If `bookingDatesMaybe` is provided, it determines `units`, and `seats` defaults to 1
+  // (implying quantity = units)
+
+  // These are the order parameters for the first request transition
+  // which is either request-payment or request-payment-after-inquiry
   const orderParams = {
     listingId: pageData?.listing?.id,
     ...deliveryMethodMaybe,
     ...quantityMaybe,
+    ...seatsMaybe,
     ...bookingDatesMaybe(pageData.orderData?.bookingDates),
+    ...priceVariantNameMaybe,
     ...protectedDataMaybe,
   };
   return orderParams;
@@ -166,49 +227,54 @@ const handleSubmit = (values, process, props, submitting, setSubmitting) => {
     return;
   }
   setSubmitting(true);
-  console.log({ values });
 
   const {
     history,
     config,
     routeConfiguration,
-    speculatedTransaction,
-    currentUser,
-    dispatch,
     onInitiateOrder,
-    onSendMessage,
     onSubmitCallback,
     pageData,
     setPageData,
     sessionStorageKey,
+    transactionFieldConfigs = [],
   } = props;
   const { message, formValues } = values;
 
-  const requestPaymentParams = {
+  const transactionFieldsProtectedData = {
+    ...pickTransactionFieldsData(
+      formValues,
+      "protected",
+      true,
+      transactionFieldConfigs,
+    ),
+  };
+
+  const requestParams = {
     pageData,
-    speculatedTransaction,
-    billingDetails: getBillingDetails(formValues),
-    message,
     process,
     onInitiateOrder,
-    onSendMessage,
     sessionStorageKey,
     setPageData,
   };
 
   const shippingDetails = getShippingDetailsMaybe(formValues);
 
-  // These are the order parameters for the first payment-related transition
-  // which is either initiate-transition or initiate-transition-after-enquiry
-  const orderParams = getOrderParams(pageData, shippingDetails, config);
+  // These are the order parameters for the first request transition
+  // which is either request-payment or request-payment-after-inquiry
+  const orderParams = getOrderParams(
+    pageData,
+    shippingDetails,
+    config,
+    transactionFieldsProtectedData,
+    message,
+  );
 
-  // There are multiple XHR calls that needs to be made against the Sharetribe Marketplace API on checkout with payments
-  processCheckoutWithoutPayment(orderParams, requestPaymentParams)
+  processCheckoutWithoutPayment(orderParams, requestParams)
     .then((response) => {
-      const { orderId, messageSuccess } = response;
+      const { orderId } = response;
       setSubmitting(false);
 
-      const initialMessageFailedToTransaction = messageSuccess ? null : orderId;
       const orderDetailsPath = pathByRouteName(
         "OrderDetailsPage",
         routeConfiguration,
@@ -216,11 +282,7 @@ const handleSubmit = (values, process, props, submitting, setSubmitting) => {
           id: orderId.uuid,
         },
       );
-      const initialValues = {
-        initialMessageFailedToTransaction,
-      };
 
-      setOrderPageInitialValues(initialValues, routeConfiguration, dispatch);
       onSubmitCallback();
       history.push(orderDetailsPath);
     })
@@ -246,6 +308,9 @@ export const CheckoutPageWithoutPayment = (props) => {
     listingTitle,
     title,
     config,
+    showListingImage,
+    transactionFieldConfigs = [],
+    showTransactionFields,
   } = props;
 
   // Since the listing data is already given from the ListingPage
@@ -356,13 +421,14 @@ export const CheckoutPageWithoutPayment = (props) => {
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
-      <CustomTopbar intl={intl} />
+      <TopbarSimplified />
       <div className={css.contentContainer}>
         <MobileListingImage
           listingTitle={listingTitle}
           author={listing?.author}
           firstImage={firstImage}
           layoutListingImageConfig={config.layout.listingImage}
+          showListingImage={showListingImage}
         />
         <div className={css.orderFormContainer}>
           <div className={css.headingContainer}>
@@ -418,6 +484,8 @@ export const CheckoutPageWithoutPayment = (props) => {
                 marketplaceName={config.marketplaceName}
                 isBooking={isBookingProcessAlias(transactionProcessAlias)}
                 isFuzzyLocation={config.maps.fuzzy.enabled}
+                transactionFieldConfigs={transactionFieldConfigs}
+                showTransactionFields={showTransactionFields}
               />
             ) : null}
           </section>
@@ -435,6 +503,7 @@ export const CheckoutPageWithoutPayment = (props) => {
           isInquiryProcess={false}
           processName={processName}
           breakdown={breakdown}
+          showListingImage={showListingImage}
           intl={intl}
         />
       </div>
