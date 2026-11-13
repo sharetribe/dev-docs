@@ -51,11 +51,11 @@ guide in Dev Docs.
 Let's see what the subcommand `help` gives us about `process create`:
 
 ```shell
-$ flex-cli help process create
+$ sharetribe-cli help process create
 create a new transaction process
 
 USAGE
-  $ flex-cli process create
+  $ sharetribe-cli process create
 
 OPTIONS
   --path=LOCAL_PROCESS_DIR          path to the directory where the process.edn file is
@@ -75,7 +75,7 @@ use _"biketribe-instant-booking"_. Our final command for the
 _biketribe-dev_ marketplace would look like this:
 
 ```shell
-flex-cli process create --path=./instant-booking --process=biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process create --path=./instant-booking --process=biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 <Callout>
@@ -98,7 +98,7 @@ our client app, since it doesn't have process alias set. We can create
 an alias for our new process with Sharetribe CLI command:
 
 ```shell
-flex-cli process create-alias --process=biketribe-instant-booking --version=1 --alias=release-1 --marketplace=biketribe-dev
+sharetribe-cli process create-alias --process=biketribe-instant-booking --version=1 --alias=release-1 --marketplace=biketribe-dev
 ```
 
 With that command, we are creating a new alias _"release-1"_ and point
@@ -127,7 +127,7 @@ have most the up-to-date version of the process. You can fetch any
 process version with Sharetribe CLI:
 
 ```shell
-flex-cli process pull --process=biketribe-instant-booking --alias=release-1 --path=./biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process pull --process=biketribe-instant-booking --alias=release-1 --path=./biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 Now, we can open the _process.edn_ file from the new directory with a
@@ -172,7 +172,7 @@ Updating a transaction process is a similar process than creating a new
 one. This time we use _push_ command:
 
 ```shell
-flex-cli process push --process=biketribe-instant-booking --path=./biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process push --process=biketribe-instant-booking --path=./biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 And if you go to Console, you notice that there's a new version (2)
@@ -180,7 +180,7 @@ created of the _biketribe-instant-booking_ process. However, the alias
 is still pointing to the first version. We need to update the alias too:
 
 ```shell
-flex-cli process update-alias --alias=release-1 --process=biketribe-instant-booking --version=2 --marketplace=biketribe-dev
+sharetribe-cli process update-alias --alias=release-1 --process=biketribe-instant-booking --version=2 --marketplace=biketribe-dev
 ```
 
 Now, if you open the process graph from the Sharetribe Console, you'll

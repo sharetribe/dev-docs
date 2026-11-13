@@ -379,13 +379,13 @@ To validate a process and print overall process description (when it's
 valid) or validation errors:
 
 ```bash
-flex-cli process --path my-process-dir
+sharetribe-cli process --path my-process-dir
 ```
 
 To print more details about a specific transition:
 
 ```bash
-flex-cli process --path my-process-dir --transition transition/my-transition
+sharetribe-cli process --path my-process-dir --transition transition/my-transition
 ```
 
 Assuming we have stored the example process from this guide under
@@ -393,7 +393,7 @@ Assuming we have stored the example process from this guide under
 request-payment transition by running:
 
 ```ansi
-$ flex-cli process --path processes/guide/example --transition transition/request-payment
+$ sharetribe-cli process --path processes/guide/example --transition transition/request-payment
 Name
   transition/request-payment
 From

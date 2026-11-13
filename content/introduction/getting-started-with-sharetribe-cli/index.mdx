@@ -48,7 +48,7 @@ yarn dlx add flex-cli
 To verify that Sharetribe CLI was successfully installed, run:
 
 ```bash
-flex-cli
+sharetribe-cli
 ```
 
 This command should show you the CLI version and list available
@@ -60,18 +60,19 @@ Didn't work? Have a look at the [Troubleshooting](#troubleshooting).
 
 <Asciinema recordingId="267479"></Asciinema>
 
-`flex-cli help` is the command to see the list of available commands:
+`sharetribe-cli help` is the command to see the list of available
+commands:
 
 ```bash
-flex-cli help
+sharetribe-cli help
 ```
 
 In order to see subcommand help, pass the command as an argument for the
-`flex-cli help` command. For example, let's see help for command
+`sharetribe-cli help` command. For example, let's see help for command
 `login`.
 
 ```bash
-flex-cli help login
+sharetribe-cli help login
 ```
 
 ## Get an API key
@@ -87,18 +88,18 @@ the bottom left of the sidebar and click
 <Asciinema recordingId="267480"></Asciinema>
 
 After you've received [your API key](#get-an-api-key), you can log in
-with `flex-cli login` command. First, let's see help for the login
+with `sharetribe-cli login` command. First, let's see help for the login
 command:
 
 ```bash
-flex-cli help login
+sharetribe-cli help login
 ```
 
 You can see that the command does not require any additional options. So
 let's run it:
 
 ```bash
-flex-cli login
+sharetribe-cli login
 ```
 
 The command will prompt you your API key.
@@ -121,7 +122,7 @@ The command to list processes is `process list`. Let's see the help
 first:
 
 ```bash
-flex-cli help process list
+sharetribe-cli help process list
 ```
 
 As you can see, the command requires `MARKETPLACE_ID` option. You can
@@ -135,7 +136,7 @@ detailed information about a single process.
 Let's list all the processes:
 
 ```bash
-flex-cli process list -m my-marketplace-dev
+sharetribe-cli process list -m my-marketplace-dev
 ```
 
 This command shows you a list of transaction processes in your
@@ -154,10 +155,10 @@ Now that we know how to list processes, the next this is to
 
 ## Troubleshooting
 
-### flex-cli: command not found
+### sharetribe-cli: command not found
 
-If you're seeing `flex-cli: command not found` error and you installed
-Sharetribe CLI with Yarn, you need to add
+If you're seeing `sharetribe-cli: command not found` error and you
+installed Sharetribe CLI with Yarn, you need to add
 [Yarn global bin path to the PATH environment variable](https://classic.yarnpkg.com/en/docs/cli/global/#adding-the-install-location-to-your-path).
 
 #### On Windows
