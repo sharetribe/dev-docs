@@ -58,11 +58,11 @@ guide in Dev Docs.
 Let's see what the subcommand `help` tells us about `process create`:
 
 ```shell
-$ flex-cli help process create
+$ sharetribe-cli help process create
 create a new transaction process
 
 USAGE
-  $ flex-cli process create
+  $ sharetribe-cli process create
 
 OPTIONS
   --path=LOCAL_PROCESS_DIR          path to the directory where the process.edn file is
@@ -89,7 +89,7 @@ _"booking-with-negotiation"_. For clarity, in this example we'll use a
 different name for the new process.
 
 ```shell
-flex-cli process create --path=./negotiated-booking --process=booking-with-negotiation -m=my-marketplace-dev
+sharetribe-cli process create --path=./negotiated-booking --process=booking-with-negotiation -m=my-marketplace-dev
 ```
 
 After executing that command, you can go to the Sharetribe Console:
@@ -105,7 +105,7 @@ our client app, since it doesn't have process alias set. We can create
 an alias for our new process with Sharetribe CLI command:
 
 ```shell
-flex-cli process create-alias --process=booking-with-negotiation --version=1 --alias=release-1 -m=my-marketplace-dev
+sharetribe-cli process create-alias --process=booking-with-negotiation --version=1 --alias=release-1 -m=my-marketplace-dev
 ```
 
 With that command, we are creating a new alias _"release-1"_ and point

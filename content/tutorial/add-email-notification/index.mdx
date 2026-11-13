@@ -21,7 +21,7 @@ have most the up-to-date version of the process. You can fetch any
 process version with Sharetribe CLI:
 
 ```shell
-flex-cli process pull --process=biketribe-instant-booking --alias=release-1 --path=./biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process pull --process=biketribe-instant-booking --alias=release-1 --path=./biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 <Callout>
@@ -132,7 +132,7 @@ Once we have created the email notification, we can preview them with
 command:
 
 ```shell
-flex-cli notifications preview --template biketribe-instant-booking/templates/booking-reminder-customer --marketplace=biketribe-dev
+sharetribe-cli notifications preview --template biketribe-instant-booking/templates/booking-reminder-customer --marketplace=biketribe-dev
 ```
 
 You should see the HTML preview of the template in the address
@@ -142,7 +142,7 @@ refresh the browser to reload the template and render a new preview
 You can also test sending the preview email:
 
 ```shell
-flex-cli notifications send --template biketribe-instant-booking/templates/booking-reminder-customer --marketplace=biketribe-dev
+sharetribe-cli notifications send --template biketribe-instant-booking/templates/booking-reminder-customer --marketplace=biketribe-dev
 ```
 
 <Callout>
@@ -203,20 +203,20 @@ need more detailed information, take a look at the
 Push the updated process:
 
 ```shell
-flex-cli process push --process=biketribe-instant-booking --path=./biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process push --process=biketribe-instant-booking --path=./biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 Check version number with _process list_ command:
 
 ```shell
-flex-cli process list --process=biketribe-instant-booking --marketplace=biketribe-dev
+sharetribe-cli process list --process=biketribe-instant-booking --marketplace=biketribe-dev
 ```
 
 Update the alias to point to the latest version of the transaction
 process:
 
 ```shell
-flex-cli process update-alias --alias=release-1 --process=biketribe-instant-booking --version=3 --marketplace=biketribe-dev
+sharetribe-cli process update-alias --alias=release-1 --process=biketribe-instant-booking --version=3 --marketplace=biketribe-dev
 ```
 
 ## Summary

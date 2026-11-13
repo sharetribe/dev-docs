@@ -143,9 +143,9 @@ Console, the available field type options are
 - select one (search schema: `enum`)
 - select multiple (search schema: `multi-enum`)
 
-When you review your search schemas with the `flex-cli search` command,
-schemas defined for listing fields in console have the following doc
-string in the search schema:
+When you review your search schemas with the `sharetribe-cli search`
+command, schemas defined for listing fields in console have the
+following doc string in the search schema:
 
 ```shell
 A listing field defined in Console. Can not be edited with the CLI.
@@ -175,7 +175,7 @@ Our marketplace has one Console-created listing field, `condition`.
 Let's first see how that search schema looks:
 
 ```
-$ flex-cli search -m my-marketplace-dev
+$ sharetribe-cli search -m my-marketplace-dev
 
 Schema for   Scope   Key       Type   Default value   Doc
 listing      public  condition  enum                   A listing field defined in Console. Can not be edited with the CLI.
@@ -185,14 +185,14 @@ listing      public  condition  enum                   A listing field defined i
 Let's add the search schema for `accessories`:
 
 ```
-$ flex-cli search set --key accessories --type multi-enum --scope public -m my-marketplace-dev
+$ sharetribe-cli search set --key accessories --type multi-enum --scope public -m my-marketplace-dev
 ```
 
 We should now see the details for this new schema alongside our Console
 created one:
 
 ```
-$ flex-cli search -m my-marketplace-dev
+$ sharetribe-cli search -m my-marketplace-dev
 
 Schema for   Scope   Key          Type   Default value   Doc
 listing      public  condition     enum                   A listing field defined in Console. Can not be edited with the CLI.
@@ -220,8 +220,8 @@ same key.
 
 Adding user search schemas is only supported in Sharetribe CLI versions
 1.10.0 and above. Use yarn to update Sharetribe CLI by running
-`yarn global upgrade flex-cli` or `npm update -g flex-cli` if you are
-using npm.
+`yarn global upgrade sharetribe-cli` or `npm update -g sharetribe-cli`
+if you are using npm.
 
 </Callout>
 
@@ -235,7 +235,7 @@ to find users of a certain age range.
 Search schema for user profiles can be added as follows:
 
 ```
-$ flex-cli search set --schema-for userProfile --key age --type long --scope protected -m my-marketplace-dev
+$ sharetribe-cli search set --schema-for userProfile --key age --type long --scope protected -m my-marketplace-dev
 ```
 
 The above adds a search schema for `userProfile` with `long` type for a
@@ -245,7 +245,7 @@ Querying the defined schemas now shows both the listing schemas added on
 the previous step and the new user profile schema:
 
 ```
-$ flex-cli search -m my-marketplace-dev
+$ sharetribe-cli search -m my-marketplace-dev
 
 Schema for   Scope      Key          Type   Default value   Doc
 listing      public     condition    enum                   A listing field defined in Console. Can not be edited with the CLI.
@@ -261,8 +261,8 @@ If you wish to remove a schema, you can use the `search unset` command.
 
 Adding user search schemas is only supported in Sharetribe CLI versions
 1.14.0 and above. Use yarn to update Sharetribe CLI by running
-`yarn global upgrade flex-cli` or `npm update -g flex-cli` if you are
-using npm.
+`yarn global upgrade sharetribe-cli` or `npm update -g sharetribe-cli`
+if you are using npm.
 
 </Callout>
 
@@ -274,7 +274,7 @@ shipping transactions and pickup transactions.
 Search schema for transactions can be added as follows:
 
 ```
-$ flex-cli search set --schema-for transaction --key deliveryMethod --type enum --scope protected -m my-marketplace-dev
+$ sharetribe-cli search set --schema-for transaction --key deliveryMethod --type enum --scope protected -m my-marketplace-dev
 ```
 
 The above adds a search schema for `transaction` with `enum` type for a
@@ -284,7 +284,7 @@ Querying the defined schemas now shows both the listing schemas added on
 the previous step and the new user profile schema:
 
 ```
-$ flex-cli search -m my-marketplace-dev
+$ sharetribe-cli search -m my-marketplace-dev
 
 Schema for   Scope      Key            Type   Default value   Doc
 listing      public     condition      enum                   A listing field defined in Console. Can not be edited with the CLI.
@@ -313,7 +313,7 @@ listing search schema described above, the Sharetribe CLI command is as
 follows:
 
 ```
-$ flex-cli search set --key isPromoted --type boolean --scope metadata --default false -m my-marketplace-dev
+$ sharetribe-cli search set --key isPromoted --type boolean --scope metadata --default false -m my-marketplace-dev
 ```
 
 Now, if we query all the search schemas on the marketplace, we can see
@@ -321,7 +321,7 @@ the default value for the `isPromoted` schema in the corresponding
 column.
 
 ```
-$ flex-cli search -m my-marketplace-dev
+$ sharetribe-cli search -m my-marketplace-dev
 
 Schema for   Scope      Key            Type     Default value   Doc
 listing      metadata   isPromoted     boolean  false
