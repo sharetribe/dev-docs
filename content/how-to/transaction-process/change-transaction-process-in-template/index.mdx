@@ -47,7 +47,7 @@ add a new process:
 ## Add a listing type that uses the transaction process
 
 The
-[src/config/configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
+[src/config/listing/defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js)
 file lists the listing types actively used by the template, as well as
 the transaction processes related to those types. You need to add a
 listing type configuration for a new transaction process into the
@@ -62,7 +62,7 @@ previously active process definitions (if you only want to use the new
 process) or leave them as they are (if you want to allow using multiple
 processes in the same application).
 
-```js filename="src/config/configListing.js"
+```js filename="src/config/listing/defaultListing.js"
 export const listingTypes = [
   {
     listingType: 'booking-with-negotiation',
@@ -96,7 +96,7 @@ export const listingTypes = [
 Settings configured in local configurations files are overridden by any
 fetched via the Asset Delivery API.
 
-When you first add a new listing type in the configListing.js file, you
+When you first add a new listing type in the defaultListing.js file, you
 need to follow the steps in
 [this article](/template/configuration/hosted-and-local-configurations/)
 to modify the way your template merges local and hosted configurations.

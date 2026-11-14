@@ -21,17 +21,18 @@ and they guide users to the most popular locations in your marketplace.
 In addition to current location, we want to help users find listings in
 specific locations. Let's add a suggestion: _"Auckland, New Zealand"_.
 
-## Change configDefaultLocationSearches.js
+## Change defaultLocationSearches.js
 
 The component that makes geocoding calls to the map providers geocoding
 API is called _LocationAutocompleteInput_. However, the default
 locations are actually set in a file called
-_configDefaultLocationSearches.js_:
+_defaultLocationSearches.js_:
 
 ```shell
 └── src
     └── config
-        └── _configDefaultLocationSearches.js
+        └── maps
+            └── defaultLocationSearches.js
 ```
 
 In that file you can see example locations, in comments, listed inside
@@ -103,7 +104,7 @@ You can add other locations in a similar fashion.
 ## Summary
 
 In this tutorial, you modified the default locations by making changes
-to the _configDefaultLocationSearches.js_ file in the _src/config_
+to the _defaultLocationSearches.js_ file in the _src/config/maps_
 directory. Within this file, you can edit an array of example locations,
 each represented by an object containing an id, an address, and a bounds
 object defining the bounding box for the displayed area on the search
