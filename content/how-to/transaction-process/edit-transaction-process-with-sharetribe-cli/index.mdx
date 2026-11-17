@@ -52,7 +52,7 @@ Remember to include your marketplace ident to the command with the
 `-m <your marketplace ident here>`:
 
 ```bash
-sharetribe-cli process list -m my-marketplace-dev
+sharetribe process list -m my-marketplace-dev
 ```
 
 From the list of processes, pick the one that you want to edit. In this
@@ -67,7 +67,7 @@ We can pull the process with the `process pull` command. Let's see the
 options that the command needs:
 
 ```bash
-sharetribe-cli help process pull
+sharetribe help process pull
 ```
 
 We can see that required options are:
@@ -81,7 +81,7 @@ We can see that required options are:
 Pull the process and save it to `process` directory:
 
 ```bash
-sharetribe-cli process pull --process default-booking --version 1 --path process -m my-marketplace-dev
+sharetribe process pull --process default-booking --version 1 --path process -m my-marketplace-dev
 ```
 
 See what's inside the `process` directory:
@@ -168,7 +168,7 @@ validate that the changes are correct. The CLI command `process` can do
 this:
 
 ```bash
-sharetribe-cli process --path process
+sharetribe process --path process
 ```
 
 In case the `process.edn` file is valid, you'll see a description of
@@ -196,7 +196,7 @@ process to avoid unnecessary errors.
 {/* // prettier-ignore */}
 
 You can see the CLI version you are using by running
-`sharetribe-cli version`.
+`sharetribe version`.
 
 </Callout>
 
@@ -204,7 +204,7 @@ Now that we have validated the `process.edn` file we are ready to push
 the changes to Sharetribe:
 
 ```bash
-sharetribe-cli process push --path process --process default-booking -m my-marketplace-dev
+sharetribe process push --path process --process default-booking -m my-marketplace-dev
 ```
 
 After the process is successfully pushed, you'll see a new process
@@ -226,7 +226,7 @@ First, let's see what aliases are pointing to which versions. We can do
 this by using the `process list` command with the `--process` option:
 
 ```bash
-sharetribe-cli process list --process default-booking -m my-marketplace-dev
+sharetribe process list --process default-booking -m my-marketplace-dev
 ```
 
 You'll see a list of process versions and aliases pointing to them. The
@@ -240,7 +240,7 @@ In the default process, the name of the existing alias is `release-1`.
 The command to update the alias is `process update-alias`:
 
 ```bash
-sharetribe-cli process update-alias --process default-booking --alias release-1 --version 2 -m my-marketplace-dev
+sharetribe process update-alias --process default-booking --alias release-1 --version 2 -m my-marketplace-dev
 ```
 
 This command updates the alias `release-1` to point to `default-booking`
