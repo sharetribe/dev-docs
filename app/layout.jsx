@@ -65,7 +65,7 @@ const banner = (
 const navbar = (
   <Navbar
     logo={<Logo />}
-    chatLink="https://community.sharetribe.com/c/building-with-custom-code"
+    chatLink="https://community.sharetribe.com/c/how-to-and-help"
     chatIcon={<CommunityIcon />}
     projectLink="https://www.github.com/sharetribe/web-template"
     // ... Your additional navbar options
