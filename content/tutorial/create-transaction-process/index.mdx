@@ -201,20 +201,21 @@ the version of the process that was in use at that time. Therefore, you
 might need to update your client app so that it supports several
 different process versions.
 
-### Update configListing.js
+### Update defaultListing.js
 
 ```shell
 └── src
     └── config
-        └── configListing.js
+        └── listing
+            └── defaultListing.js
 ```
 
-The **configListing.js** file details an array listing types, each with
+The **defaultListing.js** file details an array listing types, each with
 a unique transaction type. The transaction type defines the transaction
 process and alias being used, as well as the unit type, such as _day_ or
 _night_.
 
-```jsx filename="src/config/configListing.js"
+```jsx filename="src/config/listing/defaultListing.js"
 export const listingTypes = [
   // // Here are some examples of listingTypes
   // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
@@ -247,7 +248,7 @@ export const listingTypes = [
 Let's use the new _biketribe-instant-booking_ process as the daily
 booking process:
 
-```diff filename="src/config/configListing.js"
+```diff filename="src/config/listing/defaultListing.js"
 
 -  // {
 -  //   listingType: 'daily-booking',
@@ -282,18 +283,19 @@ booking process:
 ### Use built-in listing configuration alongside hosted
 
 If the template uses listing type configurations from Sharetribe Console
-by default, it ignores the changes made in configListing.js. We will
+by default, it ignores the changes made in defaultListing.js. We will
 need to set the template to use the default listing type configurations
 alongside the hosted ones next.
 
 ```shell
 └── src
-    └── util
-        └── configHelpers.js
+    └── config
+        └── listing
+            └── listing.js
 ```
 
-```diff filename="src/util/configHelpers.js"
-const mergeListingConfig = (hostedConfig, defaultConfigs) => {
+```diff filename="src/config/listing/listing.js"
+const resolve = (validated, defaults, ctx) => {
   /* ... */
   const shouldMerge = mergeDefaultTypesAndFieldsForDebugging(false);
 - const listingTypes = shouldMerge

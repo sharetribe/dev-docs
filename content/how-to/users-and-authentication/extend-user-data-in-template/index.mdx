@@ -21,22 +21,24 @@ Adding new attributes to the data model relies on
 starting from release
 [v5.0.0](https://github.com/sharetribe/web-template/releases/tag/v5.0.0),
 top-level user extended data can be configured in the
-[configUser.js](https://github.com/sharetribe/web-template/blob/main/src/config/configUser.js)
+[defaultUser.js](https://github.com/sharetribe/web-template/blob/main/src/config/user/defaultUser.js)
 file.
 
 As of November 2025, public and private user fields can be configured in
 Console. Protected data user fields still need to be configured in
-configUser.js.
+defaultUser.js.
 
 In addition, Console allows configuring up to 100 user fields. If you
 have more than 100 user fields configured in Console, for example if you
 have a complex user type and user field setup on your marketplace, you
-will need to configure the rest of your user fields in configUser.js.
+will need to configure the rest of your user fields in defaultUser.js.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
     <FileTree.Folder name="config" defaultOpen>
-      <FileTree.File name="configUser.js" />
+      <FileTree.Folder name="user" defaultOpen>
+        <FileTree.File name="defaultUser.js" />
+      </FileTree.Folder>
     </FileTree.Folder>
   </FileTree.Folder>
 </FileTree>
@@ -91,8 +93,8 @@ The full configuration looks like this:
 
 ### Declare the attribute and its possible values
 
-Extended data attributes in the `configUser.js` file need to be defined,
-at minimum, by **key**, by **scope**, and by **schemaType**.
+Extended data attributes in the `defaultUser.js` file need to be
+defined, at minimum, by **key**, by **scope**, and by **schemaType**.
 
 ```js
     key: 'arrivalInstructions',

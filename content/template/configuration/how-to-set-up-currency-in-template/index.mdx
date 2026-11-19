@@ -21,26 +21,16 @@ you can do so by editing the currency code in the
 [configDefault.js](https://github.com/sharetribe/web-template/blob/main/src/config/configDefault.js#L20)
 file.
 
-You will also need to update the mergeCurrency function in
-[configHelpers.js](https://github.com/sharetribe/web-template/blob/main/src/util/configHelpers.js#L51-L63)
+You will also need to update the `getMarketplaceCurrency` function in
+[localization.js](https://github.com/sharetribe/web-template/blob/main/src/config/localization/localization.js)
 to prevent the template from using the currency defined in assets.
 
-```diff
-const mergeCurrency = (hostedCurrency, defaultCurrency) => {
-- const currency = hostedCurrency || defaultCurrency;
-+ const currency = defaultCurrency;
-  const supportedCurrencies = Object.keys(subUnitDivisors);
-  if (supportedCurrencies.includes(currency)) {
-    return currency;
-  } else {
-    console.error(
-      `The given currency (${currency}) is not supported.
-      There's a missing entry on subUnitDivisors`
-    );
-    return null;
-  }
-};
-
+```diff filename="src/config/localization/localization.js"
+ export const getMarketplaceCurrency = (localization, defaultCurrency) => {
+-  const currency = localization?.currency || defaultCurrency;
++  const currency = defaultCurrency;
+   return supportedCurrencies.includes(currency) ? currency : null;
+ };
 ```
 
 ## Supported currencies

@@ -18,13 +18,15 @@ and used to filter searches.
 Adding new attributes to the data model relies on
 [extended data](/references/extended-data/). In Sharetribe Web Template,
 top-level listing extended data is configured in the
-[configListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/configListing.js)
+[defaultListing.js](https://github.com/sharetribe/web-template/blob/main/src/config/listing/defaultListing.js)
 file.
 
 <FileTree>
   <FileTree.Folder name="src" defaultOpen>
     <FileTree.Folder name="config" defaultOpen>
-      <FileTree.File name="configListing.js" />
+      <FileTree.Folder name="listing" defaultOpen>
+        <FileTree.File name="defaultListing.js" />
+      </FileTree.Folder>
     </FileTree.Folder>
   </FileTree.Folder>
 </FileTree>
@@ -63,7 +65,7 @@ listing page, if you want to show the attribute there.
 ## Define a has_any multi-enum field for listings
 
 In this article, we will extend top-level data using
-**configListing.js** to use a **has_any** search pattern.
+**defaultListing.js** to use a **has_any** search pattern.
 
 When configuring a multi-enum field in Console, the search is always in
 **has_all** mode – selecting two options returns listings with both of
@@ -75,7 +77,7 @@ Let's extend the default bike related listing data by adding an
 attribute 'accessories' to show what accessories are included. The full
 configuration looks like this:
 
-```jsx filename="configListing.js"
+```jsx filename="defaultListing.js"
   {
     key: 'accessories',
     scope: 'public',
@@ -105,10 +107,10 @@ configuration looks like this:
 
 ### Declare the attribute and its possible values
 
-Extended data attributes in the `configListing.js` file need to be
+Extended data attributes in the `defaultListing.js` file need to be
 defined, at minimum, by **key**, by **scope**, and by **schemaType**.
 
-```jsx filename="configListing.js"
+```jsx filename="defaultListing.js"
 key: 'accessories',
 scope: 'public',
 schemaType: 'multi-enum',
@@ -178,7 +180,7 @@ other contexts where the attribute shows up. You can also set the
 attribute as required, and determine the error message to show if the
 attribute is missing.
 
-```jsx filename="configListing.js"
+```jsx filename="defaultListing.js"
 saveConfig: {
   label: 'Accessories',
   placeholderMessage: 'Select an option…',
@@ -210,7 +212,7 @@ Console, the default is _has_all_. To define a multi-enum listing field
 with _has_any_ search logic, you will need to define the field in your
 local code.
 
-```jsx filename="configListing.js"
+```jsx filename="defaultListing.js"
 filterConfig: {
   showFilter: true,
   label: 'Accessories',
@@ -234,7 +236,7 @@ are shown on the listing page, but by setting **isDetail** to **false**
 on an attribute with schema type _enum_, _long_, or _boolean_, you can
 hide the attribute from the Details section on the listing page.
 
-```jsx filename="configListing.js"
+```jsx filename="defaultListing.js"
 showConfig: {
   label: 'Accessories',
 },
